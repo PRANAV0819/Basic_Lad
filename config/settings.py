@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Without this, Django won't find our models, templates or static files.
     "core",
     "adminpanel",
+    "student",
 ]
 
 MIDDLEWARE = [

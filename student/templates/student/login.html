@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Login - Placement Readiness Platform</title>
+    <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+</head>
+<body class="auth-body">
+
+    <!-- Top Minimal Navigation -->
+    <header class="auth-header">
+        <a href="{% url 'core:home' %}" class="auth-logo">
+            <span class="logo-icon">&#9670;</span>
+            <span class="logo-text">PlaceReady</span>
+        </a>
+        <a href="{% url 'core:home' %}" class="back-link">&#8592; Back to Home</a>
+    </header>
+
+    <!-- Main Container -->
+    <main class="auth-container">
+        <div class="auth-card">
+
+            <div class="auth-header-block">
+                <span class="role-badge">Student Portal</span>
+                <h1 class="auth-title">Student Login</h1>
+                <p class="auth-subtitle">Sign in to access your assessment dashboard and readiness report.</p>
+            </div>
+
+            <!-- Registration Success Alert -->
+            {% if success %}
+                <div class="alert-box alert-success" role="alert">
+                    <span class="alert-icon">&#10003;</span>
+                    <span>{{ success }}</span>
+                </div>
+            {% endif %}
+
+            <!-- Error Alert -->
+            {% if error %}
+                <div class="alert-box alert-error" role="alert">
+                    <span class="alert-icon">&#9888;</span>
+                    <span>{{ error }}</span>
+                </div>
+            {% endif %}
+
+            <!-- Login Form -->
+            <form method="POST" action="{% url 'signin_student' %}" class="auth-form" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-input"
+                        placeholder="student@college.edu"
+                        value="{{ email }}"
+                        required
+                        autofocus
+                        autocomplete="email"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-input"
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    />
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Login
+                </button>
+            </form>
+
+            <div class="auth-switch">
+                <p>Don't have an account? <a href="{% url 'student:signup' %}" class="link-highlight">Sign Up</a></p>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="{% static 'student/js/script.js' %}"></script>
+</body>
+</html>

@@ -70,11 +70,11 @@ HOW Django uses it:
                         Sign In <span class="dropdown-caret">&#9662;</span>
                     </button>
                     <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item">Student</a>
+                        <a href="{% url 'signin_student' %}" class="dropdown-item">Student</a>
                         <a href="{% url 'signin_admin' %}" class="dropdown-item">Admin</a>
                     </div>
                 </div>
-                <a href="#" class="nav-btn-primary">Sign Up</a>
+                <a href="{% url 'student:signup' %}" class="nav-btn-primary">Sign Up</a>
             </nav>
 
             <!-- Hamburger for mobile — toggled by script.js -->
@@ -93,11 +93,11 @@ HOW Django uses it:
                     Sign In <span class="dropdown-caret">&#9662;</span>
                 </button>
                 <div class="mobile-dropdown-menu">
-                    <a href="#" class="mobile-sublink">Student</a>
+                    <a href="{% url 'signin_student' %}" class="mobile-sublink">Student</a>
                     <a href="{% url 'signin_admin' %}" class="mobile-sublink">Admin</a>
                 </div>
             </div>
-            <a href="#" class="nav-btn-primary">Sign Up</a>
+            <a href="{% url 'student:signup' %}" class="nav-btn-primary">Sign Up</a>
         </div>
     </header>
 
@@ -118,14 +118,14 @@ HOW Django uses it:
                     you need to improve.
                 </p>
                 <div class="hero-actions">
-                    <a href="#" class="btn btn-primary">Get Started</a>
+                    <a href="{% url 'student:signup' %}" class="btn btn-primary">Get Started</a>
                     <!-- Hero Sign In Dropdown -->
                     <div class="dropdown hero-dropdown" id="heroSignInDropdown">
                         <button type="button" class="btn btn-secondary dropdown-toggle hero-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
                             Sign In <span class="dropdown-caret">&#9662;</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">Student</a>
+                            <a href="{% url 'signin_student' %}" class="dropdown-item">Student</a>
                             <a href="{% url 'signin_admin' %}" class="dropdown-item">Admin</a>
                         </div>
                     </div>

@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Sign Up - Placement Readiness Platform</title>
+    <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+</head>
+<body class="auth-body">
+
+    <!-- Top Minimal Navigation -->
+    <header class="auth-header">
+        <a href="{% url 'core:home' %}" class="auth-logo">
+            <span class="logo-icon">&#9670;</span>
+            <span class="logo-text">PlaceReady</span>
+        </a>
+        <a href="{% url 'core:home' %}" class="back-link">&#8592; Back to Home</a>
+    </header>
+
+    <!-- Main Container -->
+    <main class="auth-container">
+        <div class="auth-card">
+
+            <div class="auth-header-block">
+                <span class="role-badge">Student Registration</span>
+                <h1 class="auth-title">Create your Student Account</h1>
+                <p class="auth-subtitle">Register to evaluate your placement readiness and skills.</p>
+            </div>
+
+            <!-- Error Alert -->
+            {% if error %}
+                <div class="alert-box alert-error" role="alert">
+                    <span class="alert-icon">&#9888;</span>
+                    <span>{{ error }}</span>
+                </div>
+            {% endif %}
+
+            <!-- Signup Form -->
+            <form method="POST" action="{% url 'student:signup' %}" class="auth-form" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name <span class="required">*</span></label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        class="form-input"
+                        placeholder="e.g. John Doe"
+                        value="{{ form_data.name|default:'' }}"
+                        required
+                        autofocus
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address <span class="required">*</span></label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-input"
+                        placeholder="student@college.edu"
+                        value="{{ form_data.email|default:'' }}"
+                        required
+                    />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="password" class="form-label">Password <span class="required">*</span></label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-input"
+                            placeholder="At least 6 characters"
+                            required
+                        />
+                    </div>
+
+                    <div class="form-group flex-1">
+                        <label for="confirm_password" class="form-label">Confirm Password <span class="required">*</span></label>
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            class="form-input"
+                            placeholder="Re-enter password"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="department" class="form-label">Department</label>
+                        <input
+                            type="text"
+                            id="department"
+                            name="department"
+                            class="form-input"
+                            placeholder="e.g. Computer Engineering"
+                            value="{{ form_data.department|default:'' }}"
+                        />
+                    </div>
+
+                    <div class="form-group flex-1">
+                        <label for="year" class="form-label">Year of Study</label>
+                        <input
+                            type="text"
+                            id="year"
+                            name="year"
+                            class="form-input"
+                            placeholder="e.g. Third Year"
+                            value="{{ form_data.year|default:'' }}"
+                        />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-switch">
+                <p>Already have an account? <a href="{% url 'signin_student' %}" class="link-highlight">Sign In</a></p>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="{% static 'student/js/script.js' %}"></script>
+</body>
+</html>
