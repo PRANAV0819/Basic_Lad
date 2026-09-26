@@ -1,0 +1,330 @@
+{% comment %}
+core/templates/core/home.html
+
+WHAT: This is the HTML template for the landing page.
+
+WHY:  Django uses a templating engine that lets us mix Python-like
+      template tags ({% %}, {{ }}) inside HTML. This allows views
+      to pass data into the page dynamically. Right now the page
+      is static, so we only use {% load %} and {% static %}.
+
+WHERE: Django finds this file because:
+       1. 'core' is in INSTALLED_APPS in settings.py
+       2. APP_DIRS = True in TEMPLATES setting
+       3. Django looks inside every installed app's templates/ folder
+       4. It finds core/templates/core/home.html
+
+HOW Django uses it:
+       render(request, 'core/home.html', {})
+       → Django looks up core/home.html in the template loader
+       → Processes template tags
+       → Returns rendered HTML string
+       → Sent back as HTTP 200 response to the browser
+
+{% load static %}
+       This is a Django template tag that loads the "static" library.
+       After loading it, we can use {% static 'path/to/file' %}
+       which outputs the correct URL for a static file.
+       e.g., {% static 'core/css/style.css' %}
+       becomes: /static/core/css/style.css
+{% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Readiness Platform</title>
+
+    <!--
+        {% static '...' %} generates the correct URL for our CSS file.
+        Without {% load static %} at the top, this would throw an error.
+        Django's staticfiles app serves files from each app's static/ folder
+        during development (when DEBUG=True).
+    -->
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}" />
+</head>
+<body>
+
+    <!-- ===================== NAVIGATION ===================== -->
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{% url 'core:home' %}" class="logo">
+                <!--
+                    {% url 'core:home' %} generates '/'.
+                    'core' is the app_name from core/urls.py.
+                    'home' is the name= from the urlpatterns entry.
+                    Using named URLs means if we ever change '/' to '/home/',
+                    we only change it in urls.py — templates stay the same.
+                -->
+                <span class="logo-icon">&#9670;</span>
+                <span class="logo-text">PlaceReady</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <!-- Sign In Dropdown Menu (Student / Admin) -->
+                <div class="dropdown" id="navSignInDropdown">
+                    <button class="dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+                        Sign In <span class="dropdown-caret">&#9662;</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">Student</a>
+                        <a href="{% url 'signin_admin' %}" class="dropdown-item">Admin</a>
+                    </div>
+                </div>
+                <a href="#" class="nav-btn-primary">Sign Up</a>
+            </nav>
+
+            <!-- Hamburger for mobile — toggled by script.js -->
+            <button class="hamburger" id="hamburger" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        <!-- Mobile menu drawer -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <!-- Mobile Sign In Dropdown -->
+            <div class="mobile-dropdown" id="mobileSignInDropdown">
+                <button type="button" class="mobile-dropdown-toggle">
+                    Sign In <span class="dropdown-caret">&#9662;</span>
+                </button>
+                <div class="mobile-dropdown-menu">
+                    <a href="#" class="mobile-sublink">Student</a>
+                    <a href="{% url 'signin_admin' %}" class="mobile-sublink">Admin</a>
+                </div>
+            </div>
+            <a href="#" class="nav-btn-primary">Sign Up</a>
+        </div>
+    </header>
+
+
+    <!-- ===================== HERO SECTION ===================== -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-text">
+                <h1 class="hero-heading">
+                    Know Exactly Where<br />
+                    You Stand.<br />
+                    <span class="hero-heading-accent">Before Placement Season.</span>
+                </h1>
+                <p class="hero-sub">
+                    Answer a few questions about your skills, academics, and projects.
+                    Our system evaluates your responses and gives you a
+                    <strong>Placement Readiness Score</strong> along with the areas
+                    you need to improve.
+                </p>
+                <div class="hero-actions">
+                    <a href="#" class="btn btn-primary">Get Started</a>
+                    <!-- Hero Sign In Dropdown -->
+                    <div class="dropdown hero-dropdown" id="heroSignInDropdown">
+                        <button type="button" class="btn btn-secondary dropdown-toggle hero-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                            Sign In <span class="dropdown-caret">&#9662;</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item">Student</a>
+                            <a href="{% url 'signin_admin' %}" class="dropdown-item">Admin</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simple score preview card — purely decorative HTML/CSS -->
+            <div class="hero-card" aria-hidden="true">
+                <p class="card-label">Your Readiness Score</p>
+                <div class="score-ring">
+                    <span class="score-number">--</span>
+                    <span class="score-slash">/ 100</span>
+                </div>
+                <ul class="score-hints">
+                    <li class="hint-item hint-ok">&#10003; Core Subjects</li>
+                    <li class="hint-item hint-warn">&#9888; DSA Practice</li>
+                    <li class="hint-item hint-bad">&#10007; Projects</li>
+                </ul>
+                <p class="card-note">Sign up to see your actual score</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===================== HOW IT WORKS ===================== -->
+    <section class="how" id="about">
+        <div class="section-inner">
+            <h2 class="section-heading">How It Works</h2>
+            <p class="section-sub">
+                No guesswork. No complicated setup. Just honest self-evaluation.
+            </p>
+
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-number">01</div>
+                    <h3 class="step-title">Enter Your Preparation Details</h3>
+                    <p class="step-desc">
+                        Fill in your academic score, number of DSA problems solved,
+                        projects completed, internship experience, and technical skills.
+                    </p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">02</div>
+                    <h3 class="step-title">System Evaluates Your Profile</h3>
+                    <p class="step-desc">
+                        Our algorithm processes your inputs against defined scoring rules
+                        and benchmarks that reflect common placement requirements.
+                    </p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">03</div>
+                    <h3 class="step-title">Receive Your Readiness Score</h3>
+                    <p class="step-desc">
+                        You receive a score out of 100 that reflects your overall
+                        placement preparedness based on weighted criteria.
+                    </p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">04</div>
+                    <h3 class="step-title">See Areas for Improvement</h3>
+                    <p class="step-desc">
+                        The result page highlights exactly which areas are bringing
+                        your score down so you can focus your preparation effectively.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===================== FEATURES ===================== -->
+    <section class="features">
+        <div class="section-inner">
+            <div class="features-header">
+                <div>
+                    <h2 class="section-heading">What the Platform Evaluates</h2>
+                    <p class="section-sub">
+                        Three clear pillars that together form your placement readiness.
+                    </p>
+                </div>
+            </div>
+
+            <div class="features-layout">
+                <!-- Left: feature list -->
+                <div class="feature-list">
+                    <div class="feature-item" id="feat-1">
+                        <div class="feature-icon">&#128202;</div>
+                        <div>
+                            <h3 class="feature-title">Skill Assessment</h3>
+                            <p class="feature-desc">
+                                Rate your proficiency in programming languages,
+                                data structures, algorithms, databases, and operating systems.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item" id="feat-2">
+                        <div class="feature-icon">&#127942;</div>
+                        <div>
+                            <h3 class="feature-title">Readiness Score</h3>
+                            <p class="feature-desc">
+                                A single score out of 100 calculated from your inputs
+                                using our custom weighted scoring algorithm.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item" id="feat-3">
+                        <div class="feature-icon">&#128270;</div>
+                        <div>
+                            <h3 class="feature-title">Weak Area Identification</h3>
+                            <p class="feature-desc">
+                                Automatically flags areas where your score falls below
+                                the minimum threshold, giving you a clear action plan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: decorative info panel -->
+                <div class="feature-panel">
+                    <p class="panel-heading">Scoring Criteria</p>
+                    <ul class="criteria-list">
+                        <li class="criteria-row">
+                            <span class="criteria-name">Academic CGPA</span>
+                            <span class="criteria-weight">20 pts</span>
+                        </li>
+                        <li class="criteria-row">
+                            <span class="criteria-name">DSA Practice</span>
+                            <span class="criteria-weight">25 pts</span>
+                        </li>
+                        <li class="criteria-row">
+                            <span class="criteria-name">Core Subject Knowledge</span>
+                            <span class="criteria-weight">20 pts</span>
+                        </li>
+                        <li class="criteria-row">
+                            <span class="criteria-name">Projects</span>
+                            <span class="criteria-weight">20 pts</span>
+                        </li>
+                        <li class="criteria-row">
+                            <span class="criteria-name">Internship / Experience</span>
+                            <span class="criteria-weight">15 pts</span>
+                        </li>
+                        <li class="criteria-total-row">
+                            <span class="criteria-name">Total</span>
+                            <span class="criteria-weight">100 pts</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===================== CALL TO ACTION ===================== -->
+    <section class="cta">
+        <div class="section-inner cta-inner">
+            <h2 class="cta-heading">Ready to find out where you stand?</h2>
+            <p class="cta-sub">
+                Takes less than 5 minutes. No sign-up required to preview.
+            </p>
+            <div class="cta-actions">
+                <a href="#" class="btn btn-primary">Get Started — It's Free</a>
+                <a href="#" class="btn btn-ghost">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="logo-icon">&#9670;</span>
+                <span class="logo-text">PlaceReady</span>
+            </div>
+            <p class="footer-copy">
+                A college project &mdash; built to demonstrate
+                custom placement readiness evaluation logic.
+            </p>
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="#about">About</a>
+                <a href="#">Sign In</a>
+                <a href="#">Sign Up</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <!--
+        {% static '...' %} for the JS file.
+        Placed at the bottom of <body> so the HTML loads first,
+        then the script runs. This is a best practice.
+    -->
+    <script src="{% static 'core/js/script.js' %}"></script>
+
+</body>
+</html>

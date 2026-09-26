@@ -1,0 +1,858 @@
+/*
+  core/static/core/css/style.css
+
+  WHAT: All visual styling for the landing page.
+
+  WHY:  Keeping CSS separate from HTML follows the separation-of-concerns
+        principle — structure (HTML) and presentation (CSS) stay independent.
+        This makes both easier to read, edit, and debug.
+
+  WHERE: Django's staticfiles system serves this file from:
+         core/static/core/css/style.css
+         At URL: /static/core/css/style.css
+
+  DESIGN REFERENCE: CodeHelp.in
+  - White background with very light lavender section tints
+  - Dark near-black text (#111 / #222)
+  - Purple primary accent: #6d28d9
+  - Clean, generous spacing
+  - Simple flat cards with light gray borders
+  - Bold, large headings
+  - Minimal hover effects
+*/
+
+
+/* ============================================================
+   1. CSS RESET & BASE
+   ============================================================ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* --- Color Palette (inspired by CodeHelp) --- */
+    --clr-bg:          #ffffff;          /* page background */
+    --clr-bg-tint:     #f5f3ff;          /* light purple tint for alternating sections */
+    --clr-border:      #e5e7eb;          /* light gray border */
+    --clr-text:        #111111;          /* primary dark text */
+    --clr-muted:       #555555;          /* secondary/description text */
+    --clr-accent:      #6d28d9;          /* purple — primary accent */
+    --clr-accent-dark: #5b21b6;          /* darker purple for hover states */
+    --clr-accent-bg:   #ede9fe;          /* very light purple background for badges */
+
+    /* --- Typography --- */
+    --font-main:  'Segoe UI', system-ui, -apple-system, sans-serif;
+    --fw-normal:  400;
+    --fw-medium:  500;
+    --fw-bold:    700;
+
+    /* --- Spacing Scale --- */
+    --space-xs:   0.5rem;
+    --space-sm:   1rem;
+    --space-md:   1.5rem;
+    --space-lg:   2.5rem;
+    --space-xl:   4rem;
+    --space-2xl:  6rem;
+
+    /* --- Borders --- */
+    --radius-sm:  6px;
+    --radius-md:  10px;
+    --radius-lg:  16px;
+}
+
+html {
+    scroll-behavior: smooth;            /* smooth scrolling for anchor links */
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--clr-bg);
+    color: var(--clr-text);
+    line-height: 1.6;
+    font-size: 1rem;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+
+/* ============================================================
+   2. REUSABLE UTILITIES
+   ============================================================ */
+
+/* Max-width wrapper — used inside every section */
+.section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+}
+
+.section-heading {
+    font-size: 2rem;
+    font-weight: var(--fw-bold);
+    color: var(--clr-text);
+    line-height: 1.25;
+    margin-bottom: var(--space-xs);
+}
+
+.section-sub {
+    font-size: 1rem;
+    color: var(--clr-muted);
+    max-width: 560px;
+    margin-bottom: var(--space-lg);
+}
+
+
+/* ============================================================
+   3. BUTTONS
+   ============================================================ */
+
+.btn {
+    display: inline-block;
+    padding: 0.65rem 1.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    border: 2px solid transparent;
+}
+
+/* Purple filled button */
+.btn-primary {
+    background-color: var(--clr-accent);
+    color: #ffffff;
+    border-color: var(--clr-accent);
+}
+
+.btn-primary:hover {
+    background-color: var(--clr-accent-dark);
+    border-color: var(--clr-accent-dark);
+}
+
+/* Outlined / ghost button */
+.btn-secondary {
+    background-color: transparent;
+    color: var(--clr-accent);
+    border-color: var(--clr-accent);
+}
+
+.btn-secondary:hover {
+    background-color: var(--clr-accent-bg);
+}
+
+/* Minimal ghost — used in CTA */
+.btn-ghost {
+    background-color: transparent;
+    color: var(--clr-muted);
+    border-color: var(--clr-border);
+}
+
+.btn-ghost:hover {
+    border-color: #999;
+    color: var(--clr-text);
+}
+
+
+/* ============================================================
+   4. NAVBAR
+   ============================================================ */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--clr-bg);
+    border-bottom: 1px solid var(--clr-border);
+}
+
+.navbar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: var(--fw-bold);
+    font-size: 1.1rem;
+    color: var(--clr-text);
+}
+
+.logo-icon {
+    color: var(--clr-accent);
+    font-size: 1.2rem;
+}
+
+/* Desktop nav links */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.nav-link {
+    font-size: 0.95rem;
+    color: var(--clr-muted);
+    font-weight: var(--fw-medium);
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--clr-text);
+}
+
+/* Nav "Sign Up" button — same style as .btn-primary but smaller */
+.nav-btn-primary {
+    display: inline-block;
+    padding: 0.4rem 1.1rem;
+    background-color: var(--clr-accent);
+    color: #ffffff;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: var(--fw-medium);
+    transition: background-color 0.2s ease;
+}
+
+.nav-btn-primary:hover {
+    background-color: var(--clr-accent-dark);
+}
+
+/* Hamburger — hidden on desktop */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background-color: var(--clr-text);
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Dropdown Menus (Student / Admin) */
+.dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.dropdown-toggle {
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--clr-muted);
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0;
+    transition: color 0.2s ease;
+}
+
+.dropdown-toggle:hover,
+.dropdown-toggle:focus {
+    color: var(--clr-text);
+    outline: none;
+}
+
+.dropdown-caret {
+    font-size: 0.65rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+
+/* Floating menu card */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 140px;
+    background-color: var(--clr-bg);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 0.35rem 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    z-index: 500;
+}
+
+/* Open on hover, focus-within, or active JS class */
+.dropdown:hover .dropdown-menu,
+.dropdown:focus-within .dropdown-menu,
+.dropdown.open .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown:hover .dropdown-caret,
+.dropdown:focus-within .dropdown-caret,
+.dropdown.open .dropdown-caret {
+    transform: rotate(180deg);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    color: var(--clr-text);
+    font-weight: var(--fw-medium);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--clr-bg-tint);
+    color: var(--clr-accent);
+}
+
+/* Hero Section Dropdown */
+.hero-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.hero-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.hero-dropdown .dropdown-menu {
+    left: 0;
+    right: auto;
+}
+
+/* Mobile menu — hidden by default, toggled by JS */
+.mobile-menu {
+    display: none;
+    flex-direction: column;
+    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-sm);
+    border-top: 1px solid var(--clr-border);
+    background-color: var(--clr-bg);
+}
+
+.mobile-menu.open {
+    display: flex;
+}
+
+/* Mobile dropdown */
+.mobile-dropdown {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.mobile-dropdown-toggle {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--clr-muted);
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    text-align: left;
+    transition: color 0.2s ease;
+}
+
+.mobile-dropdown-toggle:hover {
+    color: var(--clr-text);
+}
+
+.mobile-dropdown-menu {
+    display: none;
+    flex-direction: column;
+    padding-left: var(--space-sm);
+    margin-top: 0.35rem;
+    gap: 0.35rem;
+    border-left: 2px solid var(--clr-border);
+}
+
+.mobile-dropdown.open .mobile-dropdown-menu {
+    display: flex;
+}
+
+.mobile-dropdown.open .dropdown-caret {
+    transform: rotate(180deg);
+}
+
+.mobile-sublink {
+    font-size: 0.9rem;
+    color: var(--clr-text);
+    padding: 0.3rem 0;
+    transition: color 0.2s ease;
+}
+
+.mobile-sublink:hover {
+    color: var(--clr-accent);
+}
+
+
+
+/* ============================================================
+   5. HERO SECTION
+   ============================================================ */
+
+.hero {
+    padding: var(--space-2xl) 0;
+    background-color: var(--clr-bg);
+}
+
+.hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+}
+
+.hero-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.hero-heading {
+    font-size: 2.8rem;
+    font-weight: var(--fw-bold);
+    line-height: 1.2;
+    color: var(--clr-text);
+    margin-bottom: var(--space-md);
+}
+
+.hero-heading-accent {
+    color: var(--clr-accent);
+}
+
+.hero-sub {
+    font-size: 1.05rem;
+    color: var(--clr-muted);
+    max-width: 500px;
+    margin-bottom: var(--space-lg);
+    line-height: 1.75;
+}
+
+.hero-actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+/* Hero decorative score card */
+.hero-card {
+    flex: 0 0 280px;
+    background-color: var(--clr-bg);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg) var(--space-md);
+    text-align: center;
+}
+
+.card-label {
+    font-size: 0.8rem;
+    font-weight: var(--fw-medium);
+    color: var(--clr-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: var(--space-sm);
+}
+
+.score-ring {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-bottom: var(--space-md);
+}
+
+.score-number {
+    font-size: 3.5rem;
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent);
+    line-height: 1;
+}
+
+.score-slash {
+    font-size: 1.1rem;
+    color: var(--clr-muted);
+}
+
+.score-hints {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: var(--space-md);
+}
+
+.hint-item {
+    font-size: 0.875rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: var(--fw-medium);
+}
+
+.hint-ok   { background-color: #d1fae5; color: #065f46; }
+.hint-warn { background-color: #fef3c7; color: #92400e; }
+.hint-bad  { background-color: #fee2e2; color: #991b1b; }
+
+.card-note {
+    font-size: 0.78rem;
+    color: var(--clr-muted);
+}
+
+
+/* ============================================================
+   6. HOW IT WORKS SECTION
+   ============================================================ */
+
+.how {
+    padding: var(--space-2xl) 0;
+    background-color: var(--clr-bg-tint);
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.step-item {
+    background-color: var(--clr-bg);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    transition: border-color 0.2s ease;
+}
+
+.step-item:hover {
+    border-color: var(--clr-accent);
+}
+
+.step-number {
+    font-size: 2rem;
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent-bg);
+    color: var(--clr-accent);
+    opacity: 0.35;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.step-title {
+    font-size: 1rem;
+    font-weight: var(--fw-bold);
+    margin-bottom: 0.4rem;
+    color: var(--clr-text);
+}
+
+.step-desc {
+    font-size: 0.9rem;
+    color: var(--clr-muted);
+    line-height: 1.65;
+}
+
+
+/* ============================================================
+   7. FEATURES SECTION
+   ============================================================ */
+
+.features {
+    padding: var(--space-2xl) 0;
+    background-color: var(--clr-bg);
+}
+
+.features-header {
+    margin-bottom: var(--space-lg);
+}
+
+.features-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+}
+
+/* Left: stacked feature items */
+.feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    cursor: default;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.feature-item:hover {
+    border-color: var(--clr-border);
+    background-color: var(--clr-bg-tint);
+}
+
+.feature-icon {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.feature-title {
+    font-size: 1rem;
+    font-weight: var(--fw-bold);
+    margin-bottom: 0.3rem;
+    color: var(--clr-text);
+}
+
+.feature-desc {
+    font-size: 0.9rem;
+    color: var(--clr-muted);
+    line-height: 1.6;
+}
+
+/* Right: scoring criteria panel */
+.feature-panel {
+    background-color: var(--clr-bg-tint);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    position: sticky;
+    top: 80px;                          /* stays visible while scrolling */
+}
+
+.panel-heading {
+    font-size: 0.85rem;
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--clr-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.criteria-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.criteria-row,
+.criteria-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--clr-border);
+    font-size: 0.9rem;
+}
+
+.criteria-row:last-of-type {
+    border-bottom: none;
+}
+
+.criteria-total-row {
+    border-top: 2px solid var(--clr-border);
+    border-bottom: none;
+    margin-top: 0.25rem;
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent);
+}
+
+.criteria-name {
+    color: var(--clr-text);
+}
+
+.criteria-weight {
+    font-weight: var(--fw-medium);
+    color: var(--clr-accent);
+}
+
+
+/* ============================================================
+   8. CALL TO ACTION SECTION
+   ============================================================ */
+
+.cta {
+    padding: var(--space-2xl) 0;
+    background-color: var(--clr-bg-tint);
+    text-align: center;
+}
+
+.cta-inner {
+    max-width: 600px;
+}
+
+.cta-heading {
+    font-size: 2rem;
+    font-weight: var(--fw-bold);
+    margin-bottom: var(--space-sm);
+    color: var(--clr-text);
+}
+
+.cta-sub {
+    font-size: 1rem;
+    color: var(--clr-muted);
+    margin-bottom: var(--space-lg);
+}
+
+.cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+
+/* ============================================================
+   9. FOOTER
+   ============================================================ */
+
+.footer {
+    background-color: var(--clr-bg);
+    border-top: 1px solid var(--clr-border);
+    padding: var(--space-lg) 0;
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: var(--fw-bold);
+    font-size: 1rem;
+}
+
+.footer-copy {
+    font-size: 0.85rem;
+    color: var(--clr-muted);
+    flex: 1;
+    text-align: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.footer-links a {
+    font-size: 0.85rem;
+    color: var(--clr-muted);
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--clr-text);
+}
+
+
+/* ============================================================
+   10. RESPONSIVE — MOBILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+    /* Hide desktop nav, show hamburger */
+    .nav-links {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    /* Hero: stack vertically */
+    .hero-inner {
+        flex-direction: column;
+    }
+
+    .hero-heading {
+        font-size: 2rem;
+    }
+
+    .hero-card {
+        flex: none;
+        width: 100%;
+        max-width: 320px;
+        align-self: center;
+    }
+
+    /* Steps: single column */
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Features: single column */
+    .features-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-panel {
+        position: static;
+    }
+
+    /* Footer: stack */
+    .footer-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-copy {
+        text-align: center;
+    }
+
+    .footer-links {
+        justify-content: center;
+    }
+
+    .section-heading {
+        font-size: 1.6rem;
+    }
+}
