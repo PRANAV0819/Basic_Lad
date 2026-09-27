@@ -62,11 +62,114 @@ class Student(models.Model):
         help_text="Current academic year"
     )
 
+    # prn: Permanent Registration Number or College Roll Number
+    prn = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        help_text="Permanent Registration Number / College Roll Number"
+    )
+
+    # cgpa: Academic CGPA (out of 10.00)
+    cgpa = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Cumulative Grade Point Average (out of 10.00)"
+    )
+
+    # skills: Comma-separated list of technical skills (e.g., Python, SQL, Django)
+    skills = models.TextField(
+        blank=True,
+        default="",
+        help_text="Technical skills (e.g., Python, Django, MySQL, Data Structures)"
+    )
+
+    # certifications: Certifications completed by the student
+    certifications = models.TextField(
+        blank=True,
+        default="",
+        help_text="Courses or certifications completed"
+    )
+
+    # projects: Key academic or personal projects
+    projects = models.TextField(
+        blank=True,
+        default="",
+        help_text="Key academic or personal projects summary"
+    )
+
+    # resume_link: Link to student's resume (Google Drive, portfolio, etc.)
+    resume_link = models.URLField(
+        max_length=500,
+        blank=True,
+        default="",
+        help_text="Link to online resume or portfolio"
+    )
+
+    # linkedin_url: Student's LinkedIn profile link
+    linkedin_url = models.URLField(
+        max_length=500,
+        blank=True,
+        default="",
+        help_text="LinkedIn profile URL"
+    )
+
+    # github_url: Student's GitHub or competitive programming profile
+    github_url = models.URLField(
+        max_length=500,
+        blank=True,
+        default="",
+        help_text="GitHub or LeetCode/HackerRank profile URL"
+    )
+
     # created_at: Automatically records timestamp when student registers
     created_at = models.DateTimeField(
         auto_now_add=True,
         help_text="Timestamp of account creation"
     )
+
+    @property
+    def profile_completion_percentage(self) -> int:
+        """
+        Calculates profile completion percentage (0 - 100%).
+        10 key attributes each contribute 10%:
+        1. Full Name
+        2. Email Address
+        3. Department
+        4. Year of Study
+        5. PRN / Roll Number
+        6. CGPA
+        7. Technical Skills
+        8. Projects
+        9. Certifications
+        10. Profile Links (Resume, LinkedIn, or GitHub)
+        """
+        score = 0
+        if self.name and self.name.strip():
+            score += 10
+        if self.email and self.email.strip():
+            score += 10
+        if self.department and self.department.strip():
+            score += 10
+        if self.year and self.year.strip():
+            score += 10
+        if self.prn and self.prn.strip():
+            score += 10
+        if self.cgpa is not None and self.cgpa > 0:
+            score += 10
+        if self.skills and self.skills.strip():
+            score += 10
+        if self.projects and self.projects.strip():
+            score += 10
+        if self.certifications and self.certifications.strip():
+            score += 10
+        if (self.resume_link and self.resume_link.strip()) or \
+           (self.linkedin_url and self.linkedin_url.strip()) or \
+           (self.github_url and self.github_url.strip()):
+            score += 10
+        return score
 
     def __str__(self):
         return f"{self.name} ({self.email})"

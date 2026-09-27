@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Dashboard - Placement Readiness Platform</title>
     <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
 </head>
 <body class="dashboard-app">
 
@@ -44,7 +45,7 @@
                 <span>My Profile</span>
             </a>
 
-            <a href="#" class="nav-item">
+            <a href="{% url 'assignments:student_list' %}" class="nav-item">
                 <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
@@ -54,7 +55,7 @@
                 <span>Assignments</span>
             </a>
 
-            <a href="#" class="nav-item">
+            <a href="{% url 'assignments:student_results_list' %}" class="nav-item">
                 <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="20" x2="18" y2="10"></line>
                     <line x1="12" y1="20" x2="12" y2="4"></line>
@@ -63,7 +64,7 @@
                 <span>My Results</span>
             </a>
 
-            <a href="#" class="nav-item">
+            <a href="{% url 'student:readiness' %}" class="nav-item">
                 <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <circle cx="12" cy="12" r="6"></circle>
@@ -71,26 +72,35 @@
                 </svg>
                 <span>Readiness Score</span>
             </a>
+
+            <a href="{% url 'student:rankings' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+                <span>Leaderboard</span>
+            </a>
         </nav>
 
-        <!-- Lower Navigation Menu -->
-        <div class="sidebar-footer">
-            <a href="#" class="nav-item">
-                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-                <span>Settings</span>
+        <!-- Sidebar Footer with User Profile Pill -->
+        <div class="sidebar-footer" style="padding: 16px;">
+
+            <!-- User Profile Pill -->
+            <a href="{% url 'student:profile' %}" class="user-profile-widget" title="View Profile">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">
+                        {{ initial }}
+                    </div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">{{ student.name }}</div>
+                        <div class="user-email-sub">{{ student.email }}</div>
+                    </div>
+                </div>
+                <span class="user-profile-chevron">&#8250;</span>
             </a>
 
             <!-- Logout Link -->
-            <a href="{% url 'student:logout' %}" class="nav-item logout-link" id="logoutBtn">
-                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                <span>Logout</span>
+            <a href="{% url 'student:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
             </a>
         </div>
     </aside>
@@ -101,48 +111,39 @@
         <!-- Top Header Bar -->
         <header class="topbar">
             <div class="topbar-left">
-                <!-- Hamburger Button for mobile -->
-                <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </button>
-
-                <!-- Search Input -->
-                <div class="search-box">
-                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" placeholder="Search assignments, results, topics..." />
-                </div>
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'student:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">Dashboard</span>
+                </nav>
             </div>
 
             <div class="topbar-right">
-                <!-- Notification Bell with Red Badge -->
-                <div class="notification-wrap">
-                    <button class="icon-btn" aria-label="Notifications">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span class="notification-badge"></span>
-                    </button>
+                <!-- Global Search Input with Ctrl K Pill -->
+                <div class="search-box-pill">
+                    <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="globalSearchInput" class="search-input-pill" placeholder="Search..." />
+                    <span class="shortcut-badge">Ctrl K</span>
                 </div>
 
-                <!-- Student Profile Pill -->
-                <div class="user-profile-pill">
-                    <div class="avatar-circle">{{ initial }}</div>
-                    <div class="user-meta">
-                        <span class="user-name">{{ student.name }}</span>
-                        <span class="user-role">Student</span>
-                    </div>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" class="chevron-icon">
-                        <polyline points="6 9 12 15 18 9"></polyline>
+                <!-- Notification Bell with Counter -->
+                <button type="button" class="notif-bell-btn" title="Notifications">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
-                </div>
+                    <span class="notif-count-badge">9</span>
+                </button>
+
+                <!-- Live Dashboard Outline Pill Button -->
+                <a href="{% url 'student:dashboard' %}" class="live-dash-pill">
+                    <span class="live-dot"></span>
+                    <span>Live Dashboard</span>
+                </a>
             </div>
         </header>
 
@@ -257,9 +258,11 @@
 
                     <div class="rank-display-box">
                         <div class="rank-large-val">#{{ rank }}</div>
-                        <div class="rank-sub-text">out of {{ total_students }} students</div>
-                        <div class="rank-trend-pill">
-                            <span class="trend-arrow">&#8599; 5</span> improved from last month
+                        <div class="rank-sub-text">out of {{ total_students }} enrolled students</div>
+                        <div style="margin-top: 0.85rem;">
+                            <a href="{% url 'student:rankings' %}" style="display: inline-block; padding: 0.35rem 0.85rem; background: #2563eb; color: #ffffff; border-radius: 6px; font-size: 0.82rem; font-weight: 600; text-decoration: none;">
+                                View Full Leaderboard &rarr;
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -275,12 +278,7 @@
                             </svg>
                             <h3 class="panel-title">Subject-wise Performance</h3>
                         </div>
-                        <div class="filter-dropdown-btn">
-                            <span>&#128197; This Month</span>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </div>
+                        <a href="{% url 'student:readiness' %}" class="view-all-link" style="font-size: 0.82rem;">Detailed Analysis</a>
                     </div>
 
                     <!-- Pure CSS Bar Chart with Y-axis markers -->
@@ -302,42 +300,21 @@
                             <div class="grid-line" style="bottom: 20%;"></div>
                             <div class="grid-line" style="bottom: 0%;"></div>
 
-                            <!-- Bars -->
+                            <!-- Dynamic Bars -->
                             <div class="bars-container">
-                                <!-- Bar 1: Aptitude (72%) -->
-                                <div class="bar-column">
-                                    <span class="bar-val">72%</span>
-                                    <div class="bar-fill bar-blue-1" style="height: 72%;"></div>
-                                    <span class="bar-label">Aptitude</span>
-                                </div>
-
-                                <!-- Bar 2: Programming (65%) -->
-                                <div class="bar-column">
-                                    <span class="bar-val">65%</span>
-                                    <div class="bar-fill bar-blue-2" style="height: 65%;"></div>
-                                    <span class="bar-label">Programming</span>
-                                </div>
-
-                                <!-- Bar 3: DBMS (78%) -->
-                                <div class="bar-column">
-                                    <span class="bar-val">78%</span>
-                                    <div class="bar-fill bar-purple" style="height: 78%;"></div>
-                                    <span class="bar-label">DBMS</span>
-                                </div>
-
-                                <!-- Bar 4: Core Subjects (60%) -->
-                                <div class="bar-column">
-                                    <span class="bar-val">60%</span>
-                                    <div class="bar-fill bar-cyan" style="height: 60%;"></div>
-                                    <span class="bar-label">Core Subjects</span>
-                                </div>
-
-                                <!-- Bar 5: Communication (68%) -->
-                                <div class="bar-column">
-                                    <span class="bar-val">68%</span>
-                                    <div class="bar-fill bar-green" style="height: 68%;"></div>
-                                    <span class="bar-label">Communication</span>
-                                </div>
+                                {% if subject_perf %}
+                                    {% for s in subject_perf %}
+                                        <div class="bar-column">
+                                            <span class="bar-val">{{ s.percentage }}%</span>
+                                            <div class="bar-fill {% cycle 'bar-blue-1' 'bar-blue-2' 'bar-purple' 'bar-cyan' 'bar-green' %}" style="height: {{ s.percentage }}%;"></div>
+                                            <span class="bar-label">{{ s.subject }}</span>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 1rem;">
+                                        No subject attempts yet. Complete assignments to see your performance graph!
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -419,63 +396,31 @@
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <h3 class="panel-title">Upcoming Assignments</h3>
+                            <h3 class="panel-title">Available Assignments</h3>
                         </div>
-                        <a href="#" class="view-all-link">View all</a>
+                        <a href="{% url 'assignments:student_list' %}" class="view-all-link">View all</a>
                     </div>
 
                     <div class="assignment-list">
-                        <!-- Item 1: Aptitude Practice Test -->
-                        <div class="assignment-item">
-                            <div class="date-badge badge-blue">
-                                <span class="badge-day">28</span>
-                                <span class="badge-month">SEP</span>
+                        {% if upcoming_assignments %}
+                            {% for a in upcoming_assignments %}
+                                <div class="assignment-item">
+                                    <div class="date-badge badge-blue">
+                                        <span class="badge-day">{{ a.time_limit }}</span>
+                                        <span class="badge-month">MIN</span>
+                                    </div>
+                                    <div class="assignment-details">
+                                        <h4 class="assignment-name">{{ a.title }}</h4>
+                                        <span class="assignment-sub">{{ a.subject }} &nbsp;|&nbsp; {{ a.total_marks }} Marks &nbsp;|&nbsp; {{ a.questions.count }} Questions</span>
+                                    </div>
+                                    <a href="{% url 'assignments:student_start' a.id %}" class="status-pill status-active" style="text-decoration: none;">Attempt</a>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="padding: 1.5rem 1rem; color: #94a3b8; font-size: 0.9rem; text-align: center;">
+                                &#10004; You have completed all currently published tests!
                             </div>
-                            <div class="assignment-details">
-                                <h4 class="assignment-name">Aptitude Practice Test</h4>
-                                <span class="assignment-sub">50 Questions &nbsp;|&nbsp; 60 Minutes</span>
-                            </div>
-                            <span class="status-pill status-active">Active</span>
-                        </div>
-
-                        <!-- Item 2: Data Structures Assignment -->
-                        <div class="assignment-item">
-                            <div class="date-badge badge-purple">
-                                <span class="badge-day">30</span>
-                                <span class="badge-month">SEP</span>
-                            </div>
-                            <div class="assignment-details">
-                                <h4 class="assignment-name">Data Structures Assignment</h4>
-                                <span class="assignment-sub">5 Questions &nbsp;|&nbsp; 7 Days</span>
-                            </div>
-                            <span class="status-pill status-upcoming">Upcoming</span>
-                        </div>
-
-                        <!-- Item 3: DBMS Quiz -->
-                        <div class="assignment-item">
-                            <div class="date-badge badge-red">
-                                <span class="badge-day">03</span>
-                                <span class="badge-month">OCT</span>
-                            </div>
-                            <div class="assignment-details">
-                                <h4 class="assignment-name">DBMS Quiz</h4>
-                                <span class="assignment-sub">20 Questions &nbsp;|&nbsp; 30 Minutes</span>
-                            </div>
-                            <span class="status-pill status-upcoming">Upcoming</span>
-                        </div>
-
-                        <!-- Item 4: Communication Skills Task -->
-                        <div class="assignment-item">
-                            <div class="date-badge badge-amber">
-                                <span class="badge-day">06</span>
-                                <span class="badge-month">OCT</span>
-                            </div>
-                            <div class="assignment-details">
-                                <h4 class="assignment-name">Communication Skills Task</h4>
-                                <span class="assignment-sub">Essay Submission</span>
-                            </div>
-                            <span class="status-pill status-upcoming">Upcoming</span>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -490,7 +435,7 @@
                             </svg>
                             <h3 class="panel-title">Your Recent Scores</h3>
                         </div>
-                        <a href="#" class="view-all-link">View all</a>
+                        <a href="{% url 'assignments:student_results_list' %}" class="view-all-link">View all</a>
                     </div>
 
                     <div class="table-responsive">
@@ -500,40 +445,30 @@
                                     <th>Assignment</th>
                                     <th>Score</th>
                                     <th>Date</th>
-                                    <th>Status</th>
+                                    <th>Solutions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="font-medium">Python Basics Quiz</td>
-                                    <td><strong>18</strong> / 20</td>
-                                    <td class="date-cell">20 Sep 2026</td>
-                                    <td><span class="badge-completed">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">Aptitude Test 1</td>
-                                    <td><strong>35</strong> / 50</td>
-                                    <td class="date-cell">18 Sep 2026</td>
-                                    <td><span class="badge-completed">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">DBMS Concepts</td>
-                                    <td><strong>16</strong> / 20</td>
-                                    <td class="date-cell">15 Sep 2026</td>
-                                    <td><span class="badge-completed">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">Communication Task</td>
-                                    <td><strong>28</strong> / 40</td>
-                                    <td class="date-cell">10 Sep 2026</td>
-                                    <td><span class="badge-completed">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">C Programming Quiz</td>
-                                    <td><strong>12</strong> / 20</td>
-                                    <td class="date-cell">05 Sep 2026</td>
-                                    <td><span class="badge-completed">Completed</span></td>
-                                </tr>
+                                {% if recent_scores %}
+                                    {% for att in recent_scores %}
+                                        <tr>
+                                            <td class="font-medium">{{ att.assignment.title }}</td>
+                                            <td><strong>{{ att.score }}</strong> / {{ att.assignment.total_marks }} ({{ att.percentage }}%)</td>
+                                            <td class="date-cell">{{ att.submitted_at|date:"d M Y" }}</td>
+                                            <td>
+                                                <a href="{% url 'assignments:student_result' att.id %}" class="badge-completed" style="text-decoration: none; display: inline-block;">
+                                                    Review
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: #94a3b8; padding: 1.5rem;">
+                                            No completed assignments yet. Attempt a test above to view your score breakdown!
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
@@ -596,5 +531,6 @@
 
     <!-- Student Panel Vanilla JavaScript -->
     <script src="{% static 'student/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
 </body>
 </html>

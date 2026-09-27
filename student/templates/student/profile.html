@@ -6,6 +6,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Profile - Placement Readiness Platform</title>
     <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        .profile-card {
+            max-width: 760px;
+            margin: 2rem auto;
+            padding: 2.25rem;
+            background: var(--clr-card-bg);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+        }
+        .completion-banner {
+            background: var(--clr-primary-bg);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .completion-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .completion-label {
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 0.95rem;
+        }
+        .completion-pct {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1d4ed8;
+        }
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            background-color: #cbd5e1;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+        .completion-hint {
+            font-size: 0.8rem;
+            color: #475569;
+        }
+        .form-section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--clr-text-main);
+            border-bottom: 2px solid var(--clr-border-light);
+            padding-bottom: 0.4rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            background-color: var(--clr-primary-bg);
+            color: var(--clr-primary);
+        }
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 0.9rem;
+            font-family: inherit;
+            font-size: 0.92rem;
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-sm);
+            background-color: #ffffff;
+            color: var(--clr-text-main);
+            resize: vertical;
+            min-height: 75px;
+            line-height: 1.4;
+        }
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--clr-primary);
+        }
+    </style>
 </head>
 <body class="dashboard-body">
 
@@ -18,7 +110,7 @@
                 <span class="badge-role">Student</span>
             </div>
 
-            <div class="nav-controls">
+            <div class="nav-controls" style="display: flex; align-items: center; gap: 10px;">
                 <a href="{% url 'student:dashboard' %}" class="btn-secondary-sm">&#8592; Back to Dashboard</a>
                 <a href="{% url 'student:logout' %}" class="btn-logout" id="logoutBtn">Logout</a>
             </div>
@@ -30,8 +122,26 @@
         <div class="dash-card profile-card">
 
             <div class="profile-header">
-                <h1 class="dash-heading">My Profile</h1>
-                <p class="dash-sub">View and update your student account information.</p>
+                <h1 class="dash-heading">Student Profile & Portfolio</h1>
+                <p class="dash-sub">Complete your academic, technical, and project details to boost your Placement Readiness Score.</p>
+            </div>
+
+            <!-- Profile Completion Progress Widget -->
+            <div class="completion-banner">
+                <div class="completion-top">
+                    <span class="completion-label">&#128200; Profile Readiness Meter</span>
+                    <span class="completion-pct">{{ completion_percentage }}% Complete</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: {{ completion_percentage }}%;"></div>
+                </div>
+                <div class="completion-hint">
+                    {% if completion_percentage == 100 %}
+                        &#10004; Excellent! Your profile is 100% complete and will maximize your readiness assessment.
+                    {% else %}
+                        Tip: Fill in your CGPA, Technical Skills, Projects, and Professional Links to reach 100%.
+                    {% endif %}
+                </div>
             </div>
 
             <!-- Success Alert -->
@@ -54,65 +164,193 @@
             <form method="POST" action="{% url 'student:profile' %}" class="profile-form">
                 {% csrf_token %}
 
-                <!-- Email (Read-only / Not casually editable) -->
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address <span class="read-only-tag">(Non-editable)</span></label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="form-input input-disabled"
-                        value="{{ student.email }}"
-                        disabled
-                        readonly
-                    />
-                    <small class="field-hint">Your email is your unique login credential and cannot be changed.</small>
+                <!-- SECTION 1: Personal & College Info -->
+                <div class="form-section-title">
+                    <span>1. Academic & Personal Details</span>
+                    <span class="section-badge">Required</span>
                 </div>
 
-                <!-- Name (Editable) -->
+                <div class="form-row">
+                    <!-- Email (Read-only) -->
+                    <div class="form-group flex-1">
+                        <label for="email" class="form-label">Email Address <span class="read-only-tag">(Read-only)</span></label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-input input-disabled"
+                            value="{{ student.email }}"
+                            disabled
+                            readonly
+                        />
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="form-group flex-1">
+                        <label for="name" class="form-label">Full Name <span class="required">*</span></label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-input"
+                            value="{{ student.name }}"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <!-- PRN / Roll Number -->
+                    <div class="form-group flex-1">
+                        <label for="prn" class="form-label">PRN / Roll Number</label>
+                        <input
+                            type="text"
+                            id="prn"
+                            name="prn"
+                            class="form-input"
+                            placeholder="e.g. 72149821H"
+                            value="{{ student.prn }}"
+                        />
+                    </div>
+
+                    <!-- CGPA -->
+                    <div class="form-group flex-1">
+                        <label for="cgpa" class="form-label">Current CGPA (Out of 10.0)</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            max="10"
+                            id="cgpa"
+                            name="cgpa"
+                            class="form-input"
+                            placeholder="e.g. 8.45"
+                            value="{{ student.cgpa|default_if_none:'' }}"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <!-- Department -->
+                    <div class="form-group flex-1">
+                        <label for="department" class="form-label">Department / Branch</label>
+                        <input
+                            type="text"
+                            id="department"
+                            name="department"
+                            class="form-input"
+                            placeholder="e.g. Computer Science & Engineering"
+                            value="{{ student.department }}"
+                        />
+                    </div>
+
+                    <!-- Year of Study -->
+                    <div class="form-group flex-1">
+                        <label for="year" class="form-label">Year of Study</label>
+                        <input
+                            type="text"
+                            id="year"
+                            name="year"
+                            class="form-input"
+                            placeholder="e.g. Final Year / BE"
+                            value="{{ student.year }}"
+                        />
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Technical Profile -->
+                <div class="form-section-title" style="margin-top: 1.5rem;">
+                    <span>2. Technical Skills & Projects</span>
+                    <span class="section-badge">Placement Critical</span>
+                </div>
+
+                <!-- Technical Skills -->
                 <div class="form-group">
-                    <label for="name" class="form-label">Full Name <span class="required">*</span></label>
+                    <label for="skills" class="form-label">Technical Skills (Comma-separated)</label>
+                    <textarea
+                        id="skills"
+                        name="skills"
+                        class="form-textarea"
+                        placeholder="e.g. Python, Django, MySQL, Data Structures & Algorithms, Git, REST APIs"
+                    >{{ student.skills }}</textarea>
+                    <small class="field-hint">List your key programming languages, tools, frameworks, and databases.</small>
+                </div>
+
+                <!-- Projects -->
+                <div class="form-group">
+                    <label for="projects" class="form-label">Academic & Personal Projects</label>
+                    <textarea
+                        id="projects"
+                        name="projects"
+                        class="form-textarea"
+                        placeholder="e.g. Placement Readiness Platform: Built dynamic assessment and analytics engine with Django & MySQL."
+                    >{{ student.projects }}</textarea>
+                    <small class="field-hint">Briefly summarize major academic, capstone, or personal software projects.</small>
+                </div>
+
+                <!-- Certifications -->
+                <div class="form-group">
+                    <label for="certifications" class="form-label">Courses & Certifications</label>
+                    <textarea
+                        id="certifications"
+                        name="certifications"
+                        class="form-textarea"
+                        placeholder="e.g. NPTEL Data Structures, Coursera Python Specialization, HackerRank SQL Gold"
+                    >{{ student.certifications }}</textarea>
+                </div>
+
+                <!-- SECTION 3: Professional Links -->
+                <div class="form-section-title" style="margin-top: 1.5rem;">
+                    <span>3. Professional & Coding Profiles</span>
+                    <span class="section-badge">Optional</span>
+                </div>
+
+                <!-- Resume Link -->
+                <div class="form-group">
+                    <label for="resume_link" class="form-label">Resume / Portfolio Link</label>
                     <input
-                        type="text"
-                        id="name"
-                        name="name"
+                        type="url"
+                        id="resume_link"
+                        name="resume_link"
                         class="form-input"
-                        value="{{ student.name }}"
-                        required
+                        placeholder="https://drive.google.com/... or https://myportfolio.dev"
+                        value="{{ student.resume_link }}"
                     />
                 </div>
 
-                <!-- Department (Editable) -->
-                <div class="form-group">
-                    <label for="department" class="form-label">Department / Branch</label>
-                    <input
-                        type="text"
-                        id="department"
-                        name="department"
-                        class="form-input"
-                        placeholder="e.g. Computer Engineering, IT, Mechanical"
-                        value="{{ student.department }}"
-                    />
+                <div class="form-row">
+                    <!-- LinkedIn URL -->
+                    <div class="form-group flex-1">
+                        <label for="linkedin_url" class="form-label">LinkedIn Profile URL</label>
+                        <input
+                            type="url"
+                            id="linkedin_url"
+                            name="linkedin_url"
+                            class="form-input"
+                            placeholder="https://www.linkedin.com/in/username"
+                            value="{{ student.linkedin_url }}"
+                        />
+                    </div>
+
+                    <!-- GitHub / HackerRank URL -->
+                    <div class="form-group flex-1">
+                        <label for="github_url" class="form-label">GitHub / Coding Profile URL</label>
+                        <input
+                            type="url"
+                            id="github_url"
+                            name="github_url"
+                            class="form-input"
+                            placeholder="https://github.com/username"
+                            value="{{ student.github_url }}"
+                        />
+                    </div>
                 </div>
 
-                <!-- Year of Study (Editable) -->
-                <div class="form-group">
-                    <label for="year" class="form-label">Year of Study</label>
-                    <input
-                        type="text"
-                        id="year"
-                        name="year"
-                        class="form-input"
-                        placeholder="e.g. First Year, Second Year, Third Year, Final Year"
-                        value="{{ student.year }}"
-                    />
-                </div>
-
-                <div class="profile-btn-row">
-                    <button type="submit" class="btn-submit">
-                        Save Changes
+                <div class="profile-btn-row" style="margin-top: 1.5rem;">
+                    <button type="submit" class="btn-submit" style="flex: 2;">
+                        Save Profile & Update Score
                     </button>
-                    <a href="{% url 'student:dashboard' %}" class="btn-cancel">
+                    <a href="{% url 'student:dashboard' %}" class="btn-cancel" style="flex: 1;">
                         Cancel
                     </a>
                 </div>
@@ -122,5 +360,6 @@
     </main>
 
     <script src="{% static 'student/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
 </body>
 </html>

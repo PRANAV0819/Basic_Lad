@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Scores & Submissions - Admin Panel</title>
+    <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
+</head>
+<body class="dashboard-app">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="10" width="4" height="11" rx="1.5" fill="#38bdf8"/>
+                    <rect x="9" y="5" width="4" height="16" rx="1.5" fill="#2563eb"/>
+                    <rect x="16" y="2" width="4" height="19" rx="1.5" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-title-wrap">
+                <h2 class="brand-title">PlaceReady</h2>
+                <span class="brand-sub">Placement Readiness Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="{% url 'adminpanel:dashboard' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'assignments:admin_list' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Assignments</span>
+            </a>
+
+            <a href="{% url 'adminpanel:students' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Students</span>
+            </a>
+
+            <a href="{% url 'adminpanel:student_scores' %}" class="nav-item active">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Student Scores</span>
+            </a>
+
+            <a href="{% url 'adminpanel:reports' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer with Admin Profile Widget -->
+        <div class="sidebar-footer" style="padding: 16px;">
+            <div class="user-profile-widget">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">A</div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">Admin Console</div>
+                        <div class="user-email-sub">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- ===================== MAIN CONTENT WRAPPER ===================== -->
+    <div class="main-wrapper">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'adminpanel:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">Student Scores</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <a href="{% url 'adminpanel:dashboard' %}" class="live-dash-pill">
+                    <span>&#8592; Dashboard</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="content-body">
+
+            <div class="panel-card" style="padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--clr-text-main);">
+                        All Completed Exam Submissions
+                    </h3>
+                    <span style="font-size: 0.88rem; color: var(--clr-text-muted);">
+                        Total Records: <strong>{{ total_attempts }}</strong>
+                    </span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Assignment</th>
+                                <th>Exam Type</th>
+                                <th>Score</th>
+                                <th>Percentage</th>
+                                <th>Correct / Wrong / Skipped</th>
+                                <th>Date Submitted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in attempts %}
+                                <tr>
+                                    <td class="font-medium">
+                                        <a href="{% url 'adminpanel:student_detail' a.student.id %}" style="color: var(--clr-primary); text-decoration: none; font-weight: 600;">
+                                            {{ a.student.name }}
+                                        </a>
+                                        <div style="font-size: 0.78rem; color: var(--clr-text-muted);">{{ a.student.department }}</div>
+                                    </td>
+                                    <td>{{ a.assignment.title }}</td>
+                                    <td><span class="role-badge">{{ a.assignment.exam_type }}</span></td>
+                                    <td><strong>{{ a.score }}</strong> / {{ a.assignment.total_marks }}</td>
+                                    <td>
+                                        <strong style="color: {% if a.percentage >= 70 %}#16a34a{% elif a.percentage >= 50 %}#d97706{% else %}#dc2626{% endif %};">
+                                            {{ a.percentage }}%
+                                        </strong>
+                                    </td>
+                                    <td>{{ a.correct_count }} / {{ a.wrong_count }} / {{ a.unattempted_count }}</td>
+                                    <td>{{ a.submitted_at|date:"d M Y H:i" }}</td>
+                                    <td>
+                                        <a href="{% url 'assignments:admin_submissions' a.assignment.id %}" class="btn-table-view" style="text-decoration: none; display: inline-block;">
+                                            Exam Report
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" style="text-align: center; color: #94a3b8; padding: 2rem;">
+                                        No student submissions recorded in MySQL yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="{% static 'adminpanel/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

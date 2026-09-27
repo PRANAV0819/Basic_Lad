@@ -1,0 +1,274 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ student.name }} - Student Dossier</title>
+    <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
+</head>
+<body class="dashboard-app">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="10" width="4" height="11" rx="1.5" fill="#38bdf8"/>
+                    <rect x="9" y="5" width="4" height="16" rx="1.5" fill="#2563eb"/>
+                    <rect x="16" y="2" width="4" height="19" rx="1.5" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-title-wrap">
+                <h2 class="brand-title">PlaceReady</h2>
+                <span class="brand-sub">Placement Readiness Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="{% url 'adminpanel:dashboard' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'assignments:admin_list' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Assignments</span>
+            </a>
+
+            <a href="{% url 'adminpanel:students' %}" class="nav-item active">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Students</span>
+            </a>
+
+            <a href="{% url 'adminpanel:student_scores' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Student Scores</span>
+            </a>
+
+            <a href="{% url 'adminpanel:reports' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer with Admin Profile Widget -->
+        <div class="sidebar-footer" style="padding: 16px;">
+            <div class="user-profile-widget">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">A</div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">Admin Console</div>
+                        <div class="user-email-sub">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- ===================== MAIN CONTENT WRAPPER ===================== -->
+    <div class="main-wrapper">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'adminpanel:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <a href="{% url 'adminpanel:students' %}">Students</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">{{ student.name }}</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <a href="{% url 'adminpanel:students' %}" class="live-dash-pill">
+                    <span>&#8592; Student Directory</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="content-body" style="display: flex; flex-direction: column; gap: 2rem;">
+
+            <!-- Overview Banner -->
+            <div style="background: var(--clr-card-bg); border: 1px solid var(--clr-border); border-radius: var(--radius-md); padding: 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h1 style="font-size: 1.6rem; font-weight: 800; color: var(--clr-text-main); margin-bottom: 0.25rem;">
+                        {{ student.name }}
+                    </h1>
+                    <p style="color: var(--clr-text-muted); font-size: 0.95rem;">
+                        {{ student.email }} &bull; Department: <strong>{{ student.department|default:"N/A" }}</strong> &bull; Year: <strong>{{ student.year|default:"N/A" }}</strong> &bull; PRN: <strong>{{ student.prn|default:"N/A" }}</strong>
+                    </p>
+                    <p style="margin-top: 0.4rem; color: var(--clr-text-muted); font-size: 0.9rem;">
+                        CGPA: <strong>{{ student.cgpa|default:"Not specified" }}</strong> &bull; Profile Completion: <strong>{{ student.profile_completion_percentage }}%</strong>
+                    </p>
+                </div>
+
+                <div style="text-align: right; background: var(--clr-primary-bg); border: 1px solid var(--clr-primary); border-radius: var(--radius-md); padding: 1.2rem 1.75rem;">
+                    <div style="font-size: 2.2rem; font-weight: 800; color: var(--clr-primary); line-height: 1;">
+                        {{ readiness.readiness_score }}%
+                    </div>
+                    <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--clr-text-muted); font-weight: 600; margin-top: 0.35rem;">
+                        Readiness Score (Rank #{{ rank_info.rank }})
+                    </div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--clr-primary); margin-top: 0.25rem;">
+                        {{ readiness.band }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile & Portfolio Details -->
+            <div class="panel-card" style="padding: 1.5rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--clr-text-main); margin-bottom: 1rem; border-bottom: 1px solid var(--clr-border-light); padding-bottom: 0.5rem;">
+                    Technical Profile & Portfolio Links
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Technical Skills:</span>
+                        <p style="font-size: 0.95rem; margin-top: 0.25rem; color: var(--clr-text-main);">
+                            {{ student.skills|default:"None listed" }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Projects:</span>
+                        <p style="font-size: 0.95rem; margin-top: 0.25rem; color: var(--clr-text-main);">
+                            {{ student.projects|default:"None listed" }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Certifications:</span>
+                        <p style="font-size: 0.95rem; margin-top: 0.25rem; color: var(--clr-text-main);">
+                            {{ student.certifications|default:"None listed" }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Professional Links:</span>
+                        <div style="margin-top: 0.35rem; display: flex; flex-direction: column; gap: 0.3rem;">
+                            {% if student.resume_link %}
+                                <a href="{{ student.resume_link }}" target="_blank" style="color: var(--clr-primary); font-size: 0.9rem;">&#128196; View Resume</a>
+                            {% endif %}
+                            {% if student.linkedin_url %}
+                                <a href="{{ student.linkedin_url }}" target="_blank" style="color: var(--clr-primary); font-size: 0.9rem;">&#128100; LinkedIn Profile</a>
+                            {% endif %}
+                            {% if student.github_url %}
+                                <a href="{{ student.github_url }}" target="_blank" style="color: var(--clr-primary); font-size: 0.9rem;">&#128187; GitHub Profile</a>
+                            {% endif %}
+                            {% if not student.resume_link and not student.linkedin_url and not student.github_url %}
+                                <span style="color: #94a3b8; font-size: 0.9rem;">No external links submitted</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subject-wise Performance Breakdown -->
+            <div class="panel-card" style="padding: 1.5rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--clr-text-main); margin-bottom: 0.75rem;">
+                    Subject-wise Assessment Performance
+                </h3>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Attempts</th>
+                                <th>Score Scored</th>
+                                <th>Accuracy</th>
+                                <th>Proficiency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in subject_perf %}
+                                <tr>
+                                    <td class="font-medium">{{ s.subject }}</td>
+                                    <td>{{ s.attempts_count }}</td>
+                                    <td>{{ s.total_score }} / {{ s.total_marks }}</td>
+                                    <td><strong>{{ s.percentage }}%</strong></td>
+                                    <td><span class="badge-completed">{{ s.status }}</span></td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #94a3b8; padding: 1rem;">
+                                        No assessment attempts on record for this student.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Assessment Attempts History -->
+            <div class="panel-card" style="padding: 1.5rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--clr-text-main); margin-bottom: 0.75rem;">
+                    Assessment Submissions Log
+                </h3>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Assignment Title</th>
+                                <th>Type</th>
+                                <th>Score</th>
+                                <th>Accuracy</th>
+                                <th>Correct / Wrong / Skipped</th>
+                                <th>Submission Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in attempts %}
+                                <tr>
+                                    <td class="font-medium">{{ a.assignment.title }}</td>
+                                    <td><span class="role-badge">{{ a.assignment.exam_type }}</span></td>
+                                    <td><strong>{{ a.score }}</strong> / {{ a.assignment.total_marks }}</td>
+                                    <td>{{ a.percentage }}%</td>
+                                    <td>{{ a.correct_count }} / {{ a.wrong_count }} / {{ a.unattempted_count }}</td>
+                                    <td>{{ a.submitted_at|date:"d M Y H:i" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #94a3b8; padding: 1rem;">
+                                        No attempts recorded.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="{% static 'adminpanel/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

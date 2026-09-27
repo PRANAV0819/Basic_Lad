@@ -101,27 +101,73 @@ def validate_student_login(raw_email: str, raw_password: str):
     return True, None, cleaned_email, cleaned_password
 
 
-def validate_student_profile(name: str, department: str, year: str):
+def validate_student_profile(
+    name: str,
+    department: str = "",
+    year: str = "",
+    prn: str = "",
+    cgpa_raw: str = "",
+    skills: str = "",
+    certifications: str = "",
+    projects: str = "",
+    resume_link: str = "",
+    linkedin_url: str = "",
+    github_url: str = ""
+):
     """
-    Validates data submitted when updating Student Profile.
+    Validates data submitted when updating the Student Profile.
 
     Rules:
     - Name must be at least 2 characters long.
-    - Department and year are sanitized strings.
+    - CGPA must be a valid float between 0.00 and 10.00 (if provided).
+    - URL fields must be valid HTTP/HTTPS URLs (if provided).
+    - Department, Year, PRN, Skills, Certifications, Projects are sanitized strings.
     """
     cleaned_name = (name or "").strip()
     cleaned_dept = (department or "").strip()
     cleaned_year = (year or "").strip()
+    cleaned_prn = (prn or "").strip()
+    cleaned_skills = (skills or "").strip()
+    cleaned_certs = (certifications or "").strip()
+    cleaned_proj = (projects or "").strip()
+    cleaned_resume = (resume_link or "").strip()
+    cleaned_linkedin = (linkedin_url or "").strip()
+    cleaned_github = (github_url or "").strip()
 
     if not cleaned_name:
-        return False, "Name cannot be empty.", {}
+        return False, "Full Name cannot be empty.", {}
 
     if len(cleaned_name) < 2:
-        return False, "Name must be at least 2 characters long.", {}
+        return False, "Full Name must be at least 2 characters long.", {}
+
+    # Validate CGPA
+    cgpa_val = None
+    if cgpa_raw and cgpa_raw.strip():
+        try:
+            cgpa_val = round(float(cgpa_raw.strip()), 2)
+            if cgpa_val < 0.0 or cgpa_val > 10.0:
+                return False, "CGPA must be between 0.00 and 10.00.", {}
+        except ValueError:
+            return False, "Please enter a valid numeric CGPA (e.g. 8.45).", {}
+
+    # Validate URLs if provided
+    url_regex = re.compile(r'^https?://[^\s/$.?#].[^\s]*$', re.IGNORECASE)
+    for label, url in [("Resume Link", cleaned_resume), ("LinkedIn URL", cleaned_linkedin), ("GitHub / Profile URL", cleaned_github)]:
+        if url and not url_regex.match(url):
+            return False, f"Please enter a valid URL for {label} (starting with http:// or https://).", {}
 
     cleaned_data = {
         'name': cleaned_name,
         'department': cleaned_dept,
         'year': cleaned_year,
+        'prn': cleaned_prn,
+        'cgpa': cgpa_val,
+        'skills': cleaned_skills,
+        'certifications': cleaned_certs,
+        'projects': cleaned_proj,
+        'resume_link': cleaned_resume,
+        'linkedin_url': cleaned_linkedin,
+        'github_url': cleaned_github,
     }
     return True, None, cleaned_data
+

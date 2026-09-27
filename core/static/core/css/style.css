@@ -33,15 +33,16 @@
 }
 
 :root {
-    /* --- Color Palette (inspired by CodeHelp) --- */
-    --clr-bg:          #ffffff;          /* page background */
-    --clr-bg-tint:     #f5f3ff;          /* light purple tint for alternating sections */
-    --clr-border:      #e5e7eb;          /* light gray border */
-    --clr-text:        #111111;          /* primary dark text */
-    --clr-muted:       #555555;          /* secondary/description text */
-    --clr-accent:      #6d28d9;          /* purple — primary accent */
-    --clr-accent-dark: #5b21b6;          /* darker purple for hover states */
-    --clr-accent-bg:   #ede9fe;          /* very light purple background for badges */
+    /* CodeHelp Light Mode */
+    --clr-bg:          #ffffff;
+    --clr-bg-tint:     #f8fafc;
+    --clr-border:      #e5e7eb;
+    --clr-card-bg:     #ffffff;
+    --clr-text:        #0f172a;
+    --clr-muted:       #64748b;
+    --clr-accent:      #2563eb;
+    --clr-accent-dark: #1d4ed8;
+    --clr-accent-bg:   #eff6ff;
 
     /* --- Typography --- */
     --font-main:  'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -61,6 +62,7 @@
     --radius-sm:  6px;
     --radius-md:  10px;
     --radius-lg:  16px;
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 html {
@@ -219,20 +221,67 @@ ul {
     color: var(--clr-text);
 }
 
-/* Nav "Sign Up" button — same style as .btn-primary but smaller */
-.nav-btn-primary {
-    display: inline-block;
-    padding: 0.4rem 1.1rem;
-    background-color: var(--clr-accent);
-    color: #ffffff;
+/* Nav Action Buttons (Parallel Sign In Box + Sign Up Box) */
+.nav-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Nav "Sign In" secondary button box */
+.nav-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.45rem 1.15rem;
+    background-color: transparent;
+    color: var(--clr-accent);
+    border: 1.5px solid var(--clr-accent);
     border-radius: var(--radius-sm);
+    font-family: var(--font-main);
     font-size: 0.9rem;
     font-weight: var(--fw-medium);
-    transition: background-color 0.2s ease;
+    cursor: pointer;
+    line-height: normal;
+    height: 38px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+}
+
+.nav-btn-secondary:hover,
+.nav-btn-secondary:focus {
+    background-color: var(--clr-accent-bg);
+    color: var(--clr-accent-dark);
+    border-color: var(--clr-accent-dark);
+    outline: none;
+}
+
+/* Nav "Sign Up" primary button box */
+.nav-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 1.25rem;
+    background-color: var(--clr-accent);
+    color: #ffffff;
+    border: 1.5px solid var(--clr-accent);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    line-height: normal;
+    height: 38px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
 }
 
 .nav-btn-primary:hover {
     background-color: var(--clr-accent-dark);
+    border-color: var(--clr-accent-dark);
 }
 
 /* Hamburger — hidden on desktop */
@@ -775,22 +824,7 @@ ul {
     font-size: 0.85rem;
     color: var(--clr-muted);
     flex: 1;
-    text-align: center;
-}
-
-.footer-links {
-    display: flex;
-    gap: var(--space-md);
-}
-
-.footer-links a {
-    font-size: 0.85rem;
-    color: var(--clr-muted);
-    transition: color 0.2s ease;
-}
-
-.footer-links a:hover {
-    color: var(--clr-text);
+    text-align: right;
 }
 
 
@@ -846,10 +880,6 @@ ul {
 
     .footer-copy {
         text-align: center;
-    }
-
-    .footer-links {
-        justify-content: center;
     }
 
     .section-heading {

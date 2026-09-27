@@ -64,17 +64,19 @@ HOW Django uses it:
             <nav class="nav-links">
                 <a href="#" class="nav-link">Home</a>
                 <a href="#about" class="nav-link">About</a>
-                <!-- Sign In Dropdown Menu (Student / Admin) -->
-                <div class="dropdown" id="navSignInDropdown">
-                    <button class="dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true">
-                        Sign In <span class="dropdown-caret">&#9662;</span>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="{% url 'signin_student' %}" class="dropdown-item">Student</a>
-                        <a href="{% url 'signin_admin' %}" class="dropdown-item">Admin</a>
+                <!-- Action Buttons: Secondary Sign In Button Box + Primary Sign Up Button Box -->
+                <div class="nav-actions">
+                    <div class="dropdown" id="navSignInDropdown">
+                        <button class="nav-btn-secondary dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+                            Sign In <span class="dropdown-caret">&#9662;</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="{% url 'signin_student' %}" class="dropdown-item">Student</a>
+                            <a href="{% url 'signin_admin' %}" class="dropdown-item">Admin</a>
+                        </div>
                     </div>
+                    <a href="{% url 'student:signup' %}" class="nav-btn-primary">Sign Up</a>
                 </div>
-                <a href="{% url 'student:signup' %}" class="nav-btn-primary">Sign Up</a>
             </nav>
 
             <!-- Hamburger for mobile — toggled by script.js -->
@@ -118,7 +120,7 @@ HOW Django uses it:
                     you need to improve.
                 </p>
                 <div class="hero-actions">
-                    <a href="{% url 'student:signup' %}" class="btn btn-primary">Get Started</a>
+                    <a href="{% url 'student:signup' %}" class="btn btn-primary">Sign Up</a>
                     <!-- Hero Sign In Dropdown -->
                     <div class="dropdown hero-dropdown" id="heroSignInDropdown">
                         <button type="button" class="btn btn-secondary dropdown-toggle hero-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
@@ -250,30 +252,30 @@ HOW Django uses it:
 
                 <!-- Right: decorative info panel -->
                 <div class="feature-panel">
-                    <p class="panel-heading">Scoring Criteria</p>
+                    <p class="panel-heading">Live Scoring Weights</p>
                     <ul class="criteria-list">
                         <li class="criteria-row">
-                            <span class="criteria-name">Academic CGPA</span>
-                            <span class="criteria-weight">20 pts</span>
+                            <span class="criteria-name">Subject Technical Tests</span>
+                            <span class="criteria-weight">40 pts</span>
                         </li>
                         <li class="criteria-row">
-                            <span class="criteria-name">DSA Practice</span>
+                            <span class="criteria-name">Final Mock Placement Exam</span>
                             <span class="criteria-weight">25 pts</span>
                         </li>
                         <li class="criteria-row">
-                            <span class="criteria-name">Core Subject Knowledge</span>
-                            <span class="criteria-weight">20 pts</span>
-                        </li>
-                        <li class="criteria-row">
-                            <span class="criteria-name">Projects</span>
-                            <span class="criteria-weight">20 pts</span>
-                        </li>
-                        <li class="criteria-row">
-                            <span class="criteria-name">Internship / Experience</span>
+                            <span class="criteria-name">Profile & Skills Completeness</span>
                             <span class="criteria-weight">15 pts</span>
                         </li>
+                        <li class="criteria-row">
+                            <span class="criteria-name">Academic CGPA</span>
+                            <span class="criteria-weight">10 pts</span>
+                        </li>
+                        <li class="criteria-row">
+                            <span class="criteria-name">Assessment Consistency</span>
+                            <span class="criteria-weight">10 pts</span>
+                        </li>
                         <li class="criteria-total-row">
-                            <span class="criteria-name">Total</span>
+                            <span class="criteria-name">Total Readiness Index</span>
                             <span class="criteria-weight">100 pts</span>
                         </li>
                     </ul>
@@ -288,11 +290,11 @@ HOW Django uses it:
         <div class="section-inner cta-inner">
             <h2 class="cta-heading">Ready to find out where you stand?</h2>
             <p class="cta-sub">
-                Takes less than 5 minutes. No sign-up required to preview.
+                Take timed assessments, view your personalized weak-area detection, and track your global placement rank.
             </p>
             <div class="cta-actions">
-                <a href="#" class="btn btn-primary">Get Started — It's Free</a>
-                <a href="#" class="btn btn-ghost">Learn More</a>
+                <a href="{% url 'student:signup' %}" class="btn btn-primary">Create Student Account</a>
+                <a href="{% url 'signin_student' %}" class="btn btn-ghost">Sign In</a>
             </div>
         </div>
     </section>
@@ -306,15 +308,8 @@ HOW Django uses it:
                 <span class="logo-text">PlaceReady</span>
             </div>
             <p class="footer-copy">
-                A college project &mdash; built to demonstrate
-                custom placement readiness evaluation logic.
+                Placement Readiness Platform &mdash; Transparent, explainable algorithmic assessment for engineering campus recruitment.
             </p>
-            <div class="footer-links">
-                <a href="#">Home</a>
-                <a href="#about">About</a>
-                <a href="#">Sign In</a>
-                <a href="#">Sign Up</a>
-            </div>
         </div>
     </footer>
 
@@ -325,6 +320,7 @@ HOW Django uses it:
         then the script runs. This is a best practice.
     -->
     <script src="{% static 'core/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
 
 </body>
 </html>

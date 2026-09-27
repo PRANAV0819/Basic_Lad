@@ -28,6 +28,9 @@ urlpatterns = [
     # Student routes
     path('student/', include('student.urls')),
 
+    # Assignment Module routes
+    path('assignments/', include('assignments.urls')),
+
     # Core landing page routes
     path('', include('core.urls')),
 ]

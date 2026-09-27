@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exam: {{ assignment.title }} - Placement Readiness</title>
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+</head>
+<body>
+
+    <!-- ===================== TOP STICKY HEADER ===================== -->
+    <header class="test-header-bar" style="border-radius: 0; margin-bottom: 0;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="font-weight: 800; font-size: 18px; color: #38bdf8;">
+                PlaceReady Exam
+            </div>
+            <div style="height: 20px; width: 1px; background: rgba(255,255,255,0.2);"></div>
+            <div>
+                <strong style="font-size: 15px;">{{ assignment.title }}</strong>
+                <span style="font-size: 12px; color: #94a3b8; margin-left: 8px;">
+                    ({{ assignment.get_exam_type_display }} &bull; {{ assignment.subject }})
+                </span>
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="font-size: 13px; color: #cbd5e1;">
+                Candidate: <strong>{{ student.name }}</strong>
+            </div>
+
+            <!-- Countdown Timer Display -->
+            <div class="timer-box">
+                <span>⏱️</span>
+                <span id="timerDisplay" data-remaining-seconds="{{ remaining_seconds }}">--:--</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===================== TEST WORKSPACE ===================== -->
+    <div class="assignment-container" style="max-width: 1280px; padding: 20px 24px;">
+
+        <form id="testForm" method="POST" action="{% url 'assignments:student_submit' assignment.id %}">
+            {% csrf_token %}
+
+            <div class="test-layout">
+                <!-- Main Questions Stream -->
+                <div>
+                    <!-- Instructions reminder -->
+                    <div style="background: #ffffff; border: 1px solid var(--clr-border); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--clr-text-muted);">
+                        <div>
+                            💡 <strong>Guidelines:</strong> Answer all questions carefully. For <strong>MSQ</strong> questions, you must select ALL correct answers to receive marks. The test will auto-submit when the timer expires.
+                        </div>
+                        <div style="font-weight: 600; color: var(--clr-text-main);">
+                            Total Questions: {{ questions.count }} &bull; Max Marks: {{ assignment.total_marks }}
+                        </div>
+                    </div>
+
+                    <!-- Question Cards -->
+                    {% for q in questions %}
+                        <div class="question-card" id="question_{{ q.id }}" data-question-id="{{ q.id }}">
+                            <div class="question-header">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="question-number">Question {{ forloop.counter }} of {{ questions.count }}</span>
+                                    {% if q.question_type == 'MCQ' %}
+                                        <span class="badge badge-mcq">Single Choice (MCQ)</span>
+                                    {% else %}
+                                        <span class="badge badge-msq">Multiple Select (MSQ - Select all that apply)</span>
+                                    {% endif %}
+                                </div>
+                                <div style="font-weight: 700; font-size: 13px; color: var(--clr-text-muted);">
+                                    {{ q.marks }} {% if q.marks == 1 %}mark{% else %}marks{% endif %}
+                                </div>
+                            </div>
+
+                            <div class="question-text">{{ q.question_text }}</div>
+
+                            <!-- Options -->
+                            <div class="options-container">
+                                {% for opt in q.options.all %}
+                                    <label class="option-choice-item">
+                                        {% if q.question_type == 'MCQ' %}
+                                            <input type="radio" name="q_{{ q.id }}" value="{{ opt.id }}" />
+                                        {% else %}
+                                            <input type="checkbox" name="q_{{ q.id }}" value="{{ opt.id }}" />
+                                        {% endif %}
+                                        <span class="option-badge-label">{{ opt.option_label }}</span>
+                                        <span style="font-size: 14px; font-weight: 500; color: var(--clr-text-main);">{{ opt.option_text }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Bottom Submit bar -->
+                    <div style="background: #ffffff; border: 1px solid var(--clr-border); border-radius: var(--radius-md); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+                        <span style="font-size: 14px; color: var(--clr-text-muted);">
+                            Review all answers on the right palette before submitting.
+                        </span>
+                        <button type="submit" id="submitBtn" class="btn btn-success" style="padding: 12px 28px; font-size: 15px;" onclick="return confirm('Are you sure you want to finish and submit your test? You cannot change your answers after submission.');">
+                            ✓ Submit & Finish Test
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Question Palette -->
+                <div>
+                    <div class="palette-card">
+                        <div class="palette-title">Question Palette</div>
+                        <div style="font-size: 12px; color: var(--clr-text-muted); margin-bottom: 12px;">
+                            Click any number to jump to that question:
+                        </div>
+
+                        <div class="palette-grid">
+                            {% for q in questions %}
+                                <button type="button" class="palette-btn" data-question-id="{{ q.id }}">
+                                    {{ forloop.counter }}
+                                </button>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Legend -->
+                        <div style="border-top: 1px solid var(--clr-border-light); padding-top: 14px; margin-top: 14px; font-size: 12px; color: var(--clr-text-muted);">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <div style="width: 14px; height: 14px; background: var(--clr-primary); border-radius: 3px;"></div>
+                                <span>Answered</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 14px; height: 14px; background: #f8fafc; border: 1px solid var(--clr-border); border-radius: 3px;"></div>
+                                <span>Unanswered</span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Test button in sidebar -->
+                        <button type="submit" class="btn btn-success" style="width: 100%; justify-content: center; margin-top: 20px; padding: 11px;" onclick="return confirm('Are you sure you want to finish and submit your test? You cannot change your answers after submission.');">
+                            Submit Test
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <!-- Timer and Interactivity Script -->
+    <script src="{% static 'assignments/js/timer.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

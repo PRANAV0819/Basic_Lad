@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Reports & Analytics - Admin Panel</title>
+    <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
+</head>
+<body class="dashboard-app">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="10" width="4" height="11" rx="1.5" fill="#38bdf8"/>
+                    <rect x="9" y="5" width="4" height="16" rx="1.5" fill="#2563eb"/>
+                    <rect x="16" y="2" width="4" height="19" rx="1.5" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-title-wrap">
+                <h2 class="brand-title">PlaceReady</h2>
+                <span class="brand-sub">Placement Readiness Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="{% url 'adminpanel:dashboard' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'assignments:admin_list' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Assignments</span>
+            </a>
+
+            <a href="{% url 'adminpanel:students' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Students</span>
+            </a>
+
+            <a href="{% url 'adminpanel:student_scores' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Student Scores</span>
+            </a>
+
+            <a href="{% url 'adminpanel:reports' %}" class="nav-item active">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer with Admin Profile Widget -->
+        <div class="sidebar-footer" style="padding: 16px;">
+            <div class="user-profile-widget">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">A</div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">Admin Console</div>
+                        <div class="user-email-sub">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- ===================== MAIN CONTENT WRAPPER ===================== -->
+    <div class="main-wrapper">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'adminpanel:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">Reports & Analytics</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <a href="{% url 'adminpanel:dashboard' %}" class="live-dash-pill">
+                    <span>&#8592; Dashboard</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="content-body" style="display: flex; flex-direction: column; gap: 2rem;">
+
+            <!-- Metric Summary Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card card-green">
+                    <div class="metric-body">
+                        <span class="metric-label">High Readiness (>=80%)</span>
+                        <div class="metric-number-row">
+                            <span class="metric-value">{{ high_ready_count }}</span>
+                            <span class="metric-trend">&#10004; Ready for Interviews</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-card card-amber">
+                    <div class="metric-body">
+                        <span class="metric-label">Moderate Readiness (60-79%)</span>
+                        <div class="metric-number-row">
+                            <span class="metric-value">{{ mod_ready_count }}</span>
+                            <span class="metric-trend">&#9888; Targeted Prep Needed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-card card-cyan">
+                    <div class="metric-body">
+                        <span class="metric-label">Needs Improvement (&lt;60%)</span>
+                        <div class="metric-number-row">
+                            <span class="metric-value">{{ low_ready_count }}</span>
+                            <span class="metric-trend">&#128218; Foundational</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-card card-purple">
+                    <div class="metric-body">
+                        <span class="metric-label">Drive-Eligible Pool</span>
+                        <div class="metric-number-row">
+                            <span class="metric-value">{{ eligible_students|length }}</span>
+                            <span class="metric-trend">&#127942; Score &ge; 70 & CGPA &ge; 7.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drive-Eligible Students Table -->
+            <div class="panel-card" style="padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--clr-border-light); padding-bottom: 0.5rem;">
+                    <div>
+                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--clr-text-main);">
+                            &#127891; Placement Drive Shortlist (Eligible Students)
+                        </h3>
+                        <p style="font-size: 0.85rem; color: var(--clr-text-muted); margin-top: 2px;">
+                            Criteria: Placement Readiness &ge; 70% AND Academic CGPA &ge; 7.00
+                        </p>
+                    </div>
+                    <span style="font-size: 0.85rem; font-weight: 700; background: #dcfce7; color: #166534; padding: 0.25rem 0.75rem; border-radius: 999px;">
+                        {{ eligible_students|length }} Candidates
+                    </span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Department</th>
+                                <th>Year</th>
+                                <th>CGPA</th>
+                                <th>Readiness Index</th>
+                                <th>Subject Score</th>
+                                <th>Profile Completion</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in eligible_students %}
+                                <tr>
+                                    <td class="font-medium">
+                                        <a href="{% url 'adminpanel:student_detail' e.student_id %}" style="color: var(--clr-primary); text-decoration: none; font-weight: 600;">
+                                            {{ e.name }}
+                                        </a>
+                                        <div style="font-size: 0.78rem; color: #64748b;">{{ e.email }}</div>
+                                    </td>
+                                    <td>{{ e.department }}</td>
+                                    <td>{{ e.year }}</td>
+                                    <td><strong>{{ e.cgpa }}</strong></td>
+                                    <td><strong style="color: #16a34a; font-size: 1.1rem;">{{ e.readiness_score }}%</strong></td>
+                                    <td>{{ e.subject_pct }}%</td>
+                                    <td>{{ e.profile_pct }}%</td>
+                                    <td>
+                                        <a href="{% url 'adminpanel:student_detail' e.student_id %}" class="btn-table-view" style="text-decoration: none; display: inline-block;">
+                                            View Dossier
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" style="text-align: center; color: #94a3b8; padding: 2rem;">
+                                        No students currently meet the placement drive shortlist criteria (Readiness &ge; 70% and CGPA &ge; 7.0).
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Complete College Ranking Table -->
+            <div class="panel-card" style="padding: 1.5rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--clr-text-main); margin-bottom: 0.75rem;">
+                    Full Batch Performance & Readiness Ledger
+                </h3>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px; text-align: center;">Rank</th>
+                                <th>Student</th>
+                                <th>Department</th>
+                                <th>CGPA</th>
+                                <th>Readiness Score</th>
+                                <th>Readiness Tier</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in rankings %}
+                                <tr>
+                                    <td style="text-align: center;"><strong>#{{ r.rank }}</strong></td>
+                                    <td class="font-medium">{{ r.name }}</td>
+                                    <td>{{ r.department }}</td>
+                                    <td>{{ r.cgpa|default:"--" }}</td>
+                                    <td><strong>{{ r.readiness_score }}%</strong></td>
+                                    <td><span class="badge-completed">{{ r.band }}</span></td>
+                                    <td>
+                                        <a href="{% url 'adminpanel:student_detail' r.student_id %}" class="btn-table-view" style="text-decoration: none; display: inline-block;">
+                                            Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: #94a3b8; padding: 1.5rem;">
+                                        No student records found.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="{% static 'adminpanel/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Questions - {{ assignment.title }}</title>
+    <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+</head>
+<body class="dashboard-app">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="10" width="4" height="11" rx="1.5" fill="#38bdf8"/>
+                    <rect x="9" y="5" width="4" height="16" rx="1.5" fill="#2563eb"/>
+                    <rect x="16" y="2" width="4" height="19" rx="1.5" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-title-wrap">
+                <h2 class="brand-title">PlaceReady</h2>
+                <span class="brand-sub">Placement Readiness Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="{% url 'adminpanel:dashboard' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'assignments:admin_list' %}" class="nav-item active">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Assignments</span>
+            </a>
+
+            <a href="{% url 'adminpanel:students' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Students</span>
+            </a>
+
+            <a href="{% url 'adminpanel:student_scores' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Student Scores</span>
+            </a>
+
+            <a href="{% url 'adminpanel:reports' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer with Admin Profile Widget -->
+        <div class="sidebar-footer" style="padding: 16px;">
+            <div class="user-profile-widget">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">A</div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">Admin Console</div>
+                        <div class="user-email-sub">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'adminpanel:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <a href="{% url 'assignments:admin_list' %}">Assignments</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">{{ assignment.title }}: Questions</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <a href="{% url 'assignments:admin_list' %}" class="live-dash-pill">
+                    <span>&#8592; Assignments</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="assignment-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Header with Actions -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">{{ assignment.title }}</h1>
+                    <div style="display: flex; gap: 8px; margin-top: 6px; align-items: center;">
+                        {% if assignment.exam_type == 'FINAL' %}
+                            <span class="badge badge-final">Final Exam</span>
+                        {% else %}
+                            <span class="badge badge-subject">Subject-wise: {{ assignment.subject }}</span>
+                        {% endif %}
+
+                        {% if assignment.status == 'DRAFT' %}
+                            <span class="badge badge-draft">Draft</span>
+                        {% elif assignment.status == 'PUBLISHED' %}
+                            <span class="badge badge-published">Published</span>
+                        {% else %}
+                            <span class="badge badge-closed">Closed</span>
+                        {% endif %}
+
+                        <span style="font-size: 13px; color: var(--clr-text-muted);">
+                            Duration: {{ assignment.time_limit }} mins &bull; Total Marks: <strong>{{ assignment.total_marks }}</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <a href="{% url 'assignments:admin_list' %}" class="btn btn-secondary">
+                        &larr; Catalog
+                    </a>
+
+                    <!-- Status toggle button -->
+                    <form method="POST" action="{% url 'assignments:admin_status_toggle' assignment.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        {% if assignment.status == 'DRAFT' %}
+                            <input type="hidden" name="status" value="PUBLISHED" />
+                            <button type="submit" class="btn btn-success" {% if assignment.questions.count == 0 %}disabled title="Add at least 1 question first"{% endif %}>
+                                🚀 Publish Assignment
+                            </button>
+                        {% elif assignment.status == 'PUBLISHED' %}
+                            <input type="hidden" name="status" value="CLOSED" />
+                            <button type="submit" class="btn btn-danger">
+                                🛑 Close Assignment
+                            </button>
+                        {% else %}
+                            <input type="hidden" name="status" value="PUBLISHED" />
+                            <button type="submit" class="btn btn-primary">
+                                Reopen Assignment
+                            </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 480px; gap: 24px; align-items: start;">
+                <!-- Existing Questions List -->
+                <div>
+                    <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 16px; color: var(--clr-text-main);">
+                        Questions in this Assessment ({{ questions.count }})
+                    </h3>
+
+                    {% for q in questions %}
+                        <div class="question-card" style="position: relative;">
+                            <div class="question-header">
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <span class="question-number">Question {{ q.order }}</span>
+                                    {% if q.question_type == 'MCQ' %}
+                                        <span class="badge badge-mcq">Single Choice (MCQ)</span>
+                                    {% else %}
+                                        <span class="badge badge-msq">Multiple Select (MSQ)</span>
+                                    {% endif %}
+                                </div>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <span style="font-weight: 700; font-size: 13px; color: var(--clr-text-main);">
+                                        {{ q.marks }} {% if q.marks == 1 %}mark{% else %}marks{% endif %}
+                                    </span>
+
+                                    <!-- Delete Question -->
+                                    <form method="POST" action="{% url 'assignments:admin_question_delete' assignment.id q.id %}" onsubmit="return confirm('Delete Question {{ q.order }}?');" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm" style="padding: 3px 8px; font-size: 11px;">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="question-text">{{ q.question_text }}</div>
+
+                            <!-- Options display -->
+                            <div style="margin-bottom: 14px;">
+                                {% for opt in q.options.all %}
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; background: {% if opt.is_correct %}#ecfdf5; border: 1px solid #a7f3d0;{% else %}#f8fafc; border: 1px solid #e2e8f0;{% endif %}">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span class="option-badge-label" style="{% if opt.is_correct %}background: #10b981; color: white;{% endif %}">{{ opt.option_label }}</span>
+                                            <span style="font-size: 14px;">{{ opt.option_text }}</span>
+                                        </div>
+                                        {% if opt.is_correct %}
+                                            <span style="color: #059669; font-weight: 700; font-size: 12px;">✓ Correct</span>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if q.solution %}
+                                <div class="solution-box">
+                                    <div class="solution-box-title">💡 Explanation / Solution:</div>
+                                    <div>{{ q.solution }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div style="background: #ffffff; border: 1px dashed var(--clr-border); border-radius: var(--radius-md); padding: 40px; text-align: center; color: var(--clr-text-muted);">
+                            No questions added yet. Use the form on the right to add your first question!
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Add Question Form -->
+                <div class="form-card" style="position: sticky; top: 20px;">
+                    <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 14px; color: var(--clr-text-main);">
+                        ➕ Add New Question
+                    </h3>
+
+                    {% if errors %}
+                        <div class="alert alert-error">
+                            <ul style="margin-left: 20px;">
+                                {% for err in errors %}
+                                    <li>{{ err }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label class="form-label">Question Text *</label>
+                            <textarea name="question_text" class="form-control" placeholder="Enter problem statement..." required>{{ form_data.question_text|default:'' }}</textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Question Type *</label>
+                                <select name="question_type" id="questionTypeSelect" class="form-control">
+                                    <option value="MCQ" {% if form_data.question_type == 'MCQ' %}selected{% endif %}>Single Choice (MCQ)</option>
+                                    <option value="MSQ" {% if form_data.question_type == 'MSQ' %}selected{% endif %}>Multiple Select (MSQ)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Marks *</label>
+                                <input type="number" name="marks" class="form-control" min="1" max="100" value="{{ form_data.marks|default:'1' }}" required />
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 8px;">
+                            <label class="form-label">Options & Correct Answer(s) *</label>
+                            <p style="font-size: 12px; color: var(--clr-text-muted); margin-bottom: 10px;" id="typeHint">
+                                For MCQ: Select exactly ONE correct option. For MSQ: Select one or more correct options.
+                            </p>
+                        </div>
+
+                        <!-- Option A -->
+                        <div class="option-input-row">
+                            <span class="option-badge-label">A</span>
+                            <input type="text" name="opt_a" class="form-control" placeholder="Option A text *" value="{{ form_data.opt_a|default:'' }}" required />
+                            <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                                <input type="checkbox" name="correct_options" value="A" style="width: 16px; height: 16px;" /> Correct
+                            </label>
+                        </div>
+
+                        <!-- Option B -->
+                        <div class="option-input-row">
+                            <span class="option-badge-label">B</span>
+                            <input type="text" name="opt_b" class="form-control" placeholder="Option B text *" value="{{ form_data.opt_b|default:'' }}" required />
+                            <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                                <input type="checkbox" name="correct_options" value="B" style="width: 16px; height: 16px;" /> Correct
+                            </label>
+                        </div>
+
+                        <!-- Option C -->
+                        <div class="option-input-row">
+                            <span class="option-badge-label">C</span>
+                            <input type="text" name="opt_c" class="form-control" placeholder="Option C text (optional)" value="{{ form_data.opt_c|default:'' }}" />
+                            <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                                <input type="checkbox" name="correct_options" value="C" style="width: 16px; height: 16px;" /> Correct
+                            </label>
+                        </div>
+
+                        <!-- Option D -->
+                        <div class="option-input-row">
+                            <span class="option-badge-label">D</span>
+                            <input type="text" name="opt_d" class="form-control" placeholder="Option D text (optional)" value="{{ form_data.opt_d|default:'' }}" />
+                            <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                                <input type="checkbox" name="correct_options" value="D" style="width: 16px; height: 16px;" /> Correct
+                            </label>
+                        </div>
+
+                        <!-- Solution -->
+                        <div class="form-group" style="margin-top: 14px;">
+                            <label class="form-label">Explanation / Solution Notes</label>
+                            <textarea name="solution" class="form-control" placeholder="Detailed explanation shown to students after submitting...">{{ form_data.solution|default:'' }}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
+                            Add Question to Assessment
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{% static 'adminpanel/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

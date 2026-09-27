@@ -36,7 +36,7 @@
                 <span>Dashboard</span>
             </a>
 
-            <a href="#" class="nav-item">
+            <a href="{% url 'assignments:admin_list' %}" class="nav-item">
                 <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
@@ -46,7 +46,7 @@
                 <span>Assignments</span>
             </a>
 
-            <a href="#" class="nav-item">
+            <a href="{% url 'adminpanel:students' %}" class="nav-item">
                 <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
@@ -56,7 +56,7 @@
                 <span>Students</span>
             </a>
 
-            <a href="#" class="nav-item">
+            <a href="{% url 'adminpanel:student_scores' %}" class="nav-item">
                 <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="20" x2="18" y2="10"></line>
                     <line x1="12" y1="20" x2="12" y2="4"></line>
@@ -65,7 +65,7 @@
                 <span>Student Scores</span>
             </a>
 
-            <a href="#" class="nav-item">
+            <a href="{% url 'adminpanel:reports' %}" class="nav-item">
                 <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
@@ -76,32 +76,24 @@
             </a>
         </nav>
 
-        <!-- Lower Navigation Menu -->
-        <div class="sidebar-footer">
-            <a href="#" class="nav-item">
-                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                <span>Profile</span>
-            </a>
-
-            <a href="#" class="nav-item">
-                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-                <span>Settings</span>
-            </a>
+        <!-- Sidebar Footer with Admin Profile Widget -->
+        <div class="sidebar-footer" style="padding: 16px;">
+            <!-- Admin Profile Widget -->
+            <div class="user-profile-widget">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">
+                        A
+                    </div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">{{ username|title }}</div>
+                        <div class="user-email-sub">Administrator</div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Logout Link -->
-            <a href="{% url 'adminpanel:logout' %}" class="nav-item logout-link" id="logoutBtn">
-                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                <span>Logout</span>
+            <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
             </a>
         </div>
     </aside>
@@ -121,36 +113,40 @@
                     </svg>
                 </button>
 
-                <!-- Search Input -->
-                <div class="search-box">
-                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" placeholder="Search students, assignments, reports..." />
-                </div>
+                <!-- CodeHelp Breadcrumbs -->
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'adminpanel:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">Admin Dashboard</span>
+                </nav>
             </div>
 
             <div class="topbar-right">
-                <!-- Notification Bell with Red Badge -->
-                <div class="notification-wrap">
-                    <button class="icon-btn" aria-label="Notifications">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span class="notification-badge"></span>
-                    </button>
+                <!-- Global Search Input with Ctrl K Pill -->
+                <div class="search-box-pill">
+                    <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="globalSearchInput" class="search-input-pill" placeholder="Search students, metrics..." />
+                    <span class="shortcut-badge">Ctrl K</span>
                 </div>
 
-                <!-- Admin Profile Pill -->
-                <div class="user-profile-pill">
-                    <div class="avatar-circle">A</div>
-                    <div class="user-meta">
-                        <span class="user-name">{{ username|title }}</span>
-                        <span class="user-role">Administrator</span>
-                    </div>
-                </div>
+                <!-- Notification Bell with Counter -->
+                <button type="button" class="notif-bell-btn" title="Notifications">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notif-count-badge">9</span>
+                </button>
+
+                <!-- Live Dashboard Outline Pill Button -->
+                <a href="{% url 'adminpanel:dashboard' %}" class="live-dash-pill">
+                    <span class="live-dot"></span>
+                    <span>Live Console</span>
+                </a>
             </div>
         </header>
 
@@ -421,76 +417,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="font-medium">Computer Engineering</td>
-                                    <td>42</td>
-                                    <td>
-                                        <div class="progress-cell">
-                                            <span class="progress-val">72%</span>
-                                            <div class="progress-bar-bg">
-                                                <div class="progress-bar-fill bar-green" style="width: 72%;"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Programming</td>
-                                    <td><button type="button" class="btn-table-view">View</button></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">Information Technology</td>
-                                    <td>36</td>
-                                    <td>
-                                        <div class="progress-cell">
-                                            <span class="progress-val">66%</span>
-                                            <div class="progress-bar-bg">
-                                                <div class="progress-bar-fill bar-blue" style="width: 66%;"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Aptitude</td>
-                                    <td><button type="button" class="btn-table-view">View</button></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">Electronics & Telecomm</td>
-                                    <td>28</td>
-                                    <td>
-                                        <div class="progress-cell">
-                                            <span class="progress-val">61%</span>
-                                            <div class="progress-bar-bg">
-                                                <div class="progress-bar-fill bar-amber" style="width: 61%;"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Technical Skills</td>
-                                    <td><button type="button" class="btn-table-view">View</button></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">Mechanical Engineering</td>
-                                    <td>14</td>
-                                    <td>
-                                        <div class="progress-cell">
-                                            <span class="progress-val">54%</span>
-                                            <div class="progress-bar-bg">
-                                                <div class="progress-bar-fill bar-red" style="width: 54%;"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Communication</td>
-                                    <td><button type="button" class="btn-table-view">View</button></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">Civil Engineering</td>
-                                    <td>8</td>
-                                    <td>
-                                        <div class="progress-cell">
-                                            <span class="progress-val">58%</span>
-                                            <div class="progress-bar-bg">
-                                                <div class="progress-bar-fill bar-orange" style="width: 58%;"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Aptitude</td>
-                                    <td><button type="button" class="btn-table-view">View</button></td>
-                                </tr>
+                                {% if dept_stats %}
+                                    {% for d in dept_stats %}
+                                        <tr>
+                                            <td class="font-medium">{{ d.department }}</td>
+                                            <td>{{ d.students_count }}</td>
+                                            <td>
+                                                <div class="progress-cell">
+                                                    <span class="progress-val">{{ d.avg_score }}%</span>
+                                                    <div class="progress-bar-bg">
+                                                        <div class="progress-bar-fill {% if d.avg_score >= 70 %}bar-green{% elif d.avg_score >= 50 %}bar-blue{% else %}bar-amber{% endif %}" style="width: {{ d.avg_score }}%;"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Technical Preparation</td>
+                                            <td>
+                                                <a href="{% url 'adminpanel:students' %}?q={{ d.department|urlencode }}" class="btn-table-view" style="text-decoration: none; display: inline-block;">
+                                                    View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: #94a3b8; padding: 1.5rem;">
+                                            No student records available yet.
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
@@ -506,63 +460,33 @@
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <h3 class="panel-title">Upcoming Assignments</h3>
+                            <h3 class="panel-title">Assessments</h3>
                         </div>
-                        <a href="#" class="view-all-link">View all</a>
+                        <a href="{% url 'assignments:admin_list' %}" class="view-all-link">Manage all</a>
                     </div>
 
                     <div class="assignment-list">
-                        <!-- Item 1: Aptitude Practice Test -->
-                        <div class="assignment-item">
-                            <div class="date-badge badge-blue">
-                                <span class="badge-day">18</span>
-                                <span class="badge-month">SEP</span>
+                        {% if upcoming_assignments %}
+                            {% for a in upcoming_assignments %}
+                                <div class="assignment-item">
+                                    <div class="date-badge badge-blue">
+                                        <span class="badge-day">{{ a.time_limit }}</span>
+                                        <span class="badge-month">MIN</span>
+                                    </div>
+                                    <div class="assignment-details">
+                                        <h4 class="assignment-name">{{ a.title }}</h4>
+                                        <span class="assignment-sub">{{ a.subject }} &nbsp;|&nbsp; {{ a.total_marks }} Marks</span>
+                                    </div>
+                                    <span class="status-pill {% if a.status == 'PUBLISHED' %}status-active{% else %}status-upcoming{% endif %}">
+                                        {{ a.status }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="padding: 1.5rem; text-align: center; color: #94a3b8;">
+                                No assignments created yet.
                             </div>
-                            <div class="assignment-details">
-                                <h4 class="assignment-name">Aptitude Practice Test</h4>
-                                <span class="assignment-sub">50 Questions &nbsp;|&nbsp; 60 Minutes</span>
-                            </div>
-                            <span class="status-pill status-active">Active</span>
-                        </div>
-
-                        <!-- Item 2: Data Structures Assignment -->
-                        <div class="assignment-item">
-                            <div class="date-badge badge-purple">
-                                <span class="badge-day">20</span>
-                                <span class="badge-month">SEP</span>
-                            </div>
-                            <div class="assignment-details">
-                                <h4 class="assignment-name">Data Structures Assignment</h4>
-                                <span class="assignment-sub">5 Questions &nbsp;|&nbsp; 7 Days</span>
-                            </div>
-                            <span class="status-pill status-upcoming">Upcoming</span>
-                        </div>
-
-                        <!-- Item 3: DBMS Quiz -->
-                        <div class="assignment-item">
-                            <div class="date-badge badge-red">
-                                <span class="badge-day">22</span>
-                                <span class="badge-month">SEP</span>
-                            </div>
-                            <div class="assignment-details">
-                                <h4 class="assignment-name">DBMS Quiz</h4>
-                                <span class="assignment-sub">20 Questions &nbsp;|&nbsp; 30 Minutes</span>
-                            </div>
-                            <span class="status-pill status-upcoming">Upcoming</span>
-                        </div>
-
-                        <!-- Item 4: Communication Skills Task -->
-                        <div class="assignment-item">
-                            <div class="date-badge badge-amber">
-                                <span class="badge-day">25</span>
-                                <span class="badge-month">SEP</span>
-                            </div>
-                            <div class="assignment-details">
-                                <h4 class="assignment-name">Communication Skills Task</h4>
-                                <span class="assignment-sub">Essay Submission</span>
-                            </div>
-                            <span class="status-pill status-upcoming">Upcoming</span>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </section>
@@ -572,5 +496,6 @@
 
     <!-- Admin Panel Vanilla JavaScript -->
     <script src="{% static 'adminpanel/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
 </body>
 </html>

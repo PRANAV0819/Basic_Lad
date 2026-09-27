@@ -1,0 +1,330 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Readiness Analysis - PlaceReady</title>
+    <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        .readiness-container {
+            max-width: 1080px;
+            margin: 2rem auto;
+            padding: 0 1.5rem 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--clr-border);
+            box-shadow: var(--shadow-card);
+        }
+
+        .hero-left h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-left p {
+            color: #94a3b8;
+            font-size: 1rem;
+            max-width: 580px;
+            line-height: 1.5;
+        }
+
+        .score-pill-box {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-md);
+            padding: 1.5rem 2.25rem;
+            min-width: 200px;
+        }
+
+        .score-num {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #60a5fa;
+        }
+
+        .score-lbl {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #cbd5e1;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .band-badge {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .band-high { background-color: #065f46; color: #a7f3d0; }
+        .band-moderate { background-color: #92400e; color: #fde68a; }
+        .band-low { background-color: #991b1b; color: #fecaca; }
+
+        /* Formula Breakdown Card */
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .formula-card {
+            background: #ffffff;
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .formula-card-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--clr-text-muted);
+            text-transform: uppercase;
+        }
+
+        .formula-card-val {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--clr-text-main);
+        }
+
+        .formula-card-weight {
+            font-size: 0.78rem;
+            color: var(--clr-primary);
+            font-weight: 600;
+        }
+
+        /* Improvement Action Plan Cards */
+        .plan-card {
+            background: var(--clr-card-bg);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .action-item {
+            display: flex;
+            gap: 1.25rem;
+            align-items: flex-start;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--clr-border-light);
+        }
+        .action-item:last-child { border-bottom: none; }
+
+        .priority-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            margin-top: 0.2rem;
+        }
+        .p-danger { background-color: #fee2e2; color: #b91c1c; }
+        .p-warning { background-color: #fef3c7; color: #b45309; }
+        .p-primary { background-color: #eff6ff; color: #1d4ed8; }
+        .p-secondary { background-color: #f1f5f9; color: #475569; }
+        .p-success { background-color: #dcfce7; color: #15803d; }
+
+        .action-content h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--clr-text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .action-content p {
+            font-size: 0.88rem;
+            color: var(--clr-text-muted);
+            line-height: 1.45;
+        }
+
+        /* Subjects Table */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+
+    <!-- Top Navigation -->
+    <header class="app-nav">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <span class="logo-icon">&#9670;</span>
+                <span class="brand-title">PlaceReady</span>
+                <span class="badge-role">Student</span>
+            </div>
+
+            <div class="nav-controls" style="display: flex; align-items: center; gap: 10px;">
+                <a href="{% url 'student:dashboard' %}" class="btn-secondary-sm">&#8592; Dashboard</a>
+                <a href="{% url 'student:rankings' %}" class="btn-secondary-sm">&#127942; Leaderboard</a>
+                <a href="{% url 'student:logout' %}" class="btn-logout" id="logoutBtn">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="readiness-container">
+
+        <!-- Hero Banner with Large Score -->
+        <section class="hero-banner">
+            <div class="hero-left">
+                <span style="font-size: 0.85rem; color: #93c5fd; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Placement Analysis Engine</span>
+                <h1>Placement Readiness Score</h1>
+                <p>{{ readiness.summary_verdict }}</p>
+                <div style="margin-top: 1.25rem; display: flex; gap: 1.5rem; align-items: center;">
+                    <span style="font-size: 0.95rem; color: #e2e8f0;">Global Rank: <strong style="color: #60a5fa; font-size: 1.1rem;">#{{ rank_info.rank }}</strong> of {{ rank_info.total_students }}</span>
+                    <span style="font-size: 0.95rem; color: #e2e8f0;">Percentile: <strong style="color: #34d399; font-size: 1.1rem;">{{ rank_info.percentile }}%</strong></span>
+                </div>
+            </div>
+
+            <div class="score-pill-box">
+                <div class="score-num">{{ readiness.readiness_score }}%</div>
+                <div class="score-lbl">Readiness Index</div>
+                <div class="band-badge {{ readiness.band_class }}">{{ readiness.band }}</div>
+            </div>
+        </section>
+
+        <!-- 5-Component Mathematical Breakdown -->
+        <section>
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--clr-text-main); margin-bottom: 0.5rem;">
+                Mathematical Weightage Breakdown
+            </h2>
+            <p style="color: var(--clr-text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+                Formula: <code>Readiness = (Subject × 40%) + (Final Exam × 25%) + (Profile × 15%) + (CGPA × 10%) + (Consistency × 10%)</code>
+            </p>
+
+            <div class="formula-grid">
+                <!-- Subject Performance -->
+                <div class="formula-card">
+                    <span class="formula-card-title">Subject Performance</span>
+                    <span class="formula-card-val">{{ readiness.components.subject_pct }}%</span>
+                    <span class="formula-card-weight">Weight: 40%</span>
+                </div>
+
+                <!-- Final Exam -->
+                <div class="formula-card">
+                    <span class="formula-card-title">Final Exam Score</span>
+                    <span class="formula-card-val">{{ readiness.components.final_pct }}%</span>
+                    <span class="formula-card-weight">Weight: 25%</span>
+                </div>
+
+                <!-- Profile Completion -->
+                <div class="formula-card">
+                    <span class="formula-card-title">Profile Completion</span>
+                    <span class="formula-card-val">{{ readiness.components.profile_pct }}%</span>
+                    <span class="formula-card-weight">Weight: 15%</span>
+                </div>
+
+                <!-- Academic CGPA -->
+                <div class="formula-card">
+                    <span class="formula-card-title">CGPA Normalized</span>
+                    <span class="formula-card-val">{{ readiness.components.cgpa_pct }}%</span>
+                    <span class="formula-card-weight">Weight: 10%</span>
+                </div>
+
+                <!-- Completion Ratio -->
+                <div class="formula-card">
+                    <span class="formula-card-title">Test Completion Rate</span>
+                    <span class="formula-card-val">{{ readiness.components.completion_ratio }}%</span>
+                    <span class="formula-card-weight">Weight: 10%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rule-Based Actionable Improvement Plan (Checkpoint 18) -->
+        <section class="plan-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--clr-border-light); padding-bottom: 0.75rem; margin-bottom: 0.5rem;">
+                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--clr-text-main);">
+                    &#128073; Personalized Action & Improvement Roadmap
+                </h3>
+                <span style="font-size: 0.8rem; background: #eff6ff; color: #1d4ed8; padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: 600;">
+                    {{ improvement_plan.action_items|length }} Recommendations
+                </span>
+            </div>
+
+            <div class="action-items-list">
+                {% for item in improvement_plan.action_items %}
+                    <div class="action-item">
+                        <span class="priority-badge p-{{ item.badge }}">{{ item.priority }}</span>
+                        <div class="action-content">
+                            <h4>{{ item.title }}</h4>
+                            <p>{{ item.description }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p style="color: #64748b; padding: 1rem 0;">No pending improvement items! Keep practicing to maintain your high rank.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Subject-wise Performance Table (Checkpoint 14) -->
+        <section class="plan-card">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--clr-text-main); margin-bottom: 0.5rem;">
+                Subject-wise Evaluation & Accuracy
+            </h3>
+            <p style="color: var(--clr-text-muted); font-size: 0.9rem;">Aggregated results from all your completed technical assessments.</p>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Tests Taken</th>
+                            <th>Marks Scored</th>
+                            <th>Accuracy</th>
+                            <th>Proficiency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in subject_perf %}
+                            <tr>
+                                <td class="font-medium">{{ s.subject }}</td>
+                                <td>{{ s.attempts_count }}</td>
+                                <td>{{ s.total_score }} / {{ s.total_marks }}</td>
+                                <td><strong>{{ s.percentage }}%</strong></td>
+                                <td>
+                                    <span class="badge-completed {{ s.badge_class }}">{{ s.status }}</span>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #94a3b8; padding: 1.5rem;">
+                                    No subject assessments completed yet. Take an assignment to generate subject statistics!
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Global CodeHelp Theme Controller (Ctrl + M & Ctrl + K) -->
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

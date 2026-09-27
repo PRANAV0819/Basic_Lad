@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Leaderboard - PlaceReady</title>
+    <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        .leaderboard-container {
+            max-width: 1040px;
+            margin: 2rem auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        .leaderboard-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .leaderboard-title h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--clr-text-main);
+        }
+
+        .leaderboard-title p {
+            color: var(--clr-text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .your-rank-badge {
+            background-color: var(--clr-primary-bg);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1.25rem;
+            text-align: right;
+        }
+        .your-rank-badge .yr-num {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--clr-primary);
+        }
+        .your-rank-badge .yr-lbl {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .leaderboard-card {
+            background: #ffffff;
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .rank-medal {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+        .medal-1 { background-color: #fef08a; color: #854d0e; border: 1px solid #facc15; }
+        .medal-2 { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .medal-3 { background-color: #fed7aa; color: #9a3412; border: 1px solid #fb923c; }
+        .medal-default { color: #64748b; font-weight: 700; font-size: 0.9rem; }
+
+        .current-student-row {
+            background-color: #eff6ff !important;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+
+    <!-- Top Navigation -->
+    <header class="app-nav">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <span class="logo-icon">&#9670;</span>
+                <span class="brand-title">PlaceReady</span>
+                <span class="badge-role">Student</span>
+            </div>
+
+            <div class="nav-controls" style="display: flex; align-items: center; gap: 10px;">
+                <a href="{% url 'student:dashboard' %}" class="btn-secondary-sm">&#8592; Dashboard</a>
+                <a href="{% url 'student:readiness' %}" class="btn-secondary-sm">&#128200; My Readiness</a>
+                <a href="{% url 'student:logout' %}" class="btn-logout" id="logoutBtn">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="leaderboard-container">
+
+        <div class="leaderboard-header">
+            <div class="leaderboard-title">
+                <h1>&#127942; College Placement Leaderboard</h1>
+                <p>Rankings calculated in real-time based on test scores, consistency, and profile readiness.</p>
+            </div>
+
+            <div class="your-rank-badge">
+                <div class="yr-num">Rank #{{ current_rank }}</div>
+                <div class="yr-lbl">out of {{ total_students }} Students</div>
+            </div>
+        </div>
+
+        <div class="leaderboard-card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px; text-align: center;">Rank</th>
+                            <th>Student</th>
+                            <th>Department</th>
+                            <th>Year</th>
+                            <th>CGPA</th>
+                            <th>Readiness Score</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rankings %}
+                            <tr class="{% if row.student_id == student.id %}current-student-row{% endif %}">
+                                <td style="text-align: center;">
+                                    {% if row.rank == 1 %}
+                                        <span class="rank-medal medal-1">&#129351; 1</span>
+                                    {% elif row.rank == 2 %}
+                                        <span class="rank-medal medal-2">&#129352; 2</span>
+                                    {% elif row.rank == 3 %}
+                                        <span class="rank-medal medal-3">&#129353; 3</span>
+                                    {% else %}
+                                        <span class="medal-default">#{{ row.rank }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong>{{ row.name }}</strong>
+                                    {% if row.student_id == student.id %}
+                                        <span style="font-size: 0.72rem; background: #2563eb; color: #fff; padding: 0.15rem 0.45rem; border-radius: 4px; margin-left: 0.4rem;">You</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ row.department }}</td>
+                                <td>{{ row.year }}</td>
+                                <td>
+                                    {% if row.cgpa %}
+                                        <strong>{{ row.cgpa }}</strong>
+                                    {% else %}
+                                        <span style="color: #94a3b8;">--</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong style="font-size: 1.05rem; color: #1e40af;">{{ row.readiness_score }}%</strong>
+                                </td>
+                                <td>
+                                    <span class="badge-completed">
+                                        {{ row.band }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: #94a3b8; padding: 2rem;">
+                                    No students registered yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Global CodeHelp Theme Controller (Ctrl + M & Ctrl + K) -->
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

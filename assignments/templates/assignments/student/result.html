@@ -1,0 +1,275 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assessment Result - {{ assignment.title }}</title>
+    <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+</head>
+<body class="dashboard-app">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="10" width="4" height="11" rx="1.5" fill="#38bdf8"/>
+                    <rect x="9" y="5" width="4" height="16" rx="1.5" fill="#2563eb"/>
+                    <rect x="16" y="2" width="4" height="19" rx="1.5" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-title-wrap">
+                <h2 class="brand-title">Placement</h2>
+                <span class="brand-sub">Readiness Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="{% url 'student:dashboard' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'student:profile' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>My Profile</span>
+            </a>
+
+            <a href="{% url 'assignments:student_list' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Assignments</span>
+            </a>
+
+            <a href="{% url 'assignments:student_results_list' %}" class="nav-item active">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>My Results</span>
+            </a>
+
+            <a href="{% url 'student:readiness' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="6"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                </svg>
+                <span>Readiness Score</span>
+            </a>
+
+            <a href="{% url 'student:rankings' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+                <span>Leaderboard</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer with User Profile Pill -->
+        <div class="sidebar-footer" style="padding: 16px;">
+            <!-- User Profile Pill -->
+            <a href="{% url 'student:profile' %}" class="user-profile-widget" title="View Profile">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">
+                        {{ student.name|slice:":1"|upper }}
+                    </div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">{{ student.name }}</div>
+                        <div class="user-email-sub">{{ student.email }}</div>
+                    </div>
+                </div>
+                <span class="user-profile-chevron">&#8250;</span>
+            </a>
+
+            <!-- Logout Link -->
+            <a href="{% url 'student:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- ===================== MAIN CONTENT WRAPPER ===================== -->
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'student:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <a href="{% url 'assignments:student_list' %}">Assessments</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">{{ assignment.title|truncatechars:25 }}</span>
+                </nav>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Global Search Input with Ctrl K Pill -->
+                <div class="search-box-pill">
+                    <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="globalSearchInput" class="search-input-pill" placeholder="Search..." />
+                    <span class="shortcut-badge">Ctrl K</span>
+                </div>
+
+                <!-- Notification Bell -->
+                <button type="button" class="notif-bell-btn" title="Notifications">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notif-count-badge">9</span>
+                </button>
+
+                <!-- Live Dashboard Button -->
+                <a href="{% url 'student:dashboard' %}" class="live-dash-pill">
+                    <span class="live-dot"></span>
+                    <span>Live Dashboard</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="assignment-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">{{ assignment.title }} - Performance Card</h1>
+                    <p class="page-subtitle">Submitted on {{ attempt.submitted_at|date:"F d, Y &bull; H:i" }} &bull; Time taken: {{ time_taken }}</p>
+                </div>
+                <div>
+                    <a href="{% url 'assignments:student_list' %}" class="btn btn-secondary">
+                        &larr; Back to Assignments
+                    </a>
+                </div>
+            </div>
+
+            <!-- Score Hero Card -->
+            <div class="score-hero">
+                <div>
+                    <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 600;">Overall Score</div>
+                    <div style="font-size: 42px; font-weight: 800; margin: 4px 0;">
+                        {{ attempt.score }} <span style="font-size: 20px; font-weight: 500; color: #94a3b8;">/ {{ assignment.total_marks }}</span>
+                    </div>
+                    <div style="font-size: 18px; font-weight: 600; color: {% if attempt.percentage >= 70 %}#4ade80{% elif attempt.percentage >= 40 %}#facc15{% else %}#f87171{% endif %};">
+                        {{ attempt.percentage }}% &bull; {% if attempt.percentage >= 70 %}Excellent{% elif attempt.percentage >= 40 %}Good Effort{% else %}Needs Practice{% endif %}
+                    </div>
+                </div>
+
+                <div class="score-stats">
+                    <div class="score-stat-box">
+                        <div class="score-stat-val" style="color: #4ade80;">{{ attempt.correct_count }}</div>
+                        <div class="score-stat-lbl">Correct</div>
+                    </div>
+                    <div class="score-stat-box">
+                        <div class="score-stat-val" style="color: #f87171;">{{ attempt.wrong_count }}</div>
+                        <div class="score-stat-lbl">Incorrect</div>
+                    </div>
+                    <div class="score-stat-box">
+                        <div class="score-stat-val" style="color: #cbd5e1;">{{ attempt.unattempted_count }}</div>
+                        <div class="score-stat-lbl">Unattempted</div>
+                    </div>
+                    <div class="score-stat-box">
+                        <div class="score-stat-val" style="color: #38bdf8;">{{ time_taken }}</div>
+                        <div class="score-stat-lbl">Time Taken</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question by Question Review -->
+            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--clr-text-main);">
+                Detailed Question Solutions & Explanations
+            </h2>
+
+            {% for item in breakdown %}
+                <div class="review-card {% if not item.is_attempted %}unattempted{% elif item.is_correct %}correct{% else %}incorrect{% endif %}">
+                    <div class="question-header">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="question-number">Question {{ forloop.counter }}</span>
+                            {% if item.question.question_type == 'MCQ' %}
+                                <span class="badge badge-mcq">MCQ (Single Choice)</span>
+                            {% else %}
+                                <span class="badge badge-msq">MSQ (Multiple Select)</span>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            {% if not item.is_attempted %}
+                                <span class="badge" style="background: #f1f5f9; color: #64748b;">Not Attempted (0/{{ item.question.marks }})</span>
+                            {% elif item.is_correct %}
+                                <span class="badge" style="background: #dcfce7; color: #166534;">✓ Correct (+{{ item.marks_obtained }}/{{ item.question.marks }})</span>
+                            {% else %}
+                                <span class="badge" style="background: #fee2e2; color: #991b1b;">✗ Incorrect (0/{{ item.question.marks }})</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="question-text">{{ item.question.question_text }}</div>
+
+                    <!-- Options with Visual Indicators -->
+                    <div style="margin-bottom: 14px;">
+                        {% for opt_state in item.options %}
+                            <div class="option-result-item {% if opt_state.is_selected and opt_state.is_correct %}is-correct-target was-selected{% elif opt_state.is_selected and not opt_state.is_correct %}wrong-pick{% elif not opt_state.is_selected and opt_state.is_correct %}is-correct-target{% endif %}">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="option-badge-label" style="{% if opt_state.is_correct %}background: #10b981; color: white;{% elif opt_state.is_selected %}background: #ef4444; color: white;{% endif %}">
+                                        {{ opt_state.option.option_label }}
+                                    </span>
+                                    <span>{{ opt_state.option.option_text }}</span>
+                                </div>
+
+                                <div style="display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 600;">
+                                    {% if opt_state.is_selected %}
+                                        <span class="badge" style="background: #eff6ff; color: #1d4ed8;">Your Choice</span>
+                                    {% endif %}
+                                    {% if opt_state.is_correct %}
+                                        <span class="badge" style="background: #dcfce7; color: #166534;">✓ Correct Answer</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Solution / Explanation -->
+                    {% if item.question.solution %}
+                        <div class="solution-box">
+                            <div class="solution-box-title">
+                                💡 Explanation & Solution:
+                            </div>
+                            <div style="white-space: pre-line; line-height: 1.5;">{{ item.question.solution }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div style="text-align: center; margin-top: 30px; margin-bottom: 40px;">
+                <a href="{% url 'assignments:student_list' %}" class="btn btn-primary" style="padding: 12px 28px;">
+                    &larr; Return to Available Assignments
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Global CodeHelp Theme Controller (Ctrl + M & Ctrl + K) -->
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

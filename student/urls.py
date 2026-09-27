@@ -23,6 +23,12 @@ urlpatterns = [
     # /student/profile/
     path('profile/', views.student_profile_view, name='profile'),
 
+    # /student/readiness/
+    path('readiness/', views.student_readiness_view, name='readiness'),
+
+    # /student/rankings/
+    path('rankings/', views.student_rankings_view, name='rankings'),
+
     # /student/logout/
     path('logout/', views.student_logout_view, name='logout'),
 ]

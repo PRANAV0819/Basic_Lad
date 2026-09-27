@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submissions - {{ assignment.title }}</title>
+    <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+</head>
+<body class="dashboard-app">
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="10" width="4" height="11" rx="1.5" fill="#38bdf8"/>
+                    <rect x="9" y="5" width="4" height="16" rx="1.5" fill="#2563eb"/>
+                    <rect x="16" y="2" width="4" height="19" rx="1.5" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-title-wrap">
+                <h2 class="brand-title">PlaceReady</h2>
+                <span class="brand-sub">Placement Readiness Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="{% url 'adminpanel:dashboard' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'assignments:admin_list' %}" class="nav-item active">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Assignments</span>
+            </a>
+
+            <a href="{% url 'adminpanel:students' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Students</span>
+            </a>
+
+            <a href="{% url 'adminpanel:student_scores' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Student Scores</span>
+            </a>
+
+            <a href="{% url 'adminpanel:reports' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer with Admin Profile Widget -->
+        <div class="sidebar-footer" style="padding: 16px;">
+            <div class="user-profile-widget">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">A</div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">Admin Console</div>
+                        <div class="user-email-sub">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'adminpanel:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <a href="{% url 'assignments:admin_list' %}">Assignments</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">{{ assignment.title }}: Submissions</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <a href="{% url 'assignments:admin_list' %}" class="live-dash-pill">
+                    <span>&#8592; Assignments</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="assignment-container">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">{{ assignment.title }} - Student Scores</h1>
+                    <p class="page-subtitle">
+                        Category: {{ assignment.get_exam_type_display }} &bull; Subject: {{ assignment.subject }} &bull; Max Marks: {{ assignment.total_marks }}
+                    </p>
+                </div>
+                <div>
+                    <a href="{% url 'assignments:admin_list' %}" class="btn btn-secondary">
+                        &larr; Back to Catalog
+                    </a>
+                </div>
+            </div>
+
+            <!-- Score Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon-wrap metric-icon-purple">🎓</div>
+                    <div>
+                        <div class="metric-value">{{ completed_count }}</div>
+                        <div class="metric-label">Completed Attempts</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon-wrap metric-icon-blue">📊</div>
+                    <div>
+                        <div class="metric-value">{{ avg_score }} / {{ assignment.total_marks }}</div>
+                        <div class="metric-label">Class Average Score</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon-wrap metric-icon-green">🎯</div>
+                    <div>
+                        <div class="metric-value">{{ avg_percentage }}%</div>
+                        <div class="metric-label">Average Percentage</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submissions Table -->
+            <div class="table-card">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Department & Year</th>
+                            <th>Status</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                            <th>Breakdown (C / W / U)</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in attempts %}
+                            <tr>
+                                <td>
+                                    <strong>{{ att.student.name }}</strong>
+                                    <div style="font-size: 12px; color: var(--clr-text-muted);">{{ att.student.email }}</div>
+                                </td>
+                                <td>
+                                    <div>{{ att.student.department|default:"-" }}</div>
+                                    <div style="font-size: 12px; color: var(--clr-text-muted);">{{ att.student.year|default:"-" }}</div>
+                                </td>
+                                <td>
+                                    {% if att.status == 'COMPLETED' %}
+                                        <span class="badge badge-published">Completed</span>
+                                    {% else %}
+                                        <span class="badge badge-draft">In Progress</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong>{{ att.score }}</strong> / {{ assignment.total_marks }}
+                                </td>
+                                <td>
+                                    <span style="font-weight: 700; color: {% if att.percentage >= 70 %}#16a34a{% elif att.percentage >= 40 %}#d97706{% else %}#dc2626{% endif %};">
+                                        {{ att.percentage }}%
+                                    </span>
+                                </td>
+                                <td>
+                                    <span style="color: #16a34a; font-weight: 600;">{{ att.correct_count }}</span> /
+                                    <span style="color: #dc2626; font-weight: 600;">{{ att.wrong_count }}</span> /
+                                    <span style="color: #64748b;">{{ att.unattempted_count }}</span>
+                                </td>
+                                <td>
+                                    {% if att.submitted_at %}
+                                        {{ att.submitted_at|date:"M d, Y H:i" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px; color: var(--clr-text-muted);">
+                                    No student submissions recorded for this assignment yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{% static 'adminpanel/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>
