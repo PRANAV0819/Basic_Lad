@@ -14,44 +14,54 @@
     --clr-body-bg:       #f8fafc;
     --clr-surface:       #ffffff;
     --clr-card-bg:       #ffffff;
-    --clr-card-hover:    #f1f5f9;
+    --clr-card-hover:    #f8fafc;
     --clr-sidebar:       #ffffff;
-    --clr-sidebar-hover: #f1f5f9;
-    --clr-sidebar-active:#e2e8f0;
-    --clr-sidebar-text:  #64748b;
+    --clr-sidebar-hover: #f8fafc;
+    --clr-sidebar-active:#f1f5f9;
+    --clr-sidebar-text:  #475569;
     --clr-sidebar-light: #0f172a;
     --clr-border:        #e2e8f0;
     --clr-border-light:  #f1f5f9;
     --clr-text-main:     #0f172a;
     --clr-text-muted:    #64748b;
     --clr-text-subtle:   #94a3b8;
-    --clr-primary:       #2563eb;
-    --clr-primary-light: #60a5fa;
-    --clr-primary-bg:    #eff6ff;
-    --clr-accent:        #7c3aed;
+
+    /* CodeHelp Signature Violet / Purple */
+    --clr-primary:       #7c3aed;
+    --clr-primary-dark:  #6d28d9;
+    --clr-primary-light: #8b5cf6;
+    --clr-primary-bg:    #f5f3ff;
+    --clr-primary-border:#ddd6fe;
+
+    /* CodeHelp Electric Blue */
+    --clr-accent:        #2563eb;
+    --clr-accent-light:  #3b82f6;
+    --clr-accent-bg:     #eff6ff;
+    --clr-accent-border: #dbeafe;
+
     --clr-tab-bg:        #f1f5f9;
     --clr-tab-active-bg: #0f172a;
     --clr-tab-active-text:#ffffff;
-    --clr-topbar-bg:     rgba(255, 255, 255, 0.9);
-    --clr-search-bg:     #f1f5f9;
+    --clr-topbar-bg:     rgba(255, 255, 255, 0.95);
+    --clr-search-bg:     #f8fafc;
     --clr-search-border: #e2e8f0;
     --clr-search-text:   #0f172a;
     --clr-badge-bg:      #f1f5f9;
-    --clr-badge-border:  #cbd5e1;
+    --clr-badge-border:  #e2e8f0;
     --clr-btn-continue:  #18181b;
     --clr-btn-continue-text:#ffffff;
-    --shadow-sm:         0 1px 3px rgba(0, 0, 0, 0.05);
-    --shadow-md:         0 4px 6px -1px rgba(0, 0, 0, 0.07);
-    --shadow-card:       0 2px 10px rgba(0, 0, 0, 0.04);
+    --shadow-sm:         0 1px 3px rgba(0, 0, 0, 0.03);
+    --shadow-md:         0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-card:       0 1px 3px rgba(0, 0, 0, 0.03);
 
-    --clr-success:       #16a34a;
-    --clr-success-bg:    #dcfce7;
-    --clr-success-border:#86efac;
-    --clr-warning:       #d97706;
-    --clr-warning-bg:    #fef3c7;
-    --clr-danger:        #dc2626;
-    --clr-danger-bg:     #fee2e2;
-    --clr-danger-border: #fca5a5;
+    --clr-success:       #10b981;
+    --clr-success-bg:    #ecfdf5;
+    --clr-success-border:#a7f3d0;
+    --clr-warning:       #f59e0b;
+    --clr-warning-bg:    #fffbeb;
+    --clr-danger:        #ef4444;
+    --clr-danger-bg:     #fef2f2;
+    --clr-danger-border: #fecaca;
 
     --radius-sm: 6px;
     --radius-md: 10px;
@@ -197,7 +207,7 @@ body {
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
+    background: var(--clr-primary-dark);
 }
 
 .btn-secondary {
@@ -404,8 +414,8 @@ body {
 
 .codehelp-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(56, 189, 248, 0.4);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+    border-color: var(--clr-primary-light);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
 }
 
 .card-thumb-wrap {
@@ -566,7 +576,7 @@ body {
     background: var(--clr-primary);
     color: #ffffff;
     border-color: var(--clr-primary);
-    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
 }
 
 /* ===================== CODEHELP TOPBAR & BREADCRUMBS ===================== */

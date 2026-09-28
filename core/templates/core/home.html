@@ -1,33 +1,3 @@
-{% comment %}
-core/templates/core/home.html
-
-WHAT: This is the HTML template for the landing page.
-
-WHY:  Django uses a templating engine that lets us mix Python-like
-      template tags ({% %}, {{ }}) inside HTML. This allows views
-      to pass data into the page dynamically. Right now the page
-      is static, so we only use {% load %} and {% static %}.
-
-WHERE: Django finds this file because:
-       1. 'core' is in INSTALLED_APPS in settings.py
-       2. APP_DIRS = True in TEMPLATES setting
-       3. Django looks inside every installed app's templates/ folder
-       4. It finds core/templates/core/home.html
-
-HOW Django uses it:
-       render(request, 'core/home.html', {})
-       → Django looks up core/home.html in the template loader
-       → Processes template tags
-       → Returns rendered HTML string
-       → Sent back as HTTP 200 response to the browser
-
-{% load static %}
-       This is a Django template tag that loads the "static" library.
-       After loading it, we can use {% static 'path/to/file' %}
-       which outputs the correct URL for a static file.
-       e.g., {% static 'core/css/style.css' %}
-       becomes: /static/core/css/style.css
-{% endcomment %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -36,12 +6,7 @@ HOW Django uses it:
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Placement Readiness Platform</title>
 
-    <!--
-        {% static '...' %} generates the correct URL for our CSS file.
-        Without {% load static %} at the top, this would throw an error.
-        Django's staticfiles app serves files from each app's static/ folder
-        during development (when DEBUG=True).
-    -->
+  
     <link rel="stylesheet" href="{% static 'core/css/style.css' %}" />
 </head>
 <body>
@@ -50,20 +15,13 @@ HOW Django uses it:
     <header class="navbar">
         <div class="navbar-inner">
             <a href="{% url 'core:home' %}" class="logo">
-                <!--
-                    {% url 'core:home' %} generates '/'.
-                    'core' is the app_name from core/urls.py.
-                    'home' is the name= from the urlpatterns entry.
-                    Using named URLs means if we ever change '/' to '/home/',
-                    we only change it in urls.py — templates stay the same.
-                -->
                 <span class="logo-icon">&#9670;</span>
                 <span class="logo-text">PlaceReady</span>
             </a>
 
             <nav class="nav-links">
-                <a href="#" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
+                
+                
                 <!-- Action Buttons: Secondary Sign In Button Box + Primary Sign Up Button Box -->
                 <div class="nav-actions">
                     <div class="dropdown" id="navSignInDropdown">
@@ -87,8 +45,8 @@ HOW Django uses it:
 
         <!-- Mobile menu drawer -->
         <div class="mobile-menu" id="mobileMenu">
-            <a href="#" class="nav-link">Home</a>
-            <a href="#about" class="nav-link">About</a>
+            
+            
             <!-- Mobile Sign In Dropdown -->
             <div class="mobile-dropdown" id="mobileSignInDropdown">
                 <button type="button" class="mobile-dropdown-toggle">

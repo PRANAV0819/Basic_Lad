@@ -5,8 +5,65 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Login - Placement Readiness Platform</title>
-    <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}?v=2.0" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}?v=2.0" />
+    <style>
+        .auth-header {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 1.25rem 2rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-sizing: border-box !important;
+        }
+        .auth-logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            text-decoration: none !important;
+        }
+        .back-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.35rem !important;
+            text-decoration: none !important;
+        }
+        .auth-card {
+            max-width: 400px !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+            background: #ffffff !important;
+            border: 1px solid var(--clr-border, #e2e8f0) !important;
+            border-radius: var(--radius-lg, 16px) !important;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04) !important;
+            overflow: hidden !important;
+        }
+        .auth-form-panel {
+            padding: 2.25rem 2rem !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .auth-form-header {
+            text-align: center !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .auth-title {
+            font-size: 1.6rem !important;
+            font-weight: 700 !important;
+            margin-bottom: 0.35rem !important;
+        }
+        .auth-subtitle {
+            font-size: 0.88rem !important;
+            color: var(--clr-text-muted, #64748b) !important;
+            margin-bottom: 1.5rem !important;
+        }
+        @media (max-width: 768px) {
+            .auth-header {
+                padding: 1rem 1.25rem !important;
+            }
+        }
+    </style>
 </head>
 <body class="auth-body">
 
@@ -16,9 +73,7 @@
             <span class="logo-icon">&#9670;</span>
             <span class="logo-text">PlaceReady</span>
         </a>
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <a href="{% url 'core:home' %}" class="back-link">&#8592; Back to Home</a>
-        </div>
+        <a href="{% url 'core:home' %}" class="back-link">&#8592; Back to Home</a>
     </header>
 
     <!-- Main Container: Inspired by reference screenshot layout -->
@@ -82,44 +137,6 @@
                     <p>Protected area for authorized college administrators only.</p>
                 </div>
             </div>
-
-            <!-- Right Panel: Info & Portal Overview (CodeHelp style) -->
-            <div class="auth-info-panel">
-                <div class="info-content">
-                    <div class="info-badge-icon">&#9881;</div>
-                    <h2 class="info-title">Placement Readiness Admin</h2>
-                    <p class="info-desc">
-                        Manage evaluations, monitor student performance metrics, and prepare readiness reports for department review.
-                    </p>
-
-                    <div class="feature-bullets">
-                        <div class="bullet-card">
-                            <span class="bullet-icon">&#128221;</span>
-                            <div>
-                                <h4>Assignment Management</h4>
-                                <p>Create and regulate placement evaluation criteria.</p>
-                            </div>
-                        </div>
-
-                        <div class="bullet-card">
-                            <span class="bullet-icon">&#128202;</span>
-                            <div>
-                                <h4>Score Tracking</h4>
-                                <p>View calculated readiness scores across batches.</p>
-                            </div>
-                        </div>
-
-                        <div class="bullet-card">
-                            <span class="bullet-icon">&#128196;</span>
-                            <div>
-                                <h4>HOD Reporting</h4>
-                                <p>Compile student readiness reports for academic leadership.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </main>
 

@@ -21,44 +21,54 @@
 }
 
 :root {
-    /* CodeHelp Light Mode Tokens */
+    /* CodeHelp Light Mode Tokens (Exact match to CodeHelp UI screenshot) */
     --clr-body-bg:       #f8fafc;
     --clr-surface:       #ffffff;
     --clr-card-bg:       #ffffff;
-    --clr-card-hover:    #f1f5f9;
+    --clr-card-hover:    #f8fafc;
     --clr-sidebar:       #ffffff;
-    --clr-sidebar-hover: #f1f5f9;
-    --clr-sidebar-active:#e2e8f0;
-    --clr-sidebar-text:  #64748b;
+    --clr-sidebar-hover: #f8fafc;
+    --clr-sidebar-active:#f1f5f9;
+    --clr-sidebar-text:  #475569;
     --clr-sidebar-light: #0f172a;
     --clr-border:        #e2e8f0;
     --clr-border-light:  #f1f5f9;
     --clr-text-main:     #0f172a;
     --clr-text-muted:    #64748b;
     --clr-text-subtle:   #94a3b8;
-    --clr-primary:       #2563eb;
-    --clr-primary-light: #60a5fa;
-    --clr-primary-bg:    #eff6ff;
-    --clr-accent:        #7c3aed;
-    --clr-topbar-bg:     rgba(255, 255, 255, 0.9);
-    --clr-search-bg:     #f1f5f9;
+
+    /* CodeHelp Signature Violet / Purple */
+    --clr-primary:       #7c3aed;
+    --clr-primary-dark:  #6d28d9;
+    --clr-primary-light: #8b5cf6;
+    --clr-primary-bg:    #f5f3ff;
+    --clr-primary-border:#ddd6fe;
+
+    /* CodeHelp Electric Blue */
+    --clr-accent:        #2563eb;
+    --clr-accent-light:  #3b82f6;
+    --clr-accent-bg:     #eff6ff;
+    --clr-accent-border: #dbeafe;
+
+    --clr-topbar-bg:     rgba(255, 255, 255, 0.95);
+    --clr-search-bg:     #f8fafc;
     --clr-search-border: #e2e8f0;
     --clr-search-text:   #0f172a;
     --clr-badge-bg:      #f1f5f9;
-    --clr-badge-border:  #cbd5e1;
+    --clr-badge-border:  #e2e8f0;
 
-    --clr-success:       #16a34a;
-    --clr-success-bg:    #dcfce7;
-    --clr-warning:       #d97706;
-    --clr-warning-bg:    #fef3c7;
-    --clr-danger:        #dc2626;
-    --clr-danger-bg:     #fee2e2;
+    --clr-success:       #10b981;
+    --clr-success-bg:    #ecfdf5;
+    --clr-warning:       #f59e0b;
+    --clr-warning-bg:    #fffbeb;
+    --clr-danger:        #ef4444;
+    --clr-danger-bg:     #fef2f2;
 
     --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --radius-sm: 6px;
     --radius-md: 10px;
-    --radius-lg: 14px;
-    --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
+    --radius-lg: 16px;
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 body {
@@ -656,26 +666,31 @@ button {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* Card Subtle Tints from Screenshot */
-.card-cyan   { background-color: #f0fdfa; border-color: #ccfbf1; }
-.card-green  { background-color: #f0fdf4; border-color: #dcfce7; }
-.card-amber  { background-color: #fffbeb; border-color: #fef3c7; }
-.card-purple { background-color: #faf5ff; border-color: #f3e8ff; }
+/* Card Pure White Surface (Matches CodeHelp Dashboard Screenshot) */
+.card-cyan,
+.card-green,
+.card-amber,
+.card-purple {
+    background-color: #ffffff;
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
 
 .metric-icon-box {
     width: 44px;
     height: 44px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
-.box-cyan   { background-color: #e0f2fe; }
-.box-green  { background-color: #dcfce7; }
-.box-amber  { background-color: #fef3c7; }
-.box-purple { background-color: #f3e8ff; }
+.box-cyan   { background-color: #eff6ff; color: #2563eb; }
+.box-green  { background-color: #ecfdf5; color: #10b981; }
+.box-amber  { background-color: #fffbeb; color: #f59e0b; }
+.box-purple { background-color: #f5f3ff; color: #7c3aed; }
 
 .metric-body {
     flex: 1;
@@ -813,7 +828,7 @@ button {
 .rank-large-val {
     font-size: 3.2rem;
     font-weight: 900;
-    color: #1e40af;
+    color: var(--clr-primary);
     line-height: 1;
     margin-bottom: 0.4rem;
 }
@@ -912,10 +927,10 @@ button {
     transition: height 0.6s ease;
 }
 
-.bar-blue-1 { background-color: #2563eb; }
-.bar-blue-2 { background-color: #3b82f6; }
-.bar-purple { background-color: #8b5cf6; }
-.bar-cyan   { background-color: #06b6d4; }
+.bar-blue-1 { background-color: #3b82f6; }
+.bar-blue-2 { background-color: #7c3aed; }
+.bar-purple { background-color: #7c3aed; }
+.bar-cyan   { background-color: #3b82f6; }
 .bar-green  { background-color: #10b981; }
 
 .bar-label {
@@ -1222,7 +1237,7 @@ button {
 .form-input:focus, .form-select:focus, select:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus, textarea:focus {
     outline: none;
     border-color: var(--clr-primary) !important;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15) !important;
 }
 
 /* Polished Action Buttons */
@@ -1242,9 +1257,9 @@ button {
 }
 
 .btn-primary:hover {
-    background-color: #1d4ed8;
-    border-color: #1d4ed8;
-    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    background-color: var(--clr-primary-dark);
+    border-color: var(--clr-primary-dark);
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.25);
 }
 
 .btn-secondary {
