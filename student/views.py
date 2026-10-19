@@ -325,6 +325,39 @@ def student_profile_view(request):
         if not is_valid:
             context['error'] = error_msg
         else:
+            # Handle certificate removal if requested
+            if request.POST.get('remove_certificate') == '1':
+                if student.certificate_file:
+                    try:
+                        student.certificate_file.delete(save=False)
+                    except Exception:
+                        pass
+                    student.certificate_file = None
+
+            # Handle certificate file upload
+            if 'certificate_file' in request.FILES:
+                cert_file = request.FILES['certificate_file']
+                allowed_extensions = ('pdf', 'png', 'jpg', 'jpeg')
+                file_ext = cert_file.name.rsplit('.', 1)[-1].lower() if '.' in cert_file.name else ''
+
+                if file_ext not in allowed_extensions:
+                    context['error'] = "Invalid certificate format. Please upload a PDF, PNG, or JPG/JPEG file."
+                    return render(request, 'student/profile.html', context)
+
+                # 5MB size limit
+                if cert_file.size > 5 * 1024 * 1024:
+                    context['error'] = "Certificate file size exceeds the 5MB limit. Please upload a smaller file."
+                    return render(request, 'student/profile.html', context)
+
+                # Delete old certificate file if replacing
+                if student.certificate_file:
+                    try:
+                        student.certificate_file.delete(save=False)
+                    except Exception:
+                        pass
+
+                student.certificate_file = cert_file
+
             student.name = cleaned_data['name']
             student.department = cleaned_data['department']
             student.year = cleaned_data['year']

@@ -97,28 +97,79 @@
             outline: none;
             border-color: var(--clr-primary);
         }
+        .current-cert-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1rem;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.75rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .cert-info {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 0.9rem;
+            color: var(--clr-text-main);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cert-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .btn-view-cert {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 0.85rem;
+            background: #2563eb;
+            color: #ffffff !important;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.15s ease;
+        }
+        .btn-view-cert:hover {
+            background: #1d4ed8;
+        }
+        .remove-cert-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.82rem;
+            color: #dc2626;
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+        }
+        .file-upload-input {
+            width: 100%;
+            padding: 0.55rem 0.75rem;
+            font-size: 0.88rem;
+            border: 1px dashed #94a3b8;
+            border-radius: var(--radius-sm);
+            background: #ffffff;
+            cursor: pointer;
+        }
+        .file-upload-input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
     </style>
 </head>
-<body class="dashboard-body">
+<body class="dashboard-app">
 
-    <!-- Top Navigation -->
-    <header class="app-nav">
-        <div class="nav-inner">
-            <div class="nav-brand">
-                <span class="logo-icon">&#9670;</span>
-                <span class="brand-title">PlaceReady</span>
-                <span class="badge-role">Student</span>
-            </div>
+    {% include 'student/sidebar.html' with active_nav='profile' %}
 
-            <div class="nav-controls" style="display: flex; align-items: center; gap: 10px;">
-                <a href="{% url 'student:dashboard' %}" class="btn-secondary-sm">&#8592; Back to Dashboard</a>
-                <a href="{% url 'student:logout' %}" class="btn-logout" id="logoutBtn">Logout</a>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="dashboard-container">
+    <div class="main-wrapper" style="flex: 1; min-width: 0; overflow-y: auto; padding: 2rem 1.5rem;">
+        <main class="dashboard-container" style="max-width: 900px; margin: 0 auto; padding: 0;">
         <div class="dash-card profile-card">
 
             <div class="profile-header">
@@ -161,7 +212,7 @@
             {% endif %}
 
             <!-- Profile Form -->
-            <form method="POST" action="{% url 'student:profile' %}" class="profile-form">
+            <form method="POST" action="{% url 'student:profile' %}" enctype="multipart/form-data" class="profile-form">
                 {% csrf_token %}
 
                 <!-- SECTION 1: Personal & College Info -->
@@ -234,14 +285,19 @@
                     <!-- Department -->
                     <div class="form-group flex-1">
                         <label for="department" class="form-label">Department / Branch</label>
-                        <input
-                            type="text"
+                        <select
                             id="department"
                             name="department"
                             class="form-input"
-                            placeholder="e.g. Computer Science & Engineering"
-                            value="{{ student.department }}"
-                        />
+                        >
+                            <option value="" {% if not student.department %}selected{% endif %}>-- Select Department --</option>
+                            <option value="AI & DS" {% if student.department == 'AI & DS' %}selected{% endif %}>AI & DS</option>
+                            <option value="Comp" {% if student.department == 'Comp' or student.department == 'Computer Engineering' or student.department == 'Computer Science & Engineering' %}selected{% endif %}>Comp</option>
+                            <option value="IT" {% if student.department == 'IT' %}selected{% endif %}>IT</option>
+                            {% if student.department and student.department != 'AI & DS' and student.department != 'Comp' and student.department != 'IT' and student.department != 'Computer Engineering' and student.department != 'Computer Science & Engineering' %}
+                            <option value="{{ student.department }}" selected>{{ student.department }}</option>
+                            {% endif %}
+                        </select>
                     </div>
 
                     <!-- Year of Study -->
@@ -290,13 +346,50 @@
 
                 <!-- Certifications -->
                 <div class="form-group">
-                    <label for="certifications" class="form-label">Courses & Certifications</label>
+                    <label for="certifications" class="form-label">Courses & Certifications (Summary)</label>
                     <textarea
                         id="certifications"
                         name="certifications"
                         class="form-textarea"
                         placeholder="e.g. NPTEL Data Structures, Coursera Python Specialization, HackerRank SQL Gold"
                     >{{ student.certifications }}</textarea>
+                    <small class="field-hint">List your credentials, completed courses, and issuing organizations.</small>
+                </div>
+
+                <!-- Certificate Document Upload -->
+                <div class="form-group">
+                    <label for="certificate_file" class="form-label">Upload Certificate Document (PDF / Image)</label>
+
+                    {% if student.certificate_file %}
+                        <div class="current-cert-box">
+                            <div class="cert-info">
+                                <span style="font-size: 1.25rem;">&#128196;</span>
+                                <div>
+                                    <strong>Current Certificate:</strong>
+                                    <span style="color: #475569; word-break: break-all;">{{ student.certificate_file.name }}</span>
+                                </div>
+                            </div>
+                            <div class="cert-actions">
+                                <a href="{{ student.certificate_file.url }}" target="_blank" rel="noopener noreferrer" class="btn-view-cert">
+                                    &#128065; View / Download
+                                </a>
+                                <label class="remove-cert-toggle">
+                                    <input type="checkbox" name="remove_certificate" value="1" />
+                                    <span>Remove</span>
+                                </label>
+                            </div>
+                        </div>
+                        <small class="field-hint" style="margin-bottom: 0.5rem; display: block;">To replace the file above, select a new certificate below:</small>
+                    {% endif %}
+
+                    <input
+                        type="file"
+                        id="certificate_file"
+                        name="certificate_file"
+                        class="file-upload-input"
+                        accept=".pdf,.png,.jpg,.jpeg"
+                    />
+                    <small class="field-hint">Supported formats: PDF, PNG, JPG, JPEG (Max file size: 5MB).</small>
                 </div>
 
                 <!-- SECTION 3: Professional Links -->
@@ -358,6 +451,7 @@
 
         </div>
     </main>
+    </div>
 
     <script src="{% static 'student/js/script.js' %}"></script>
     <script src="{% static 'core/js/theme.js' %}"></script>

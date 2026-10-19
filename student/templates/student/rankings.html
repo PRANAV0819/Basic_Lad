@@ -81,26 +81,12 @@
         }
     </style>
 </head>
-<body class="dashboard-body">
+<body class="dashboard-app">
 
-    <!-- Top Navigation -->
-    <header class="app-nav">
-        <div class="nav-inner">
-            <div class="nav-brand">
-                <span class="logo-icon">&#9670;</span>
-                <span class="brand-title">PlaceReady</span>
-                <span class="badge-role">Student</span>
-            </div>
+    {% include 'student/sidebar.html' with active_nav='rankings' %}
 
-            <div class="nav-controls" style="display: flex; align-items: center; gap: 10px;">
-                <a href="{% url 'student:dashboard' %}" class="btn-secondary-sm">&#8592; Dashboard</a>
-                <a href="{% url 'student:readiness' %}" class="btn-secondary-sm">&#128200; My Readiness</a>
-                <a href="{% url 'student:logout' %}" class="btn-logout" id="logoutBtn">Logout</a>
-            </div>
-        </div>
-    </header>
-
-    <main class="leaderboard-container">
+    <div class="main-wrapper" style="flex: 1; min-width: 0; overflow-y: auto; padding: 2rem 1.5rem;">
+        <main class="leaderboard-container" style="max-width: 1080px; margin: 0 auto; padding: 0;">
 
         <div class="leaderboard-header">
             <div class="leaderboard-title">
@@ -179,6 +165,7 @@
         </div>
 
     </main>
+    </div>
 
     <!-- Global CodeHelp Theme Controller (Ctrl + M & Ctrl + K) -->
     <script src="{% static 'core/js/theme.js' %}"></script>

@@ -86,11 +86,19 @@ class Student(models.Model):
         help_text="Technical skills (e.g., Python, Django, MySQL, Data Structures)"
     )
 
-    # certifications: Certifications completed by the student
+    # certifications: Certifications completed by the student (text summary)
     certifications = models.TextField(
         blank=True,
         default="",
         help_text="Courses or certifications completed"
+    )
+
+    # certificate_file: Uploaded certificate document (PDF, PNG, JPG, JPEG)
+    certificate_file = models.FileField(
+        upload_to='certificates/',
+        blank=True,
+        null=True,
+        help_text="Uploaded certificate document (PDF, PNG, JPG, JPEG)"
     )
 
     # projects: Key academic or personal projects
@@ -143,7 +151,7 @@ class Student(models.Model):
         6. CGPA
         7. Technical Skills
         8. Projects
-        9. Certifications
+        9. Certifications (Text or Uploaded Document)
         10. Profile Links (Resume, LinkedIn, or GitHub)
         """
         score = 0
@@ -163,7 +171,7 @@ class Student(models.Model):
             score += 10
         if self.projects and self.projects.strip():
             score += 10
-        if self.certifications and self.certifications.strip():
+        if (self.certifications and self.certifications.strip()) or self.certificate_file:
             score += 10
         if (self.resume_link and self.resume_link.strip()) or \
            (self.linkedin_url and self.linkedin_url.strip()) or \
