@@ -26,32 +26,7 @@
                 </nav>
             </div>
 
-            <div class="topbar-right">
-                <!-- Global Search Input with Ctrl K Pill -->
-                <div class="search-box-pill">
-                    <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" id="globalSearchInput" class="search-input-pill" placeholder="Search..." />
-                    <span class="shortcut-badge">Ctrl K</span>
-                </div>
-
-                <!-- Notification Bell with Counter -->
-                <button type="button" class="notif-bell-btn" title="Notifications">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                    <span class="notif-count-badge">9</span>
-                </button>
-
-                <!-- Live Dashboard Outline Pill Button -->
-                <a href="{% url 'student:dashboard' %}" class="live-dash-pill">
-                    <span class="live-dot"></span>
-                    <span>Live Dashboard</span>
-                </a>
-            </div>
+            <div class="topbar-right"></div>
         </header>
 
         <!-- Dashboard Content Body -->
@@ -61,7 +36,7 @@
             <div class="welcome-row">
                 <div class="welcome-text-group">
                     <span class="welcome-eyebrow">Welcome back,</span>
-                    <h1 class="welcome-title">{{ first_name }} <span class="wave-emoji">&#128075;</span></h1>
+                    <h1 class="welcome-title">{{ first_name }}</h1>
                     <p class="welcome-sub">Keep learning and improve your placement readiness.</p>
                 </div>
 
@@ -76,7 +51,7 @@
                 <!-- Card 1: Assignments -->
                 <div class="metric-card card-cyan">
                     <div class="metric-icon-box box-cyan">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -94,7 +69,7 @@
                 <!-- Card 2: Completed Assignments -->
                 <div class="metric-card card-green">
                     <div class="metric-icon-box box-green">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                             <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -112,7 +87,7 @@
                 <!-- Card 3: Average Score -->
                 <div class="metric-card card-amber">
                     <div class="metric-icon-box box-amber">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
                             <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
                             <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
                             <path d="M4 22h16"></path>
@@ -130,9 +105,9 @@
                 </div>
 
                 <!-- Card 4: Placement Readiness Score -->
-                <div class="metric-card card-purple">
-                    <div class="metric-icon-box box-purple">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9333ea" stroke-width="2">
+                <div class="metric-card card-blue">
+                    <div class="metric-icon-box box-blue">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
                             <line x1="18" y1="20" x2="18" y2="10"></line>
                             <line x1="12" y1="20" x2="12" y2="4"></line>
                             <line x1="6" y1="20" x2="6" y2="14"></line>
@@ -162,8 +137,8 @@
                     <div class="rank-display-box">
                         <div class="rank-large-val">#{{ rank }}</div>
                         <div class="rank-sub-text">out of {{ total_students }} enrolled students</div>
-                        <div style="margin-top: 0.85rem;">
-                            <a href="{% url 'student:rankings' %}" style="display: inline-block; padding: 0.35rem 0.85rem; background: #2563eb; color: #ffffff; border-radius: 6px; font-size: 0.82rem; font-weight: 600; text-decoration: none;">
+                        <div style="margin-top: 1.15rem;">
+                            <a href="{% url 'student:rankings' %}" class="btn-rank-leaderboard">
                                 View Full Leaderboard &rarr;
                             </a>
                         </div>
@@ -209,7 +184,7 @@
                                     {% for s in subject_perf %}
                                         <div class="bar-column">
                                             <span class="bar-val">{{ s.percentage }}%</span>
-                                            <div class="bar-fill {% cycle 'bar-blue-1' 'bar-blue-2' 'bar-purple' 'bar-cyan' 'bar-green' %}" style="height: {{ s.percentage }}%;"></div>
+                                            <div class="bar-fill {% cycle 'bar-blue-1' 'bar-blue-2' 'bar-blue-1' 'bar-cyan' 'bar-green' %}" style="height: {{ s.percentage }}%;"></div>
                                             <span class="bar-label">{{ s.subject }}</span>
                                         </div>
                                     {% endfor %}
@@ -238,7 +213,7 @@
                     <div class="donut-chart-layout">
                         <!-- SVG Donut Chart with Center Text -->
                         <div class="donut-graphic-wrap">
-                            <svg class="donut-svg" width="160" height="160" viewBox="0 0 42 42">
+                            <svg class="donut-svg" width="185" height="185" viewBox="0 0 42 42">
                                 <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
                                 <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#f1f5f9" stroke-width="5.5"></circle>
 

@@ -23,6 +23,10 @@ urlpatterns = [
     # /student/profile/
     path('profile/', views.student_profile_view, name='profile'),
 
+    # /student/portfolio/ (Portfolio Preview)
+    path('portfolio/', views.student_portfolio_preview_view, name='portfolio_preview'),
+    path('portfolio/<int:student_id>/', views.student_portfolio_preview_view, name='portfolio_public'),
+
     # /student/readiness/
     path('readiness/', views.student_readiness_view, name='readiness'),
 

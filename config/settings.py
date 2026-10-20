@@ -3,10 +3,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-bv0e5g0%jb8v^0^)x-42lci$h^%5^jw31ofon$4x!=)9puq69q"
 
@@ -15,9 +11,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
 
-
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -25,9 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Our apps
-    # WHY: We must register every Django app here so Django knows it exists.
-    # Without this, Django won't find our models, templates or static files.
+    
     "core",
     "adminpanel",
     "student",

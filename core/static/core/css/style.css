@@ -11,14 +11,13 @@
          core/static/core/css/style.css
          At URL: /static/core/css/style.css
 
-  DESIGN REFERENCE: CodeHelp.in
-  - White background with very light lavender section tints
-  - Dark near-black text (#111 / #222)
-  - Purple primary accent: #6d28d9
-  - Clean, generous spacing
-  - Simple flat cards with light gray borders
-  - Bold, large headings
-  - Minimal hover effects
+  DESIGN: CodeHelp-inspired Blue & White Light Mode
+  - White backgrounds (#fff / #f8fafc)
+  - Dark charcoal text (#111827) with slate muted text (#475569)
+  - Primary blue accent (#2563eb), hover (#1d4ed8)
+  - Light blue highlights (#eff6ff) for selected states
+  - Subtle gray borders (#e5e7eb)
+  - Standard semantic colors for success/warning/error
 */
 
 
@@ -33,33 +32,33 @@
 }
 
 :root {
-    /* CodeHelp Light Mode Palette (Exact Match from Screenshot) */
+    /* CodeHelp Blue Light Mode Palette */
     --clr-bg:          #ffffff;
     --clr-bg-tint:     #f8fafc;
-    --clr-border:      #e2e8f0;
+    --clr-border:      #e5e7eb;
     --clr-border-light:#f1f5f9;
     --clr-card-bg:     #ffffff;
-    --clr-text:        #0f172a;
+    --clr-text:        #111827;
     --clr-muted:       #475569;
-    --clr-subtle:      #94a3b8;
+    --clr-subtle:      #64748b;
 
-    /* CodeHelp Signature Violet / Purple */
-    --clr-accent:      #7c3aed;
-    --clr-accent-dark: #6d28d9;
-    --clr-accent-light:#8b5cf6;
-    --clr-accent-bg:   #f5f3ff;
-    --clr-accent-border:#ddd6fe;
+    /* Primary Blue */
+    --clr-accent:      #2563eb;
+    --clr-accent-dark: #1d4ed8;
+    --clr-accent-light:#3b82f6;
+    --clr-accent-bg:   #eff6ff;
+    --clr-accent-border:#93c5fd;
 
-    /* CodeHelp Electric Blue */
+    /* Secondary blue shades */
     --clr-blue:        #2563eb;
     --clr-blue-light:  #3b82f6;
     --clr-blue-bg:     #eff6ff;
 
-    /* CodeHelp Success Emerald */
+    /* Success */
     --clr-success:     #10b981;
     --clr-success-bg:  #ecfdf5;
 
-    /* CodeHelp Danger Red */
+    /* Danger */
     --clr-danger:      #ef4444;
     --clr-danger-bg:   #fef2f2;
 
@@ -149,7 +148,7 @@ ul {
     border: 2px solid transparent;
 }
 
-/* Purple filled button */
+/* CodeHelp primary blue filled button */
 .btn-primary {
     background-color: var(--clr-accent);
     color: #ffffff;
@@ -651,8 +650,8 @@ ul {
     font-weight: var(--fw-medium);
 }
 
-.hint-ok   { background-color: #d1fae5; color: #065f46; }
-.hint-warn { background-color: #fef3c7; color: #92400e; }
+.hint-ok   { background-color: #dcfce7; color: #166534; }
+.hint-warn { background-color: #fef9c3; color: #854d0e; }
 .hint-bad  { background-color: #fee2e2; color: #991b1b; }
 
 .card-note {

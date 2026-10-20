@@ -10,45 +10,45 @@
 */
 
 :root {
-    /* CodeHelp Light Mode Tokens */
+    /* CodeHelp Blue Light Mode Tokens */
     --clr-body-bg:       #f8fafc;
     --clr-surface:       #ffffff;
     --clr-card-bg:       #ffffff;
     --clr-card-hover:    #f8fafc;
     --clr-sidebar:       #ffffff;
-    --clr-sidebar-hover: #f8fafc;
-    --clr-sidebar-active:#f1f5f9;
+    --clr-sidebar-hover: #eff6ff;
+    --clr-sidebar-active:#eff6ff;
     --clr-sidebar-text:  #475569;
-    --clr-sidebar-light: #0f172a;
-    --clr-border:        #e2e8f0;
+    --clr-sidebar-light: #111827;
+    --clr-border:        #e5e7eb;
     --clr-border-light:  #f1f5f9;
-    --clr-text-main:     #0f172a;
+    --clr-text-main:     #111827;
     --clr-text-muted:    #64748b;
     --clr-text-subtle:   #94a3b8;
 
-    /* CodeHelp Signature Violet / Purple */
-    --clr-primary:       #7c3aed;
-    --clr-primary-dark:  #6d28d9;
-    --clr-primary-light: #8b5cf6;
-    --clr-primary-bg:    #f5f3ff;
-    --clr-primary-border:#ddd6fe;
+    /* Primary Blue */
+    --clr-primary:       #2563eb;
+    --clr-primary-dark:  #1d4ed8;
+    --clr-primary-light: #3b82f6;
+    --clr-primary-bg:    #eff6ff;
+    --clr-primary-border:#93c5fd;
 
-    /* CodeHelp Electric Blue */
+    /* Accent (same as primary) */
     --clr-accent:        #2563eb;
     --clr-accent-light:  #3b82f6;
     --clr-accent-bg:     #eff6ff;
     --clr-accent-border: #dbeafe;
 
     --clr-tab-bg:        #f1f5f9;
-    --clr-tab-active-bg: #0f172a;
+    --clr-tab-active-bg: #111827;
     --clr-tab-active-text:#ffffff;
     --clr-topbar-bg:     rgba(255, 255, 255, 0.95);
     --clr-search-bg:     #f8fafc;
-    --clr-search-border: #e2e8f0;
-    --clr-search-text:   #0f172a;
+    --clr-search-border: #e5e7eb;
+    --clr-search-text:   #111827;
     --clr-badge-bg:      #f1f5f9;
-    --clr-badge-border:  #e2e8f0;
-    --clr-btn-continue:  #18181b;
+    --clr-badge-border:  #e5e7eb;
+    --clr-btn-continue:  #2563eb;
     --clr-btn-continue-text:#ffffff;
     --shadow-sm:         0 1px 3px rgba(0, 0, 0, 0.03);
     --shadow-md:         0 4px 6px -1px rgba(0, 0, 0, 0.05);
@@ -137,7 +137,7 @@ body {
 .metric-icon-blue   { background: #eff6ff; color: #2563eb; }
 .metric-icon-green  { background: #ecfdf5; color: #059669; }
 .metric-icon-amber  { background: #fffbeb; color: #d97706; }
-.metric-icon-purple { background: #f5f3ff; color: #7c3aed; }
+.metric-icon-purple { background: #eff6ff; color: #2563eb; }
 
 .metric-value {
     font-size: 22px;
@@ -272,8 +272,9 @@ body {
 }
 
 .badge-final {
-    background: #f3e8ff;
-    color: #6b21a8;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
 }
 
 .badge-subject {
@@ -287,8 +288,8 @@ body {
 }
 
 .badge-msq {
-    background: #fdf2f8;
-    color: #be185d;
+    background: #f0fdf4;
+    color: #15803d;
 }
 
 /* ===================== TABLES ===================== */
@@ -422,7 +423,7 @@ body {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -430,12 +431,12 @@ body {
 }
 
 /* Gradient backgrounds for subjects */
-.thumb-dsa      { background: linear-gradient(135deg, #7f1d1d 0%, #1e1b4b 70%, #09090b 100%); }
+.thumb-dsa      { background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 70%, #09090b 100%); }
 .thumb-os       { background: linear-gradient(135deg, #14532d 0%, #0c4a6e 70%, #09090b 100%); }
-.thumb-dbms     { background: linear-gradient(135deg, #1e3a8a 0%, #312e81 70%, #09090b 100%); }
-.thumb-web      { background: linear-gradient(135deg, #701a75 0%, #1e1b4b 70%, #09090b 100%); }
-.thumb-aptitude { background: linear-gradient(135deg, #7c2d12 0%, #1c1917 70%, #09090b 100%); }
-.thumb-final    { background: linear-gradient(135deg, #581c87 0%, #1e1b4b 70%, #0f172a 100%); }
+.thumb-dbms     { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 70%, #09090b 100%); }
+.thumb-web      { background: linear-gradient(135deg, #0284c7 0%, #1e293b 70%, #09090b 100%); }
+.thumb-aptitude { background: linear-gradient(135deg, #b45309 0%, #1c1917 70%, #09090b 100%); }
+.thumb-final    { background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 70%, #0f172a 100%); }
 
 .thumb-tag-badge {
     position: absolute;
@@ -576,7 +577,7 @@ body {
     background: var(--clr-primary);
     color: #ffffff;
     border-color: var(--clr-primary);
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 /* ===================== CODEHELP TOPBAR & BREADCRUMBS ===================== */
@@ -813,7 +814,7 @@ body {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
     color: #ffffff;
     font-weight: 700;
     font-size: 14px;

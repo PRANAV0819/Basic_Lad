@@ -21,30 +21,30 @@
 }
 
 :root {
-    /* CodeHelp Light Mode Tokens */
+    /* CodeHelp Blue Light Mode Tokens */
     --clr-body-bg:       #f8fafc;
     --clr-surface:       #ffffff;
     --clr-card-bg:       #ffffff;
     --clr-card-hover:    #f8fafc;
     --clr-sidebar:       #ffffff;
-    --clr-sidebar-hover: #f8fafc;
-    --clr-sidebar-active:#f1f5f9;
+    --clr-sidebar-hover: #eff6ff;
+    --clr-sidebar-active:#eff6ff;
     --clr-sidebar-text:  #475569;
-    --clr-sidebar-light: #0f172a;
-    --clr-border:        #e2e8f0;
+    --clr-sidebar-light: #111827;
+    --clr-border:        #e5e7eb;
     --clr-border-light:  #f1f5f9;
-    --clr-text-main:     #0f172a;
+    --clr-text-main:     #111827;
     --clr-text-muted:    #64748b;
     --clr-text-subtle:   #94a3b8;
 
-    /* CodeHelp Signature Violet / Purple */
-    --clr-primary:       #7c3aed;
-    --clr-primary-dark:  #6d28d9;
-    --clr-primary-light: #8b5cf6;
-    --clr-primary-bg:    #f5f3ff;
-    --clr-primary-border:#ddd6fe;
+    /* Primary Blue — CodeHelp Blue */
+    --clr-primary:       #2563eb;
+    --clr-primary-dark:  #1d4ed8;
+    --clr-primary-light: #3b82f6;
+    --clr-primary-bg:    #eff6ff;
+    --clr-primary-border:#93c5fd;
 
-    /* CodeHelp Electric Blue */
+    /* Accent (same as primary for this theme) */
     --clr-accent:        #2563eb;
     --clr-accent-light:  #3b82f6;
     --clr-accent-bg:     #eff6ff;
@@ -52,10 +52,10 @@
 
     --clr-topbar-bg:     rgba(255, 255, 255, 0.95);
     --clr-search-bg:     #f8fafc;
-    --clr-search-border: #e2e8f0;
-    --clr-search-text:   #0f172a;
+    --clr-search-border: #e5e7eb;
+    --clr-search-text:   #111827;
     --clr-badge-bg:      #f1f5f9;
-    --clr-badge-border:  #e2e8f0;
+    --clr-badge-border:  #e5e7eb;
 
     --clr-success:       #10b981;
     --clr-success-bg:    #ecfdf5;
@@ -217,7 +217,7 @@ button {
 .form-input:focus {
     outline: none;
     border-color: var(--clr-primary);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .btn-login {
@@ -470,7 +470,7 @@ button {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background-color: #0f172a;
+    background-color: #2563eb;
     color: #ffffff;
     font-weight: 700;
     font-size: 0.95rem;
@@ -585,7 +585,7 @@ button {
 }
 
 /* CodeHelp Metric Cards (Pure White Surfaces) */
-.card-cyan, .card-green, .card-purple, .card-amber {
+.card-cyan, .card-green, .card-purple, .card-blue, .card-amber {
     background-color: #ffffff;
     border-color: var(--clr-border);
 }
@@ -601,8 +601,9 @@ button {
 }
 
 .box-cyan   { background-color: #eff6ff; color: #2563eb; }
+.box-blue   { background-color: #eff6ff; color: #2563eb; }
 .box-green  { background-color: #ecfdf5; color: #10b981; }
-.box-purple { background-color: #f5f3ff; color: #7c3aed; }
+.box-purple { background-color: #eff6ff; color: #2563eb; }
 .box-amber  { background-color: #fffbeb; color: #f59e0b; }
 
 .metric-body {
@@ -770,8 +771,8 @@ button {
     transition: height 0.6s ease;
 }
 
-.bar-primary    { background-color: #7c3aed; }
-.bar-light-blue { background-color: #3b82f6; }
+.bar-primary    { background-color: #2563eb; }
+.bar-light-blue { background-color: #93c5fd; }
 
 .bar-label {
     position: absolute;
@@ -1002,7 +1003,7 @@ button {
 }
 
 .badge-blue   { background-color: #e0f2fe; color: #0284c7; }
-.badge-purple { background-color: #f3e8ff; color: #9333ea; }
+.badge-purple { background-color: #eff6ff; color: #2563eb; }
 .badge-red    { background-color: #fee2e2; color: #dc2626; }
 .badge-amber  { background-color: #fef3c7; color: #d97706; }
 
@@ -1178,7 +1179,7 @@ button {
 
 .search-box-pill:focus-within {
     border-color: var(--clr-primary);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     width: 280px;
 }
 

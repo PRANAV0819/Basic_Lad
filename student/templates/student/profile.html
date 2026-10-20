@@ -4,163 +4,712 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Profile - Placement Readiness Platform</title>
+    <title>My Portfolio Builder - Placement Readiness Platform</title>
     <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+
     <style>
-        .profile-card {
-            max-width: 760px;
-            margin: 2rem auto;
-            padding: 2.25rem;
-            background: var(--clr-card-bg);
-            border: 1px solid var(--clr-border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-card);
+        :root {
+            --p-blue: #3A83F7;
+            --p-blue-hover: #2563EB;
+            --p-blue-deep: #1D4ED8;
+            --p-blue-light: #E8F3FE;
+            --p-bg: #FFFFFF;
+            --p-bg-subtle: #FCFCFC;
+            --p-text: #0D0D0D;
+            --p-text-secondary: #5D5D5D;
+            --p-text-muted: #8F8F8F;
+            --p-border: rgba(0, 0, 0, 0.1);
+            --p-border-strong: rgba(0, 0, 0, 0.15);
+            --p-surface: #F3F3F3;
+            --p-radius: 14px;
+            --p-radius-sm: 8px;
         }
-        .completion-banner {
-            background: var(--clr-primary-bg);
-            border: 1px solid var(--clr-border);
-            border-radius: var(--radius-md);
-            padding: 1.25rem 1.5rem;
+
+        body.dashboard-app {
+            background-color: var(--p-bg-subtle);
+            color: var(--p-text);
+        }
+
+        .builder-wrapper {
+            flex: 1;
+            min-width: 0;
+            overflow-y: auto;
+            padding: 2rem 2.5rem 4rem;
+        }
+
+        .builder-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Top Header */
+        .portfolio-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.25rem;
             margin-bottom: 2rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--p-border);
+        }
+
+        .portfolio-title-group h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--p-text);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.35rem;
+        }
+
+        .portfolio-title-group p {
+            font-size: 0.95rem;
+            color: var(--p-text-secondary);
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .btn-preview-portfolio {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.35rem;
+            background: var(--p-blue);
+            color: #FFFFFF !important;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: var(--p-radius-sm);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(58, 131, 247, 0.25);
+            border: 1px solid var(--p-blue);
+        }
+
+        .btn-preview-portfolio:hover {
+            background: var(--p-blue-hover);
+            border-color: var(--p-blue-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(58, 131, 247, 0.35);
+        }
+
+        .btn-dash-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.65rem 1.15rem;
+            background: var(--p-bg);
+            color: var(--p-text-secondary);
+            border: 1px solid var(--p-border-strong);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: var(--p-radius-sm);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-dash-back:hover {
+            background: var(--p-surface);
+            color: var(--p-text);
+        }
+
+        /* Readiness Banner Card */
+        .readiness-meter-card {
+            background: var(--p-bg);
+            border: 1px solid var(--p-border);
+            border-radius: var(--p-radius);
+            padding: 1.35rem 1.6rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
+            gap: 0.75rem;
         }
-        .completion-top {
+
+        .readiness-meter-top {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
-        .completion-label {
-            font-weight: 700;
-            color: #1e40af;
-            font-size: 0.95rem;
-        }
-        .completion-pct {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #1d4ed8;
-        }
-        .progress-track {
-            width: 100%;
-            height: 10px;
-            background-color: #cbd5e1;
-            border-radius: 999px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #10b981);
-            border-radius: 999px;
-            transition: width 0.4s ease;
-        }
-        .completion-hint {
-            font-size: 0.8rem;
-            color: #475569;
-        }
-        .form-section-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--clr-text-main);
-            border-bottom: 2px solid var(--clr-border-light);
-            padding-bottom: 0.4rem;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
+
+        .readiness-meter-title {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--p-text);
         }
-        .section-badge {
-            font-size: 0.72rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            background-color: var(--clr-primary-bg);
-            color: var(--clr-primary);
+
+        .readiness-badge-pill {
+            background: var(--p-blue-light);
+            color: var(--p-blue);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(58, 131, 247, 0.2);
         }
-        .form-textarea {
+
+        .readiness-track {
             width: 100%;
-            padding: 0.75rem 0.9rem;
-            font-family: inherit;
-            font-size: 0.92rem;
-            border: 1px solid var(--clr-border);
-            border-radius: var(--radius-sm);
-            background-color: #ffffff;
-            color: var(--clr-text-main);
-            resize: vertical;
-            min-height: 75px;
-            line-height: 1.4;
+            height: 10px;
+            background: var(--p-surface);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid var(--p-border);
         }
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--clr-primary);
+
+        .readiness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--p-blue), #10B981);
+            border-radius: 999px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .current-cert-box {
+
+        .readiness-hint-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.85rem 1rem;
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: var(--radius-sm);
-            margin-bottom: 0.75rem;
+            font-size: 0.84rem;
+            color: var(--p-text-secondary);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        /* Two-Column Layout */
+        .builder-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        /* Left Navigation Drawer */
+        .builder-nav-card {
+            background: var(--p-bg);
+            border: 1px solid var(--p-border);
+            border-radius: var(--p-radius);
+            padding: 1.25rem;
+            position: sticky;
+            top: 84px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .builder-nav-heading {
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--p-text-muted);
+            margin: 0.25rem 0 0.75rem 0.5rem;
+        }
+
+        .builder-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: var(--p-radius-sm);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--p-text-secondary);
+            text-decoration: none;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+        }
+
+        .builder-nav-item:hover {
+            background: var(--p-surface);
+            color: var(--p-text);
+        }
+
+        .builder-nav-item.active {
+            background: var(--p-blue-light);
+            color: var(--p-blue);
+            border-color: rgba(58, 131, 247, 0.2);
+        }
+
+        .builder-nav-item .nav-icon {
+            font-size: 1.1rem;
+            width: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .builder-nav-item .nav-check {
+            margin-left: auto;
+            color: #10B981;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        /* Right Content Forms */
+        .builder-main-form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .section-card {
+            background: var(--p-bg);
+            border: 1px solid var(--p-border);
+            border-radius: var(--p-radius);
+            padding: 1.75rem 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            scroll-margin-top: 90px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--p-border);
+        }
+
+        .section-header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--p-text);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            letter-spacing: -0.01em;
+        }
+
+        .section-desc {
+            font-size: 0.88rem;
+            color: var(--p-text-secondary);
+        }
+
+        .section-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            background: var(--p-surface);
+            color: var(--p-text-secondary);
+        }
+
+        .section-tag.required {
+            background: var(--p-blue-light);
+            color: var(--p-blue);
+        }
+
+        /* Form Grid & Inputs */
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-grid-1 {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .form-label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--p-text);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .form-label .req {
+            color: #DC2626;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--p-border-strong);
+            border-radius: var(--p-radius-sm);
+            background: #FFFFFF;
+            color: var(--p-text);
+            font-family: inherit;
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--p-blue);
+            box-shadow: 0 0 0 3px rgba(58, 131, 247, 0.15);
+        }
+
+        .form-input.input-readonly {
+            background: var(--p-surface);
+            color: var(--p-text-muted);
+            cursor: not-allowed;
+            border-color: var(--p-border);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 95px;
+            line-height: 1.5;
+        }
+
+        .field-tip {
+            font-size: 0.78rem;
+            color: var(--p-text-muted);
+            line-height: 1.4;
+        }
+
+        /* Interactive Skills Input */
+        .skills-tag-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+        }
+
+        .skill-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            background: var(--p-blue-light);
+            color: var(--p-blue);
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: 1px solid rgba(58, 131, 247, 0.2);
+        }
+
+        /* Project Cards Multi-Editor */
+        .projects-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .project-editor-card {
+            background: var(--p-bg-subtle);
+            border: 1px solid var(--p-border);
+            border-radius: var(--p-radius-sm);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+
+        .project-editor-card:hover {
+            border-color: rgba(58, 131, 247, 0.3);
+        }
+
+        .project-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--p-border);
+        }
+
+        .project-number-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--p-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .btn-remove-project {
+            background: none;
+            border: none;
+            color: #DC2626;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .btn-remove-project:hover {
+            background: #FEE2E2;
+        }
+
+        .btn-add-project {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            padding: 0.8rem 1.25rem;
+            background: var(--p-bg);
+            border: 1.5px dashed var(--p-blue);
+            color: var(--p-blue);
+            border-radius: var(--p-radius-sm);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-add-project:hover {
+            background: var(--p-blue-light);
+        }
+
+        /* Certificate Uploader Box */
+        .current-cert-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: var(--p-blue-light);
+            border: 1px solid rgba(58, 131, 247, 0.25);
+            border-radius: var(--p-radius-sm);
+            margin-bottom: 1rem;
             gap: 1rem;
             flex-wrap: wrap;
         }
-        .cert-info {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            font-size: 0.9rem;
-            color: var(--clr-text-main);
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .cert-actions {
+
+        .current-cert-left {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-        .btn-view-cert {
+
+        .cert-icon {
+            font-size: 1.5rem;
+        }
+
+        .cert-file-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--p-text);
+            word-break: break-all;
+        }
+
+        .cert-actions-group {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .btn-download-cert {
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            padding: 0.4rem 0.85rem;
-            background: #2563eb;
-            color: #ffffff !important;
-            border-radius: 4px;
-            font-size: 0.82rem;
+            padding: 0.45rem 0.95rem;
+            background: var(--p-blue);
+            color: #FFFFFF !important;
+            border-radius: 6px;
+            font-size: 0.84rem;
             font-weight: 600;
             text-decoration: none;
             transition: background 0.15s ease;
         }
-        .btn-view-cert:hover {
-            background: #1d4ed8;
+
+        .btn-download-cert:hover {
+            background: var(--p-blue-hover);
         }
-        .remove-cert-toggle {
+
+        .cert-remove-label {
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
             font-size: 0.82rem;
-            color: #dc2626;
+            color: #DC2626;
             cursor: pointer;
-            margin: 0;
-            font-weight: 500;
+            font-weight: 600;
         }
-        .file-upload-input {
+
+        .file-dropzone-input {
             width: 100%;
-            padding: 0.55rem 0.75rem;
-            font-size: 0.88rem;
-            border: 1px dashed #94a3b8;
-            border-radius: var(--radius-sm);
-            background: #ffffff;
+            padding: 1rem;
+            border: 1.5px dashed var(--p-border-strong);
+            border-radius: var(--p-radius-sm);
+            background: var(--p-bg);
             cursor: pointer;
+            box-sizing: border-box;
+            font-size: 0.88rem;
+            color: var(--p-text-secondary);
         }
-        .file-upload-input:focus {
+
+        .file-dropzone-input:focus {
+            border-color: var(--p-blue);
             outline: none;
-            border-color: #2563eb;
+        }
+
+        /* Bottom Sticky Action Bar */
+        .builder-action-bar {
+            position: sticky;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--p-border-strong);
+            border-radius: var(--p-radius);
+            padding: 1rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            z-index: 50;
+        }
+
+        .action-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.88rem;
+            color: var(--p-text-secondary);
+        }
+
+        .action-bar-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-save-portfolio {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.75rem;
+            background: var(--p-blue);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--p-radius-sm);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(58, 131, 247, 0.3);
+        }
+
+        .btn-save-portfolio:hover {
+            background: var(--p-blue-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(58, 131, 247, 0.4);
+        }
+
+        .btn-cancel-portfolio {
+            padding: 0.75rem 1.25rem;
+            background: var(--p-bg);
+            border: 1px solid var(--p-border-strong);
+            border-radius: var(--p-radius-sm);
+            color: var(--p-text-secondary);
+            font-size: 0.92rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-cancel-portfolio:hover {
+            background: var(--p-surface);
+            color: var(--p-text);
+        }
+
+        /* Alerts */
+        .portfolio-alert {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            border-radius: var(--p-radius-sm);
+            font-size: 0.92rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: #ECFDF5;
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+        }
+
+        .alert-error {
+            background: #FEF2F2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 980px) {
+            .builder-layout {
+                grid-template-columns: 1fr;
+            }
+            .builder-nav-card {
+                position: static;
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 0.75rem;
+            }
+            .builder-nav-heading {
+                display: none;
+            }
+            .builder-nav-item {
+                white-space: nowrap;
+            }
+            .builder-wrapper {
+                padding: 1.5rem 1.25rem 3rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .section-card {
+                padding: 1.25rem;
+            }
+            .portfolio-header-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .builder-action-bar {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+            .action-bar-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn-save-portfolio, .btn-cancel-portfolio {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -168,290 +717,566 @@
 
     {% include 'student/sidebar.html' with active_nav='profile' %}
 
-    <div class="main-wrapper" style="flex: 1; min-width: 0; overflow-y: auto; padding: 2rem 1.5rem;">
-        <main class="dashboard-container" style="max-width: 900px; margin: 0 auto; padding: 0;">
-        <div class="dash-card profile-card">
+    <div class="builder-wrapper">
+        <div class="builder-container">
 
-            <div class="profile-header">
-                <h1 class="dash-heading">Student Profile & Portfolio</h1>
-                <p class="dash-sub">Complete your academic, technical, and project details to boost your Placement Readiness Score.</p>
-            </div>
+            <!-- Page Header -->
+            <header class="portfolio-header-bar">
+                <div class="portfolio-title-group">
+                    <h1>My Portfolio</h1>
+                    <p>Showcase your skills, projects, and achievements to prepare for placement opportunities.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="{% url 'student:portfolio_preview' %}" class="btn-preview-portfolio" title="Open Recruiter-Ready Portfolio Preview">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>Preview Portfolio</span>
+                    </a>
+                    <a href="{% url 'student:dashboard' %}" class="btn-dash-back" title="Return to Dashboard">
+                        &larr; Dashboard
+                    </a>
+                </div>
+            </header>
 
             <!-- Profile Completion Progress Widget -->
-            <div class="completion-banner">
-                <div class="completion-top">
-                    <span class="completion-label">&#128200; Profile Readiness Meter</span>
-                    <span class="completion-pct">{{ completion_percentage }}% Complete</span>
+            <div class="readiness-meter-card">
+                <div class="readiness-meter-top">
+                    <div class="readiness-meter-title">
+                        <span style="font-size: 1.2rem;">⚡</span>
+                        <span>Profile Readiness Meter</span>
+                    </div>
+                    <span class="readiness-badge-pill">{{ completion_percentage }}% Complete</span>
                 </div>
-                <div class="progress-track">
-                    <div class="progress-fill" style="width: {{ completion_percentage }}%;"></div>
+                <div class="readiness-track">
+                    <div class="readiness-fill" style="width: {{ completion_percentage }}%;"></div>
                 </div>
-                <div class="completion-hint">
-                    {% if completion_percentage == 100 %}
-                        &#10004; Excellent! Your profile is 100% complete and will maximize your readiness assessment.
-                    {% else %}
-                        Tip: Fill in your CGPA, Technical Skills, Projects, and Professional Links to reach 100%.
-                    {% endif %}
+                <div class="readiness-hint-row">
+                    <span>
+                        {% if completion_percentage == 100 %}
+                            &#10004; Excellent! Your profile is 100% complete and recruiter-ready.
+                        {% else %}
+                            Tip: Fill in your Headline, CGPA, Skills, Projects, and Professional Links to reach 100%.
+                        {% endif %}
+                    </span>
+                    <a href="{% url 'student:portfolio_preview' %}" style="color: var(--p-blue); font-weight: 600; text-decoration: none;">
+                        See How Recruiters View You &rarr;
+                    </a>
                 </div>
             </div>
 
-            <!-- Success Alert -->
+            <!-- Feedback Alerts -->
             {% if success %}
-                <div class="alert-box alert-success" role="alert">
-                    <span class="alert-icon">&#10003;</span>
+                <div class="portfolio-alert alert-success" role="alert">
+                    <span style="font-size: 1.15rem;">&#10003;</span>
                     <span>{{ success }}</span>
                 </div>
             {% endif %}
 
-            <!-- Error Alert -->
             {% if error %}
-                <div class="alert-box alert-error" role="alert">
-                    <span class="alert-icon">&#9888;</span>
+                <div class="portfolio-alert alert-error" role="alert">
+                    <span style="font-size: 1.15rem;">&#9888;</span>
                     <span>{{ error }}</span>
                 </div>
             {% endif %}
 
-            <!-- Profile Form -->
-            <form method="POST" action="{% url 'student:profile' %}" enctype="multipart/form-data" class="profile-form">
+            <!-- Form Wrapper -->
+            <form method="POST" action="{% url 'student:profile' %}" enctype="multipart/form-data" id="portfolioForm">
                 {% csrf_token %}
 
-                <!-- SECTION 1: Personal & College Info -->
-                <div class="form-section-title">
-                    <span>1. Academic & Personal Details</span>
-                    <span class="section-badge">Required</span>
-                </div>
+                <div class="builder-layout">
 
-                <div class="form-row">
-                    <!-- Email (Read-only) -->
-                    <div class="form-group flex-1">
-                        <label for="email" class="form-label">Email Address <span class="read-only-tag">(Read-only)</span></label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            class="form-input input-disabled"
-                            value="{{ student.email }}"
-                            disabled
-                            readonly
-                        />
-                    </div>
+                    <!-- Left Column: Navigation Drawer -->
+                    <aside class="builder-nav-card" aria-label="Portfolio Sections">
+                        <div class="builder-nav-heading">Portfolio Sections</div>
+                        
+                        <a href="#sec-personal" class="builder-nav-item active">
+                            <span class="nav-icon">👤</span>
+                            <span>Personal Info</span>
+                            {% if student.name and student.email %}<span class="nav-check">✓</span>{% endif %}
+                        </a>
+                        
+                        <a href="#sec-education" class="builder-nav-item">
+                            <span class="nav-icon">🎓</span>
+                            <span>Education</span>
+                            {% if student.department and student.cgpa %}<span class="nav-check">✓</span>{% endif %}
+                        </a>
 
-                    <!-- Full Name -->
-                    <div class="form-group flex-1">
-                        <label for="name" class="form-label">Full Name <span class="required">*</span></label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            class="form-input"
-                            value="{{ student.name }}"
-                            required
-                        />
-                    </div>
-                </div>
+                        <a href="#sec-skills" class="builder-nav-item">
+                            <span class="nav-icon">⚡</span>
+                            <span>Technical Skills</span>
+                            {% if student.skills %}<span class="nav-check">✓</span>{% endif %}
+                        </a>
 
-                <div class="form-row">
-                    <!-- PRN / Roll Number -->
-                    <div class="form-group flex-1">
-                        <label for="prn" class="form-label">PRN / Roll Number</label>
-                        <input
-                            type="text"
-                            id="prn"
-                            name="prn"
-                            class="form-input"
-                            placeholder="e.g. 72149821H"
-                            value="{{ student.prn }}"
-                        />
-                    </div>
+                        <a href="#sec-projects" class="builder-nav-item">
+                            <span class="nav-icon">💻</span>
+                            <span>Projects</span>
+                            {% if student.projects %}<span class="nav-check">✓</span>{% endif %}
+                        </a>
 
-                    <!-- CGPA -->
-                    <div class="form-group flex-1">
-                        <label for="cgpa" class="form-label">Current CGPA (Out of 10.0)</label>
-                        <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            max="10"
-                            id="cgpa"
-                            name="cgpa"
-                            class="form-input"
-                            placeholder="e.g. 8.45"
-                            value="{{ student.cgpa|default_if_none:'' }}"
-                        />
-                    </div>
-                </div>
+                        <a href="#sec-certifications" class="builder-nav-item">
+                            <span class="nav-icon">📜</span>
+                            <span>Certifications</span>
+                            {% if student.certifications or student.certificate_file %}<span class="nav-check">✓</span>{% endif %}
+                        </a>
 
-                <div class="form-row">
-                    <!-- Department -->
-                    <div class="form-group flex-1">
-                        <label for="department" class="form-label">Department / Branch</label>
-                        <select
-                            id="department"
-                            name="department"
-                            class="form-input"
-                        >
-                            <option value="" {% if not student.department %}selected{% endif %}>-- Select Department --</option>
-                            <option value="AI & DS" {% if student.department == 'AI & DS' %}selected{% endif %}>AI & DS</option>
-                            <option value="Comp" {% if student.department == 'Comp' or student.department == 'Computer Engineering' or student.department == 'Computer Science & Engineering' %}selected{% endif %}>Comp</option>
-                            <option value="IT" {% if student.department == 'IT' %}selected{% endif %}>IT</option>
-                            {% if student.department and student.department != 'AI & DS' and student.department != 'Comp' and student.department != 'IT' and student.department != 'Computer Engineering' and student.department != 'Computer Science & Engineering' %}
-                            <option value="{{ student.department }}" selected>{{ student.department }}</option>
-                            {% endif %}
-                        </select>
-                    </div>
+                        <a href="#sec-profiles" class="builder-nav-item">
+                            <span class="nav-icon">🌐</span>
+                            <span>Profiles & Links</span>
+                            {% if student.resume_link or student.linkedin_url or student.github_url %}<span class="nav-check">✓</span>{% endif %}
+                        </a>
 
-                    <!-- Year of Study -->
-                    <div class="form-group flex-1">
-                        <label for="year" class="form-label">Year of Study</label>
-                        <input
-                            type="text"
-                            id="year"
-                            name="year"
-                            class="form-input"
-                            placeholder="e.g. Final Year / BE"
-                            value="{{ student.year }}"
-                        />
-                    </div>
-                </div>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--p-border);">
+                            <a href="{% url 'student:portfolio_preview' %}" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0.6rem; background: var(--p-surface); color: var(--p-blue); border-radius: var(--p-radius-sm); font-size: 0.85rem; font-weight: 700; text-decoration: none;">
+                                <span>👁️ Open Live Preview</span>
+                            </a>
+                        </div>
+                    </aside>
 
-                <!-- SECTION 2: Technical Profile -->
-                <div class="form-section-title" style="margin-top: 1.5rem;">
-                    <span>2. Technical Skills & Projects</span>
-                    <span class="section-badge">Placement Critical</span>
-                </div>
+                    <!-- Right Column: Structured Section Forms -->
+                    <main class="builder-main-form">
 
-                <!-- Technical Skills -->
-                <div class="form-group">
-                    <label for="skills" class="form-label">Technical Skills (Comma-separated)</label>
-                    <textarea
-                        id="skills"
-                        name="skills"
-                        class="form-textarea"
-                        placeholder="e.g. Python, Django, MySQL, Data Structures & Algorithms, Git, REST APIs"
-                    >{{ student.skills }}</textarea>
-                    <small class="field-hint">List your key programming languages, tools, frameworks, and databases.</small>
-                </div>
+                        <!-- SECTION 1: Personal Information -->
+                        <section class="section-card" id="sec-personal">
+                            <div class="section-header">
+                                <div class="section-header-left">
+                                    <h2 class="section-title">
+                                        <span>👤</span> Personal Information
+                                    </h2>
+                                    <p class="section-desc">Basic profile details and professional headline visible to hiring partners.</p>
+                                </div>
+                                <span class="section-tag required">Required</span>
+                            </div>
 
-                <!-- Projects -->
-                <div class="form-group">
-                    <label for="projects" class="form-label">Academic & Personal Projects</label>
-                    <textarea
-                        id="projects"
-                        name="projects"
-                        class="form-textarea"
-                        placeholder="e.g. Placement Readiness Platform: Built dynamic assessment and analytics engine with Django & MySQL."
-                    >{{ student.projects }}</textarea>
-                    <small class="field-hint">Briefly summarize major academic, capstone, or personal software projects.</small>
-                </div>
+                            <div class="form-grid-2">
+                                <div class="form-field">
+                                    <label for="name" class="form-label">Full Name <span class="req">*</span></label>
+                                    <input type="text" id="name" name="name" class="form-input" value="{{ student.name }}" placeholder="e.g. Rahul Sharma" required />
+                                </div>
 
-                <!-- Certifications -->
-                <div class="form-group">
-                    <label for="certifications" class="form-label">Courses & Certifications (Summary)</label>
-                    <textarea
-                        id="certifications"
-                        name="certifications"
-                        class="form-textarea"
-                        placeholder="e.g. NPTEL Data Structures, Coursera Python Specialization, HackerRank SQL Gold"
-                    >{{ student.certifications }}</textarea>
-                    <small class="field-hint">List your credentials, completed courses, and issuing organizations.</small>
-                </div>
-
-                <!-- Certificate Document Upload -->
-                <div class="form-group">
-                    <label for="certificate_file" class="form-label">Upload Certificate Document (PDF / Image)</label>
-
-                    {% if student.certificate_file %}
-                        <div class="current-cert-box">
-                            <div class="cert-info">
-                                <span style="font-size: 1.25rem;">&#128196;</span>
-                                <div>
-                                    <strong>Current Certificate:</strong>
-                                    <span style="color: #475569; word-break: break-all;">{{ student.certificate_file.name }}</span>
+                                <div class="form-field">
+                                    <label for="email" class="form-label">Email Address <span class="field-tip">(Account Linked)</span></label>
+                                    <input type="email" id="email" class="form-input input-readonly" value="{{ student.email }}" disabled readonly />
                                 </div>
                             </div>
-                            <div class="cert-actions">
-                                <a href="{{ student.certificate_file.url }}" target="_blank" rel="noopener noreferrer" class="btn-view-cert">
-                                    &#128065; View / Download
-                                </a>
-                                <label class="remove-cert-toggle">
-                                    <input type="checkbox" name="remove_certificate" value="1" />
-                                    <span>Remove</span>
-                                </label>
+
+                            <div class="form-field" style="margin-bottom: 1.25rem;">
+                                <label for="headline" class="form-label">Professional Headline</label>
+                                <input type="text" id="headline" name="headline" class="form-input" value="{{ student.headline }}" placeholder="e.g. Aspiring Full-Stack Developer | Python, Django & Cloud Computing Enthusiast" />
+                                <span class="field-tip">A concise headline introducing your technical identity to campus recruiters.</span>
                             </div>
-                        </div>
-                        <small class="field-hint" style="margin-bottom: 0.5rem; display: block;">To replace the file above, select a new certificate below:</small>
-                    {% endif %}
 
-                    <input
-                        type="file"
-                        id="certificate_file"
-                        name="certificate_file"
-                        class="file-upload-input"
-                        accept=".pdf,.png,.jpg,.jpeg"
-                    />
-                    <small class="field-hint">Supported formats: PDF, PNG, JPG, JPEG (Max file size: 5MB).</small>
+                            <div class="form-field" style="margin-bottom: 1.25rem;">
+                                <label for="summary" class="form-label">Short Professional Summary</label>
+                                <textarea id="summary" name="summary" class="form-textarea" placeholder="Write 2-4 sentences describing your technical passion, problem-solving journey, and career goals...">{{ student.summary }}</textarea>
+                                <span class="field-tip">Highlight your passion, core strengths, and what placement opportunities you are seeking.</span>
+                            </div>
+
+                            <div class="form-grid-2">
+                                <div class="form-field">
+                                    <label for="prn" class="form-label">PRN / College Roll Number</label>
+                                    <input type="text" id="prn" name="prn" class="form-input" value="{{ student.prn }}" placeholder="e.g. 72149821H" />
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="year" class="form-label">Year of Study</label>
+                                    <input type="text" id="year" name="year" class="form-input" value="{{ student.year }}" placeholder="e.g. Third Year / TE / Final Year" />
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SECTION 2: Education -->
+                        <section class="section-card" id="sec-education">
+                            <div class="section-header">
+                                <div class="section-header-left">
+                                    <h2 class="section-title">
+                                        <span>🎓</span> Education & Academics
+                                    </h2>
+                                    <p class="section-desc">Degree, branch, and current cumulative academic performance.</p>
+                                </div>
+                                <span class="section-tag required">Required</span>
+                            </div>
+
+                            <div class="form-grid-2">
+                                <div class="form-field">
+                                    <label for="department" class="form-label">Department / Branch <span class="req">*</span></label>
+                                    <select id="department" name="department" class="form-select" required>
+                                        <option value="" {% if not student.department %}selected{% endif %}>-- Select Department --</option>
+                                        <option value="AI & DS" {% if student.department == 'AI & DS' %}selected{% endif %}>Artificial Intelligence & Data Science</option>
+                                        <option value="Comp" {% if student.department == 'Comp' or student.department == 'Computer Engineering' or student.department == 'Computer Science & Engineering' %}selected{% endif %}>Computer Engineering</option>
+                                        <option value="IT" {% if student.department == 'IT' or student.department == 'Information Technology' %}selected{% endif %}>Information Technology</option>
+                                        <option value="ENTC" {% if student.department == 'ENTC' or student.department == 'Electronics & Telecommunication' %}selected{% endif %}>Electronics & Telecommunication</option>
+                                        <option value="Mechanical" {% if student.department == 'Mechanical' %}selected{% endif %}>Mechanical Engineering</option>
+                                        {% if student.department and student.department != 'AI & DS' and student.department != 'Comp' and student.department != 'IT' and student.department != 'Computer Engineering' and student.department != 'Information Technology' and student.department != 'ENTC' and student.department != 'Mechanical' %}
+                                            <option value="{{ student.department }}" selected>{{ student.department }}</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="cgpa" class="form-label">Current CGPA (Out of 10.0)</label>
+                                    <input type="number" step="0.01" min="0" max="10" id="cgpa" name="cgpa" class="form-input" value="{{ student.cgpa|default_if_none:'' }}" placeholder="e.g. 8.65" />
+                                    <span class="field-tip">Scores &ge; 7.0 qualify for tier-1 campus recruitment drives.</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SECTION 3: Technical Skills -->
+                        <section class="section-card" id="sec-skills">
+                            <div class="section-header">
+                                <div class="section-header-left">
+                                    <h2 class="section-title">
+                                        <span>⚡</span> Technical Skills
+                                    </h2>
+                                    <p class="section-desc">Key programming languages, frameworks, databases, and development tools.</p>
+                                </div>
+                                <span class="section-tag required">Placement Critical</span>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="skillsInput" class="form-label">Skills (Comma-separated)</label>
+                                <textarea id="skillsInput" name="skills" class="form-textarea" placeholder="e.g. Python, Django, MySQL, Data Structures & Algorithms, REST APIs, Git, React, Docker">{{ student.skills }}</textarea>
+                                <span class="field-tip">Type your skills separated by commas. Each skill will automatically turn into a clean badge in your portfolio.</span>
+                            </div>
+
+                            <!-- Live Skill Chips Preview -->
+                            <div style="margin-top: 1rem;">
+                                <div style="font-size: 0.82rem; font-weight: 700; color: var(--p-text-muted); margin-bottom: 0.5rem; text-transform: uppercase;">
+                                    Live Badge Preview:
+                                </div>
+                                <div class="skills-tag-preview" id="skillsChipsContainer">
+                                    {% if skills_list %}
+                                        {% for s in skills_list %}
+                                            <span class="skill-chip">{{ s }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span style="font-size: 0.85rem; color: var(--p-text-muted); font-style: italic;">Enter skills above to see badge tags.</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SECTION 4: Projects Showcase -->
+                        <section class="section-card" id="sec-projects">
+                            <div class="section-header">
+                                <div class="section-header-left">
+                                    <h2 class="section-title">
+                                        <span>💻</span> Featured Projects
+                                    </h2>
+                                    <p class="section-desc">Highlight software, capstone, or personal projects with source code and live demos.</p>
+                                </div>
+                                <span class="section-tag required">High Impact</span>
+                            </div>
+
+                            <!-- Multi-project dynamic builder -->
+                            <div class="projects-container" id="projectsContainer">
+                                {% if projects_list %}
+                                    {% for proj in projects_list %}
+                                        <div class="project-editor-card">
+                                            <div class="project-card-header">
+                                                <span class="project-number-badge">Project #{{ forloop.counter }}</span>
+                                                <button type="button" class="btn-remove-project" onclick="removeProjectCard(this)">
+                                                    &#10005; Remove
+                                                </button>
+                                            </div>
+
+                                            <div class="form-grid-2">
+                                                <div class="form-field">
+                                                    <label class="form-label">Project Title</label>
+                                                    <input type="text" name="project_title[]" class="form-input" value="{{ proj.title }}" placeholder="e.g. Placement Readiness Platform" required />
+                                                </div>
+                                                <div class="form-field">
+                                                    <label class="form-label">Tech Stack (comma-separated)</label>
+                                                    <input type="text" name="project_tech[]" class="form-input" value="{{ proj.tech_stack }}" placeholder="e.g. Django, MySQL, Vanilla JS" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-grid-2">
+                                                <div class="form-field">
+                                                    <label class="form-label">GitHub Repository URL</label>
+                                                    <input type="url" name="project_github[]" class="form-input" value="{{ proj.github_url }}" placeholder="https://github.com/username/project" />
+                                                </div>
+                                                <div class="form-field">
+                                                    <label class="form-label">Live Demo URL (optional)</label>
+                                                    <input type="url" name="project_live[]" class="form-input" value="{{ proj.live_url }}" placeholder="https://myproject.live" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-field">
+                                                <label class="form-label">Project Description</label>
+                                                <textarea name="project_description[]" class="form-textarea" placeholder="Explain the problem solved, architecture used, key algorithms, and impact...">{{ proj.description }}</textarea>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- Default empty first project card -->
+                                    <div class="project-editor-card">
+                                        <div class="project-card-header">
+                                            <span class="project-number-badge">Project #1</span>
+                                            <button type="button" class="btn-remove-project" onclick="removeProjectCard(this)">
+                                                &#10005; Remove
+                                            </button>
+                                        </div>
+
+                                        <div class="form-grid-2">
+                                            <div class="form-field">
+                                                <label class="form-label">Project Title</label>
+                                                <input type="text" name="project_title[]" class="form-input" placeholder="e.g. Placement Readiness Platform" required />
+                                            </div>
+                                            <div class="form-field">
+                                                <label class="form-label">Tech Stack (comma-separated)</label>
+                                                <input type="text" name="project_tech[]" class="form-input" placeholder="e.g. Django, MySQL, JavaScript" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-grid-2">
+                                            <div class="form-field">
+                                                <label class="form-label">GitHub Repository URL</label>
+                                                <input type="url" name="project_github[]" class="form-input" placeholder="https://github.com/username/project" />
+                                            </div>
+                                            <div class="form-field">
+                                                <label class="form-label">Live Demo URL (optional)</label>
+                                                <input type="url" name="project_live[]" class="form-input" placeholder="https://myproject.live" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-field">
+                                            <label class="form-label">Project Description</label>
+                                            <textarea name="project_description[]" class="form-textarea" placeholder="Explain the problem solved, architecture used, and your contribution..."></textarea>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <button type="button" class="btn-add-project" id="btnAddProject">
+                                <span>+</span> Add Another Project
+                            </button>
+                        </section>
+
+                        <!-- SECTION 5: Certifications & Document Upload -->
+                        <section class="section-card" id="sec-certifications">
+                            <div class="section-header">
+                                <div class="section-header-left">
+                                    <h2 class="section-title">
+                                        <span>📜</span> Certifications & Achievements
+                                    </h2>
+                                    <p class="section-desc">Course certificates, hackathon rankings, and verified credentials.</p>
+                                </div>
+                                <span class="section-tag">Verified</span>
+                            </div>
+
+                            <div class="form-field" style="margin-bottom: 1.5rem;">
+                                <label for="certifications" class="form-label">Certifications Summary (Title & Issuing Body)</label>
+                                <textarea id="certifications" name="certifications" class="form-textarea" placeholder="e.g. NPTEL Data Structures (Elite) by IIT Kharagpur
+AWS Certified Cloud Practitioner by Amazon
+HackerRank SQL Gold Badge">{{ student.certifications }}</textarea>
+                                <span class="field-tip">List 1 certification per line. Tip: write in format <code>Certification Name by Issuing Organization</code>.</span>
+                            </div>
+
+                            <!-- Certificate Document File Upload -->
+                            <div class="form-field">
+                                <label class="form-label">Upload Certificate Document (PDF or Image)</label>
+
+                                {% if student.certificate_file %}
+                                    <div class="current-cert-display">
+                                        <div class="current-cert-left">
+                                            <span class="cert-icon">📄</span>
+                                            <div>
+                                                <div class="cert-file-name">{{ student.certificate_file.name }}</div>
+                                                <span style="font-size: 0.78rem; color: #15803D; font-weight: 600;">&#10003; Document Attached</span>
+                                            </div>
+                                        </div>
+                                        <div class="cert-actions-group">
+                                            <a href="{{ student.certificate_file.url }}" target="_blank" rel="noopener noreferrer" class="btn-download-cert">
+                                                &#128065; View / Download
+                                            </a>
+                                            <label class="cert-remove-label">
+                                                <input type="checkbox" name="remove_certificate" value="1" />
+                                                <span>Remove Document</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <span class="field-tip" style="margin-bottom: 0.4rem;">Select a new file below if you wish to replace the current certificate:</span>
+                                {% endif %}
+
+                                <input type="file" id="certificate_file" name="certificate_file" class="file-dropzone-input" accept=".pdf,.png,.jpg,.jpeg" />
+                                <span class="field-tip">Supported formats: PDF, PNG, JPG, JPEG (Max file size: 5MB).</span>
+                            </div>
+                        </section>
+
+                        <!-- SECTION 6: Professional Profiles & Links -->
+                        <section class="section-card" id="sec-profiles">
+                            <div class="section-header">
+                                <div class="section-header-left">
+                                    <h2 class="section-title">
+                                        <span>🌐</span> Professional Profiles & Links
+                                    </h2>
+                                    <p class="section-desc">External links where recruiters can review your code, resume, and experience.</p>
+                                </div>
+                                <span class="section-tag required">Recruiter Essential</span>
+                            </div>
+
+                            <div class="form-field" style="margin-bottom: 1.25rem;">
+                                <label for="resume_link" class="form-label">Resume / Online Portfolio Link</label>
+                                <input type="url" id="resume_link" name="resume_link" class="form-input" value="{{ student.resume_link }}" placeholder="https://drive.google.com/your-resume or https://myportfolio.dev" />
+                                <span class="field-tip">Google Drive link (with view access enabled) or personal website.</span>
+                            </div>
+
+                            <div class="form-grid-2">
+                                <div class="form-field">
+                                    <label for="linkedin_url" class="form-label">LinkedIn Profile URL</label>
+                                    <input type="url" id="linkedin_url" name="linkedin_url" class="form-input" value="{{ student.linkedin_url }}" placeholder="https://www.linkedin.com/in/username" />
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="github_url" class="form-label">GitHub / Coding Profile URL</label>
+                                    <input type="url" id="github_url" name="github_url" class="form-input" value="{{ student.github_url }}" placeholder="https://github.com/username" />
+                                </div>
+                            </div>
+                        </section>
+
+                    </main>
                 </div>
 
-                <!-- SECTION 3: Professional Links -->
-                <div class="form-section-title" style="margin-top: 1.5rem;">
-                    <span>3. Professional & Coding Profiles</span>
-                    <span class="section-badge">Optional</span>
-                </div>
-
-                <!-- Resume Link -->
-                <div class="form-group">
-                    <label for="resume_link" class="form-label">Resume / Portfolio Link</label>
-                    <input
-                        type="url"
-                        id="resume_link"
-                        name="resume_link"
-                        class="form-input"
-                        placeholder="https://drive.google.com/... or https://myportfolio.dev"
-                        value="{{ student.resume_link }}"
-                    />
-                </div>
-
-                <div class="form-row">
-                    <!-- LinkedIn URL -->
-                    <div class="form-group flex-1">
-                        <label for="linkedin_url" class="form-label">LinkedIn Profile URL</label>
-                        <input
-                            type="url"
-                            id="linkedin_url"
-                            name="linkedin_url"
-                            class="form-input"
-                            placeholder="https://www.linkedin.com/in/username"
-                            value="{{ student.linkedin_url }}"
-                        />
+                <!-- Bottom Floating Action Bar -->
+                <div class="builder-action-bar">
+                    <div class="action-bar-left">
+                        <span>💡 Tip: Click <strong>Save Changes</strong> to update your live portfolio & boost readiness.</span>
                     </div>
-
-                    <!-- GitHub / HackerRank URL -->
-                    <div class="form-group flex-1">
-                        <label for="github_url" class="form-label">GitHub / Coding Profile URL</label>
-                        <input
-                            type="url"
-                            id="github_url"
-                            name="github_url"
-                            class="form-input"
-                            placeholder="https://github.com/username"
-                            value="{{ student.github_url }}"
-                        />
+                    <div class="action-bar-buttons">
+                        <a href="{% url 'student:dashboard' %}" class="btn-cancel-portfolio">
+                            Cancel
+                        </a>
+                        <a href="{% url 'student:portfolio_preview' %}" class="btn-dash-back" style="background: var(--p-blue-light); color: var(--p-blue); border-color: rgba(58, 131, 247, 0.2);">
+                            👁️ Preview Portfolio
+                        </a>
+                        <button type="submit" class="btn-save-portfolio">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            <span>Save Changes</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="profile-btn-row" style="margin-top: 1.5rem;">
-                    <button type="submit" class="btn-submit" style="flex: 2;">
-                        Save Profile & Update Score
-                    </button>
-                    <a href="{% url 'student:dashboard' %}" class="btn-cancel" style="flex: 1;">
-                        Cancel
-                    </a>
-                </div>
             </form>
 
         </div>
-    </main>
     </div>
+
+    <!-- Dynamic JavaScript for Builder -->
+    <script>
+        // Real-time skill badge chips update
+        const skillsInput = document.getElementById('skillsInput');
+        const skillsContainer = document.getElementById('skillsChipsContainer');
+
+        if (skillsInput && skillsContainer) {
+            skillsInput.addEventListener('input', function() {
+                const raw = this.value;
+                const items = raw.replace(/\n/g, ',').split(',').map(s => s.trim()).filter(Boolean);
+                if (items.length === 0) {
+                    skillsContainer.innerHTML = '<span style="font-size: 0.85rem; color: var(--p-text-muted); font-style: italic;">Enter skills above to see badge tags.</span>';
+                } else {
+                    skillsContainer.innerHTML = items.map(item => `<span class="skill-chip">${escapeHtml(item)}</span>`).join('');
+                }
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Add dynamic project card
+        const btnAddProject = document.getElementById('btnAddProject');
+        const projectsContainer = document.getElementById('projectsContainer');
+
+        if (btnAddProject && projectsContainer) {
+            btnAddProject.addEventListener('click', function() {
+                const projectCount = projectsContainer.querySelectorAll('.project-editor-card').length + 1;
+                const card = document.createElement('div');
+                card.className = 'project-editor-card';
+                card.innerHTML = `
+                    <div class="project-card-header">
+                        <span class="project-number-badge">Project #${projectCount}</span>
+                        <button type="button" class="btn-remove-project" onclick="removeProjectCard(this)">
+                            &#10005; Remove
+                        </button>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-field">
+                            <label class="form-label">Project Title</label>
+                            <input type="text" name="project_title[]" class="form-input" placeholder="e.g. Distributed Task Queue" required />
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Tech Stack (comma-separated)</label>
+                            <input type="text" name="project_tech[]" class="form-input" placeholder="e.g. Python, Redis, Docker" />
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-field">
+                            <label class="form-label">GitHub Repository URL</label>
+                            <input type="url" name="project_github[]" class="form-input" placeholder="https://github.com/username/project" />
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Live Demo URL (optional)</label>
+                            <input type="url" name="project_live[]" class="form-input" placeholder="https://myproject.live" />
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Project Description</label>
+                        <textarea name="project_description[]" class="form-textarea" placeholder="Explain the problem solved, architecture used, and key impact..."></textarea>
+                    </div>
+                `;
+                projectsContainer.appendChild(card);
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        }
+
+        function removeProjectCard(btn) {
+            const card = btn.closest('.project-editor-card');
+            const total = document.querySelectorAll('.project-editor-card').length;
+            if (total > 1) {
+                card.remove();
+                // Renumber project badges
+                document.querySelectorAll('.project-editor-card').forEach((c, idx) => {
+                    const badge = c.querySelector('.project-number-badge');
+                    if (badge) badge.textContent = `Project #${idx + 1}`;
+                });
+            } else {
+                // Clear fields if only one remains
+                card.querySelectorAll('input, textarea').forEach(input => input.value = '');
+            }
+        }
+
+        // Active navigation highlight on scroll
+        const navLinks = document.querySelectorAll('.builder-nav-item');
+        const sections = document.querySelectorAll('.section-card');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 120;
+                if (pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 
     <script src="{% static 'student/js/script.js' %}"></script>
     <script src="{% static 'core/js/theme.js' %}"></script>

@@ -1,0 +1,1330 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ student.name }} | Portfolio - Placement Readiness Platform</title>
+    <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+    <style>
+        :root {
+            --pr-blue: #3A83F7;
+            --pr-blue-hover: #2563EB;
+            --pr-blue-dark: #1D4ED8;
+            --pr-blue-light: #E8F3FE;
+            --pr-bg-main: #FFFFFF;
+            --pr-bg-secondary: #FCFCFC;
+            --pr-text-main: #0D0D0D;
+            --pr-text-secondary: #5D5D5D;
+            --pr-text-muted: #8F8F8F;
+            --pr-border: #0000001A;
+            --pr-border-strong: #00000026;
+            --pr-focus: #3A83F7;
+            --pr-surface: #F3F3F3;
+            --pr-success: #10B981;
+            --pr-success-light: #ECFDF5;
+            --pr-radius: 12px;
+            --pr-radius-sm: 8px;
+            --pr-radius-pill: 9999px;
+            --pr-shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --pr-shadow: 0 4px 16px -2px rgba(0,0,0,0.06), 0 2px 6px -1px rgba(0,0,0,0.03);
+            --pr-shadow-hover: 0 10px 25px -3px rgba(58, 131, 247, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--pr-bg-secondary);
+            color: var(--pr-text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Sticky Recruiter Top Navigation Bar */
+        .preview-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--pr-border);
+            padding: 12px 24px;
+        }
+
+        .topbar-content {
+            max-width: 1040px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            color: var(--pr-text-secondary);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: var(--pr-radius-sm);
+            background: var(--pr-surface);
+            transition: all 0.15s ease;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: var(--pr-text-main);
+            background: #EAEAEA;
+        }
+
+        .mode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--pr-blue-light);
+            color: var(--pr-blue-hover);
+            border-radius: var(--pr-radius-pill);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .mode-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--pr-blue);
+            box-shadow: 0 0 0 3px rgba(58, 131, 247, 0.2);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: var(--pr-radius-sm);
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid var(--pr-border);
+            background: #FFFFFF;
+            color: var(--pr-text-main);
+            transition: all 0.15s ease;
+        }
+
+        .action-btn:hover {
+            border-color: var(--pr-border-strong);
+            background: #F8FAFC;
+        }
+
+        .action-btn-primary {
+            background: var(--pr-blue);
+            color: #FFFFFF;
+            border-color: var(--pr-blue);
+        }
+
+        .action-btn-primary:hover {
+            background: var(--pr-blue-hover);
+            border-color: var(--pr-blue-hover);
+            color: #FFFFFF;
+        }
+
+        /* Portfolio Wrapper */
+        .portfolio-container {
+            max-width: 1040px;
+            margin: 32px auto 80px;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* Common Section Card */
+        .portfolio-card {
+            background: var(--pr-bg-main);
+            border: 1px solid var(--pr-border);
+            border-radius: var(--pr-radius);
+            padding: 32px;
+            box-shadow: var(--pr-shadow-sm);
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .portfolio-card:hover {
+            box-shadow: var(--pr-shadow);
+            border-color: rgba(58, 131, 247, 0.2);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--pr-border);
+        }
+
+        .section-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon-pill {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--pr-blue-light);
+            color: var(--pr-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--pr-text-main);
+            letter-spacing: -0.2px;
+        }
+
+        .section-badge {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--pr-text-muted);
+            background: var(--pr-surface);
+            padding: 3px 10px;
+            border-radius: var(--pr-radius-pill);
+        }
+
+        /* Hero Section */
+        .hero-card {
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid var(--pr-blue);
+        }
+
+        .hero-top-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .hero-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--pr-blue-light) 0%, #D8EBFE 100%);
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 4px 14px rgba(58, 131, 247, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--pr-blue);
+            flex-shrink: 0;
+        }
+
+        .hero-details {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .hero-name-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .hero-name {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--pr-text-main);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--pr-success-light);
+            color: var(--pr-success);
+            padding: 3px 10px;
+            border-radius: var(--pr-radius-pill);
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .hero-headline {
+            font-size: 1.12rem;
+            font-weight: 600;
+            color: var(--pr-blue-hover);
+            margin-bottom: 12px;
+        }
+
+        .hero-meta-tags {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .meta-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            color: var(--pr-text-secondary);
+            background: var(--pr-surface);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .hero-bio {
+            font-size: 0.98rem;
+            color: var(--pr-text-secondary);
+            line-height: 1.7;
+            max-width: 820px;
+            margin-bottom: 24px;
+        }
+
+        .hero-social-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-top: 16px;
+            border-top: 1px solid var(--pr-border);
+        }
+
+        .social-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            background: var(--pr-surface);
+            color: var(--pr-text-main);
+            border: 1px solid var(--pr-border);
+            border-radius: var(--pr-radius-pill);
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .social-pill:hover {
+            background: var(--pr-blue-light);
+            color: var(--pr-blue);
+            border-color: rgba(58, 131, 247, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .social-pill-resume {
+            background: var(--pr-blue);
+            color: #FFFFFF;
+            border-color: var(--pr-blue);
+        }
+
+        .social-pill-resume:hover {
+            background: var(--pr-blue-hover);
+            color: #FFFFFF;
+            border-color: var(--pr-blue-hover);
+        }
+
+        /* Metric Highlights Bar */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--pr-bg-main);
+            border: 1px solid var(--pr-border);
+            border-radius: var(--pr-radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: var(--pr-shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--pr-border);
+        }
+
+        .metric-card.accent-blue::before {
+            background: var(--pr-blue);
+        }
+
+        .metric-card.accent-emerald::before {
+            background: var(--pr-success);
+        }
+
+        .metric-card.accent-emerald:hover {
+            border-color: rgba(16, 185, 129, 0.35);
+        }
+
+        .metric-card-split {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .metric-split-item {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .metric-split-divider {
+            height: 22px;
+            width: 1px;
+            background: var(--pr-border-strong);
+        }
+
+        .metric-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--pr-text-muted);
+            font-weight: 700;
+        }
+
+        .metric-value-wrap {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--pr-text-main);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .metric-sub {
+            font-size: 0.85rem;
+            color: var(--pr-text-muted);
+            font-weight: 600;
+        }
+
+        .metric-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: var(--pr-radius-pill);
+            width: fit-content;
+        }
+
+        .badge-ready {
+            background: var(--pr-success-light);
+            color: #065F46;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .badge-progress {
+            background: var(--pr-blue-light);
+            color: var(--pr-blue);
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--pr-blue-light);
+            color: var(--pr-blue-hover);
+            border: 1px solid rgba(58, 131, 247, 0.2);
+            border-radius: var(--pr-radius-pill);
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.15s ease;
+        }
+
+        .skill-chip:hover {
+            transform: translateY(-2px);
+            background: #DBEAFE;
+            box-shadow: 0 4px 10px rgba(58, 131, 247, 0.15);
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background: var(--pr-bg-main);
+            border: 1px solid var(--pr-border);
+            border-radius: var(--pr-radius);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        .project-card:hover {
+            border-color: rgba(58, 131, 247, 0.35);
+            box-shadow: var(--pr-shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .project-card-top {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .project-header-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .project-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--pr-text-main);
+            line-height: 1.3;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            color: var(--pr-text-secondary);
+            line-height: 1.6;
+        }
+
+        .project-tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .tech-pill {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--pr-text-secondary);
+            background: var(--pr-surface);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .project-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 16px;
+            margin-top: 16px;
+            border-top: 1px solid var(--pr-border);
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--pr-blue);
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .project-link:hover {
+            background: var(--pr-blue-light);
+            color: var(--pr-blue-hover);
+        }
+
+        /* Certifications & Document Section */
+        .certs-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            border-radius: var(--pr-radius-sm);
+            background: var(--pr-bg-secondary);
+            border: 1px solid var(--pr-border);
+        }
+
+        .cert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #FEF3C7;
+            color: #D97706;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .cert-body {
+            flex: 1;
+        }
+
+        .cert-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--pr-text-main);
+            margin-bottom: 2px;
+        }
+
+        .cert-meta {
+            font-size: 0.82rem;
+            color: var(--pr-text-muted);
+        }
+
+        /* Verified Document Box */
+        .verified-doc-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: var(--pr-radius);
+            margin-top: 16px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .doc-box-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .doc-icon-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #DCFCE7;
+            color: #16A34A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .doc-info-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #14532D;
+        }
+
+        .doc-info-sub {
+            font-size: 0.8rem;
+            color: #15803D;
+        }
+
+        .btn-view-doc {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            border-radius: var(--pr-radius-sm);
+            background: #16A34A;
+            color: #FFFFFF;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-view-doc:hover {
+            background: #15803D;
+        }
+
+        /* Education Layout */
+        .education-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .education-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            border-radius: var(--pr-radius-sm);
+            background: var(--pr-bg-secondary);
+            border: 1px solid var(--pr-border);
+        }
+
+        .edu-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--pr-blue-light);
+            color: var(--pr-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .edu-content {
+            flex: 1;
+        }
+
+        .edu-degree {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--pr-text-main);
+        }
+
+        .edu-college {
+            font-size: 0.88rem;
+            color: var(--pr-text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .edu-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Recruiter Contact Footer CTA */
+        .recruiter-cta-card {
+            background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
+            border: 1px solid rgba(58, 131, 247, 0.25);
+            border-radius: var(--pr-radius);
+            padding: 36px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .cta-headline {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--pr-text-main);
+        }
+
+        .cta-sub {
+            font-size: 0.95rem;
+            color: var(--pr-text-secondary);
+            max-width: 580px;
+        }
+
+        .cta-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .portfolio-footer-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--pr-text-muted);
+            padding: 24px 0 12px;
+        }
+
+        /* Empty State */
+        .empty-hint {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--pr-text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Toast feedback */
+        .copy-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #111827;
+            color: #FFFFFF;
+            padding: 10px 18px;
+            border-radius: var(--pr-radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s ease;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Print Styles */
+        @media print {
+            .sidebar,
+            .preview-topbar,
+            .topbar-actions,
+            .back-link,
+            .hero-social-row .social-pill-resume,
+            .copy-toast {
+                display: none !important;
+            }
+
+            body {
+                background: #FFFFFF !important;
+                color: #000000 !important;
+            }
+
+            .portfolio-container {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                gap: 16px !important;
+            }
+
+            .portfolio-card,
+            .metric-card,
+            .project-card {
+                box-shadow: none !important;
+                border: 1px solid #D1D5DB !important;
+                page-break-inside: avoid;
+            }
+
+            .hero-avatar {
+                box-shadow: none !important;
+                border: 1px solid #D1D5DB !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .portfolio-card {
+                padding: 20px;
+            }
+            .hero-avatar {
+                width: 72px;
+                height: 72px;
+                font-size: 1.6rem;
+            }
+            .hero-name {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="dashboard-app">
+
+    {% if is_logged_in or is_owner %}
+        {% include 'student/sidebar.html' with active_nav='portfolio' %}
+    {% endif %}
+
+    <!-- ===================== MAIN CONTENT WRAPPER ===================== -->
+    <div class="main-wrapper" style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+
+        <!-- Sticky Recruiter Control Bar -->
+        <header class="preview-topbar">
+            <div class="topbar-content">
+                <div class="topbar-actions">
+                    {% if is_owner %}
+                    <a href="{% url 'student:profile' %}" class="action-btn">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                        <span>Edit Portfolio</span>
+                    </a>
+                    {% endif %}
+
+                    {% if student.resume_link %}
+                    <a href="{{ student.resume_link }}" target="_blank" rel="noopener noreferrer" class="action-btn action-btn-primary">
+                        <span>View Resume</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+    <!-- Main Recruiter Showcase Container -->
+    <main class="portfolio-container">
+
+        <!-- 1. HERO SECTION -->
+        <section class="portfolio-card hero-card">
+            <div class="hero-top-row">
+                <div class="hero-avatar">
+                    {{ initials|default:student.name|slice:":1"|upper|default:"S" }}
+                </div>
+                <div class="hero-details">
+                    <div class="hero-name-row">
+                        <h1 class="hero-name">{{ student.name }}</h1>
+                        <span class="verified-badge">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Placement Verified
+                        </span>
+                    </div>
+
+                    <div class="hero-headline">
+                        {% if student.headline %}
+                            {{ student.headline }}
+                        {% else %}
+                            Computer Science & Engineering Student | Aspiring Software Developer
+                        {% endif %}
+                    </div>
+
+                    <div class="hero-meta-tags">
+                        <span class="meta-tag">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                            </svg>
+                            {{ student.department|default:"Engineering" }}
+                        </span>
+                        <span class="meta-tag">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Year {{ student.year|default:"4" }}
+                        </span>
+                        <span class="meta-tag">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                            PRN: {{ student.prn }}
+                        </span>
+                    </div>
+
+                    {% if student.summary %}
+                    <div class="hero-bio">
+                        {{ student.summary|linebreaksbr }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Social / Professional Links -->
+                    <div class="hero-social-row">
+                        {% if student.email %}
+                        <a href="mailto:{{ student.email }}" class="social-pill" title="Email Candidate">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span>{{ student.email }}</span>
+                        </a>
+                        {% endif %}
+
+                        {% if student.github_profile %}
+                        <a href="{{ student.github_profile }}" target="_blank" rel="noopener noreferrer" class="social-pill" title="GitHub Profile">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                            </svg>
+                            <span>GitHub</span>
+                        </a>
+                        {% endif %}
+
+                        {% if student.linkedin_profile %}
+                        <a href="{{ student.linkedin_profile }}" target="_blank" rel="noopener noreferrer" class="social-pill" title="LinkedIn Profile">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <rect x="2" y="9" width="4" height="12"></rect>
+                                <circle cx="4" cy="4" r="2"></circle>
+                            </svg>
+                            <span>LinkedIn</span>
+                        </a>
+                        {% endif %}
+
+                        {% if student.resume_link %}
+                        <a href="{{ student.resume_link }}" target="_blank" rel="noopener noreferrer" class="social-pill social-pill-resume">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <span>Official Resume</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. RECRUITER METRICS HIGHLIGHT BAR -->
+        <section class="metric-grid">
+            <!-- Metric 1: CGPA -->
+            <div class="metric-card accent-blue">
+                <span class="metric-label">Academic CGPA</span>
+                <div class="metric-value-wrap">
+                    <span class="metric-value">{{ student.cgpa|default:"0.0" }}</span>
+                    <span class="metric-sub">/ 10.0</span>
+                </div>
+                <div class="metric-badge badge-progress">
+                    {% if student.cgpa and student.cgpa >= 8.0 %}
+                        First Class Distinction
+                    {% elif student.cgpa and student.cgpa >= 6.75 %}
+                        First Class
+                    {% else %}
+                        Undergraduate
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Metric 2: Readiness Score -->
+            <div class="metric-card accent-blue">
+                <span class="metric-label">Placement Readiness</span>
+                <div class="metric-value-wrap">
+                    <span class="metric-value" style="color: var(--pr-blue);">{{ readiness_score|default:"0" }}%</span>
+                </div>
+                <div class="metric-badge {% if readiness_score >= 70 %}badge-ready{% else %}badge-progress{% endif %}">
+                    {{ readiness_band|default:"In Progress" }}
+                </div>
+            </div>
+
+            <!-- Metric 3: Department Rank -->
+            <div class="metric-card">
+                <span class="metric-label">Batch Standings</span>
+                <div class="metric-value-wrap">
+                    <span class="metric-value">#{{ rank|default:"-" }}</span>
+                    <span class="metric-sub">of {{ total_students|default:"-" }} students</span>
+                </div>
+                <div class="metric-badge badge-progress">Department Rank</div>
+            </div>
+
+            <!-- Metric 4: Portfolio Projects -->
+            <div class="metric-card accent-emerald">
+                <span class="metric-label">Projects</span>
+                <div class="metric-value-wrap">
+                    <span class="metric-value">{{ projects_list|length }}</span>
+                    <span class="metric-sub">Completed</span>
+                </div>
+                <div class="metric-badge badge-ready">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Recruiter Verified</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TECHNICAL COMPETENCIES / SKILLS -->
+        <section class="portfolio-card">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="section-icon-pill">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <h2 class="section-title">Technical Skills & Competencies</h2>
+                </div>
+                <span class="section-badge">{{ skills_list|length }} Skills</span>
+            </div>
+
+            {% if skills_list %}
+            <div class="skills-grid">
+                {% for skill in skills_list %}
+                <div class="skill-chip">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>{{ skill }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-hint">
+                <p>No technical skills listed yet.</p>
+                {% if is_owner %}
+                <p style="margin-top: 8px;"><a href="{% url 'student:profile' %}" style="color: var(--pr-blue); text-decoration: underline;">Add your technical skills</a> in the editor to showcase them here.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- 4. FEATURED PROJECTS SHOWCASE -->
+        <section class="portfolio-card">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="section-icon-pill">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
+                    <h2 class="section-title">Featured Projects</h2>
+                </div>
+                <span class="section-badge">{{ projects_list|length }} Projects</span>
+            </div>
+
+            {% if projects_list %}
+            <div class="projects-grid">
+                {% for project in projects_list %}
+                <div class="project-card">
+                    <div class="project-card-top">
+                        <div class="project-header-row">
+                            <h3 class="project-title">{{ project.title|default:"Project" }}</h3>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--pr-blue); flex-shrink: 0;">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+
+                        {% if project.description %}
+                        <p class="project-desc">{{ project.description|linebreaksbr }}</p>
+                        {% endif %}
+
+                        {% if project.tech_stack %}
+                        <div class="project-tech-tags">
+                            {% for tech in project.tech_stack.split %}
+                            <span class="tech-pill">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="project-links">
+                        {% if project.github_url %}
+                        <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" class="project-link">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                            </svg>
+                            <span>Source Code</span>
+                        </a>
+                        {% endif %}
+
+                        {% if project.live_url %}
+                        <a href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer" class="project-link">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            <span>Live Demo</span>
+                        </a>
+                        {% endif %}
+
+                        {% if not project.github_url and not project.live_url %}
+                        <span style="font-size: 0.78rem; color: var(--pr-text-muted);">Internal Showcase Project</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-hint">
+                <p>No featured projects added yet.</p>
+                {% if is_owner %}
+                <p style="margin-top: 8px;"><a href="{% url 'student:profile' %}" style="color: var(--pr-blue); text-decoration: underline;">Add your featured projects</a> to show off your practical coding abilities.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- 5. CERTIFICATIONS & ACHIEVEMENTS -->
+        <section class="portfolio-card">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="section-icon-pill">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="7"></circle>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                    </div>
+                    <h2 class="section-title">Certifications & Credentials</h2>
+                </div>
+                <span class="section-badge">{{ certifications_list|length }} Credentials</span>
+            </div>
+
+            {% if certifications_list %}
+            <div class="certs-grid">
+                {% for cert in certifications_list %}
+                <div class="cert-item">
+                    <div class="cert-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="cert-body">
+                        <div class="cert-title">{% if cert.name %}{{ cert.name }}{% else %}{{ cert }}{% endif %}</div>
+                        <div class="cert-meta">
+                            {% if cert.issuer %}
+                                Issued by {{ cert.issuer }} • Verified Credential
+                            {% else %}
+                                Verified Achievement • Placement Readiness Record
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-hint">
+                <p>No certifications recorded yet.</p>
+            </div>
+            {% endif %}
+
+            <!-- Uploaded Document Verification Card -->
+            {% if student.certificate_file %}
+            <div class="verified-doc-box">
+                <div class="doc-box-left">
+                    <div class="doc-icon-badge">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="doc-info-title">Institutional Certificate Attached</div>
+                        <div class="doc-info-sub">Official credential file verified and uploaded to student file record.</div>
+                    </div>
+                </div>
+
+                <a href="{{ student.certificate_file.url }}" target="_blank" download class="btn-view-doc">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>View / Download Document</span>
+                </a>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- 6. ACADEMIC BACKGROUND -->
+        <section class="portfolio-card">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="section-icon-pill">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="section-title">Education & Academic Record</h2>
+                </div>
+            </div>
+
+            <div class="education-list">
+                <div class="education-item">
+                    <div class="edu-icon-wrap">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                    </div>
+                    <div class="edu-content">
+                        <div class="edu-degree">Bachelor of Technology / Engineering in {{ student.department|default:"Computer Science" }}</div>
+                        <div class="edu-college">Affiliated Engineering Institute • Year {{ student.year|default:"4" }}</div>
+                        <div class="edu-chips">
+                            <span class="meta-tag">Current CGPA: {{ student.cgpa|default:"0.0" }} / 10.0</span>
+                            <span class="meta-tag">PRN: {{ student.prn }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. RECRUITER CONTACT CALLOUT -->
+        <section class="recruiter-cta-card">
+            <h2 class="cta-headline">Interested in hiring {{ student.name }}?</h2>
+            <p class="cta-sub">
+                This candidate is actively participating in the Placement Readiness Platform. Connect directly to schedule an interview or review code assessments.
+            </p>
+            <div class="cta-actions">
+                {% if student.email %}
+                <a href="mailto:{{ student.email }}?subject=Placement%20Inquiry%20via%20Placement%20Readiness%20Platform" class="action-btn action-btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>Send Interview Invite</span>
+                </a>
+                {% endif %}
+
+                {% if student.linkedin_profile %}
+                <a href="{{ student.linkedin_profile }}" target="_blank" rel="noopener noreferrer" class="action-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                        <rect x="2" y="9" width="4" height="12"></rect>
+                        <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                    <span>Connect on LinkedIn</span>
+                </a>
+                {% endif %}
+            </div>
+        </section>
+
+        <div class="portfolio-footer-note">
+            Placement Readiness Platform • Verified Student Talent Profile • Generated {{ now|date:"F Y" }}
+        </div>
+
+    </main>
+
+    </div><!-- End main-wrapper -->
+</body>
+</html>

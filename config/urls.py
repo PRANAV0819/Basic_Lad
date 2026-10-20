@@ -17,8 +17,9 @@ from adminpanel import views as admin_views
 from student import views as student_views
 
 urlpatterns = [
-    # Built-in Django admin
-    path('admin/', admin.site.urls),
+    
+    # Core landing page routes
+    path('', include('core.urls')), 
 
     # Direct Sign-in shortcuts
     path('signin/admin/', admin_views.admin_login_view, name='signin_admin'),
@@ -31,10 +32,7 @@ urlpatterns = [
     path('student/', include('student.urls')),
 
     # Assignment Module routes
-    path('assignments/', include('assignments.urls')),
-
-    # Core landing page routes
-    path('', include('core.urls')),
+    path('assignments/', include('assignments.urls')),    
 ]
 
 # Serve user uploaded media files (certificates, etc.)

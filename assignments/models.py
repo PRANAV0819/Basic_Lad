@@ -1,16 +1,3 @@
-# assignments/models.py
-#
-# WHAT: Defines the MySQL database schema for the Assignment Module.
-#
-# WHY:  Stores assessments (Final & Subject-wise Exams), questions (MCQ & MSQ),
-#       options, student attempts, student answers, and selected options.
-#
-# COLLEGE REQUIREMENT:
-#       - Pure Django ORM + MySQL.
-#       - Uses custom Student model (student.Student), NOT Django's built-in auth User.
-#       - MSQ support (Multiple Select Questions) with clean normalized selection tables.
-#       - Strict single-attempt policy enforced via database constraint (unique_together).
-
 from django.db import models
 from student.models import Student
 

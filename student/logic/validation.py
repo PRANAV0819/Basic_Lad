@@ -112,7 +112,9 @@ def validate_student_profile(
     projects: str = "",
     resume_link: str = "",
     linkedin_url: str = "",
-    github_url: str = ""
+    github_url: str = "",
+    headline: str = "",
+    summary: str = ""
 ):
     """
     Validates data submitted when updating the Student Profile.
@@ -121,7 +123,7 @@ def validate_student_profile(
     - Name must be at least 2 characters long.
     - CGPA must be a valid float between 0.00 and 10.00 (if provided).
     - URL fields must be valid HTTP/HTTPS URLs (if provided).
-    - Department, Year, PRN, Skills, Certifications, Projects are sanitized strings.
+    - Department, Year, PRN, Skills, Certifications, Projects, Headline, Summary are sanitized strings.
     """
     cleaned_name = (name or "").strip()
     cleaned_dept = (department or "").strip()
@@ -133,6 +135,8 @@ def validate_student_profile(
     cleaned_resume = (resume_link or "").strip()
     cleaned_linkedin = (linkedin_url or "").strip()
     cleaned_github = (github_url or "").strip()
+    cleaned_headline = (headline or "").strip()
+    cleaned_summary = (summary or "").strip()
 
     if not cleaned_name:
         return False, "Full Name cannot be empty.", {}
@@ -168,6 +172,8 @@ def validate_student_profile(
         'resume_link': cleaned_resume,
         'linkedin_url': cleaned_linkedin,
         'github_url': cleaned_github,
+        'headline': cleaned_headline,
+        'summary': cleaned_summary,
     }
     return True, None, cleaned_data
 

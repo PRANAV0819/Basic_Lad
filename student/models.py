@@ -70,6 +70,21 @@ class Student(models.Model):
         help_text="Permanent Registration Number / College Roll Number"
     )
 
+    # headline: Professional headline (e.g. Aspiring Full-Stack Developer | Python & Django)
+    headline = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        help_text="Professional headline"
+    )
+
+    # summary: Short professional summary or introduction
+    summary = models.TextField(
+        blank=True,
+        default="",
+        help_text="Short professional summary / introduction"
+    )
+
     # cgpa: Academic CGPA (out of 10.00)
     cgpa = models.DecimalField(
         max_digits=4,
@@ -178,6 +193,68 @@ class Student(models.Model):
            (self.github_url and self.github_url.strip()):
             score += 10
         return score
+
+    def get_skills_list(self):
+        """
+        Returns list of cleaned individual skill tags.
+        """
+        if not self.skills or not self.skills.strip():
+            return []
+        # Support comma-separated or newline-separated skills
+        raw_items = self.skills.replace('\n', ',').split(',')
+        return [s.strip() for s in raw_items if s.strip()]
+
+    def get_projects_list(self):
+        """
+        Returns structured list of project dictionaries.
+        Supports both JSON-encoded project lists and legacy plain text formats.
+        """
+        import json
+        if not self.projects or not self.projects.strip():
+            return []
+        raw = self.projects.strip()
+        try:
+            data = json.loads(raw)
+            if isinstance(data, list) and len(data) > 0:
+                # Ensure all required keys exist
+                formatted = []
+                for p in data:
+                    if isinstance(p, dict) and p.get('title'):
+                        formatted.append({
+                            'title': p.get('title', '').strip(),
+                            'description': p.get('description', '').strip(),
+                            'tech_stack': p.get('tech_stack', '').strip(),
+                            'github_url': p.get('github_url', '').strip(),
+                            'live_url': p.get('live_url', '').strip(),
+                        })
+                if formatted:
+                    return formatted
+        except Exception:
+            pass
+
+        # Parse legacy plain text cleanly
+        lines = [line.strip() for line in raw.replace('\r', '').split('\n') if line.strip()]
+        projects_list = []
+        for idx, line in enumerate(lines, start=1):
+            if ':' in line:
+                parts = line.split(':', 1)
+                title = parts[0].strip()
+                desc = parts[1].strip()
+            elif ' - ' in line:
+                parts = line.split(' - ', 1)
+                title = parts[0].strip()
+                desc = parts[1].strip()
+            else:
+                title = f"Project {idx}"
+                desc = line
+            projects_list.append({
+                'title': title,
+                'description': desc,
+                'tech_stack': '',
+                'github_url': '',
+                'live_url': '',
+            })
+        return projects_list
 
     def __str__(self):
         return f"{self.name} ({self.email})"
