@@ -4,172 +4,921 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Courses & Assessments - PlaceReady</title>
+    <title>Assessments & Courses - Placement Readiness Platform</title>
     <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        :root {
+            --ch-blue: #2563EB;
+            --ch-blue-hover: #1D4ED8;
+            --ch-blue-light: #EFF6FF;
+            --ch-blue-border: #BFDBFE;
+            --ch-orange: #EA580C;
+            --ch-orange-light: #FFF7ED;
+            --ch-orange-border: #FED7AA;
+            --ch-green: #16A34A;
+            --ch-green-light: #F0FDF4;
+            --ch-green-border: #BBF7D0;
+            --ch-purple: #7C3AED;
+            --ch-purple-light: #F5F3FF;
+            --ch-purple-border: #DDD6FE;
+            --ch-teal: #0891B2;
+            --ch-teal-light: #ECFEFF;
+            --ch-teal-border: #A5F3FC;
+
+            --ch-bg-main: #FFFFFF;
+            --ch-bg-subtle: #F8FAFC;
+            --ch-text-main: #0F172A;
+            --ch-text-secondary: #334155;
+            --ch-text-muted: #64748B;
+            --ch-border: #E2E8F0;
+            --ch-border-strong: #CBD5E1;
+            --ch-radius: 12px;
+            --ch-radius-sm: 8px;
+            --ch-radius-pill: 9999px;
+            --ch-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --ch-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --ch-shadow-hover: 0 10px 15px -3px rgba(37, 99, 235, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+        }
+
+        body.dashboard-app {
+            background-color: var(--ch-bg-subtle);
+            color: var(--ch-text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .assessment-dashboard-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 28px 64px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* Top Hero Header with Readiness Meter */
+        .assessment-hero-header {
+            background: var(--ch-bg-main);
+            border: 1px solid var(--ch-border);
+            border-radius: var(--ch-radius);
+            padding: 28px 32px;
+            box-shadow: var(--ch-shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .hero-left-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .hero-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .hero-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--ch-text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .hero-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ch-blue-light);
+            color: var(--ch-blue);
+            border: 1px solid var(--ch-blue-border);
+            padding: 4px 12px;
+            border-radius: var(--ch-radius-pill);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .hero-subtitle {
+            font-size: 0.95rem;
+            color: var(--ch-text-muted);
+            max-width: 640px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Search Filter Input Bar */
+        .search-filter-wrap {
+            position: relative;
+            max-width: 520px;
+            width: 100%;
+        }
+
+        .search-icon-svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ch-text-muted);
+            pointer-events: none;
+        }
+
+        .assessment-search-input {
+            width: 100%;
+            padding: 10px 16px 10px 42px;
+            background: var(--ch-bg-subtle);
+            border: 1px solid var(--ch-border);
+            border-radius: var(--ch-radius-sm);
+            font-size: 0.9rem;
+            color: var(--ch-text-main);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .assessment-search-input:focus {
+            background: #FFFFFF;
+            border-color: var(--ch-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Top-Right Overall Readiness Score Card */
+        .readiness-score-widget {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--ch-blue-light) 100%);
+            border: 1px solid var(--ch-blue-border);
+            border-radius: var(--ch-radius);
+            padding: 20px 24px;
+            box-shadow: var(--ch-shadow);
+            flex-shrink: 0;
+            min-width: 320px;
+        }
+
+        .score-circle-svg-wrap {
+            position: relative;
+            width: 86px;
+            height: 86px;
+            flex-shrink: 0;
+        }
+
+        .score-circle-svg {
+            transform: rotate(-90deg);
+            width: 86px;
+            height: 86px;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: #E2E8F0;
+            stroke-width: 7;
+        }
+
+        .circle-progress {
+            fill: none;
+            stroke: var(--ch-blue);
+            stroke-width: 7;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.8s ease-in-out;
+        }
+
+        .circle-score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-num {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--ch-blue);
+            line-height: 1;
+        }
+
+        .score-pct-sign {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ch-text-muted);
+        }
+
+        .widget-text-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .widget-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--ch-text-muted);
+        }
+
+        .widget-band-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--ch-blue-hover);
+        }
+
+        .widget-verdict-note {
+            font-size: 0.8rem;
+            color: var(--ch-text-secondary);
+            line-height: 1.4;
+            max-width: 190px;
+        }
+
+        /* Accordion Stack Container */
+        .module-accordion-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Module Accordion Card */
+        .module-card {
+            background: var(--ch-bg-main);
+            border: 1px solid var(--ch-border);
+            border-radius: var(--ch-radius);
+            box-shadow: var(--ch-shadow-sm);
+            overflow: hidden;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .module-card:hover {
+            border-color: var(--ch-border-strong);
+            box-shadow: var(--ch-shadow);
+        }
+
+        /* Color Theme Borders & Accents */
+        .module-card.theme-blue { border-left: 5px solid var(--ch-blue); }
+        .module-card.theme-orange { border-left: 5px solid var(--ch-orange); }
+        .module-card.theme-green { border-left: 5px solid var(--ch-green); }
+        .module-card.theme-purple { border-left: 5px solid var(--ch-purple); }
+        .module-card.theme-teal { border-left: 5px solid var(--ch-teal); }
+
+        /* Accordion Header */
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            cursor: pointer;
+            user-select: none;
+            background: #FFFFFF;
+            transition: background-color 0.15s ease;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .module-header:hover {
+            background-color: #FAFAFA;
+        }
+
+        .module-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .module-icon-pill {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+
+        .theme-blue .module-icon-pill { background: var(--ch-blue-light); color: var(--ch-blue); }
+        .theme-orange .module-icon-pill { background: var(--ch-orange-light); color: var(--ch-orange); }
+        .theme-green .module-icon-pill { background: var(--ch-green-light); color: var(--ch-green); }
+        .theme-purple .module-icon-pill { background: var(--ch-purple-light); color: var(--ch-purple); }
+        .theme-teal .module-icon-pill { background: var(--ch-teal-light); color: var(--ch-teal); }
+
+        .module-info-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .module-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .module-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--ch-text-main);
+            letter-spacing: -0.01em;
+        }
+
+        .module-weight-tag {
+            font-size: 0.76rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: var(--ch-radius-pill);
+            background: var(--ch-bg-subtle);
+            color: var(--ch-text-secondary);
+            border: 1px solid var(--ch-border);
+        }
+
+        .module-desc {
+            font-size: 0.85rem;
+            color: var(--ch-text-muted);
+            line-height: 1.4;
+        }
+
+        /* Module Header Right (Progress & Chevron) */
+        .module-header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .module-progress-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+            min-width: 150px;
+        }
+
+        .progress-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--ch-text-secondary);
+        }
+
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #E2E8F0;
+            border-radius: var(--ch-radius-pill);
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: var(--ch-radius-pill);
+            transition: width 0.4s ease;
+        }
+
+        .theme-blue .progress-bar-fill { background: var(--ch-blue); }
+        .theme-orange .progress-bar-fill { background: var(--ch-orange); }
+        .theme-green .progress-bar-fill { background: var(--ch-green); }
+        .theme-purple .progress-bar-fill { background: var(--ch-purple); }
+        .theme-teal .progress-bar-fill { background: var(--ch-teal); }
+
+        .accordion-chevron-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--ch-bg-subtle);
+            border: 1px solid var(--ch-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ch-text-secondary);
+            transition: transform 0.25s ease, background 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .module-card.expanded .accordion-chevron-btn {
+            transform: rotate(180deg);
+            background: #FFFFFF;
+            border-color: var(--ch-border-strong);
+            color: var(--ch-text-main);
+        }
+
+        /* Accordion Body & Subject Rows */
+        .module-content-body {
+            display: none;
+            border-top: 1px solid var(--ch-border);
+            background: #FFFFFF;
+        }
+
+        .module-card.expanded .module-content-body {
+            display: block;
+        }
+
+        .subjects-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Individual Subject Full-Width Row */
+        .subject-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--ch-border);
+            transition: background-color 0.15s ease;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .subject-row:last-child {
+            border-bottom: none;
+        }
+
+        .subject-row:hover {
+            background-color: #F8FAFC;
+        }
+
+        .subject-main-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            flex: 1;
+            min-width: 290px;
+        }
+
+        .subject-num-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--ch-bg-subtle);
+            border: 1px solid var(--ch-border);
+            color: var(--ch-text-secondary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .subject-text-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .subject-name {
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: var(--ch-text-main);
+            line-height: 1.3;
+        }
+
+        .subject-topics {
+            font-size: 0.84rem;
+            color: var(--ch-text-muted);
+            line-height: 1.45;
+        }
+
+        .subject-topics strong {
+            color: var(--ch-text-secondary);
+            font-weight: 600;
+        }
+
+        /* Subject Actions & Meta Right */
+        .subject-action-side {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .subject-meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--ch-text-secondary);
+            background: var(--ch-bg-subtle);
+            border: 1px solid var(--ch-border);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        /* Status Pills */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--ch-radius-pill);
+            letter-spacing: 0.2px;
+        }
+
+        .status-completed {
+            background: #DCFCE7;
+            color: #15803D;
+            border: 1px solid #BBF7D0;
+        }
+
+        .status-in-progress {
+            background: #FEF3C7;
+            color: #B45309;
+            border: 1px solid #FDE68A;
+        }
+
+        .status-not-started {
+            background: var(--ch-bg-subtle);
+            color: var(--ch-text-muted);
+            border: 1px solid var(--ch-border);
+        }
+
+        /* Primary Action Buttons */
+        .btn-action-start {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ch-blue);
+            color: #FFFFFF;
+            font-size: 0.84rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: var(--ch-radius-sm);
+            text-decoration: none;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+            border: 1px solid var(--ch-blue);
+        }
+
+        .btn-action-start:hover {
+            background: var(--ch-blue-hover);
+            border-color: var(--ch-blue-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-action-review {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #FFFFFF;
+            color: var(--ch-blue);
+            border: 1px solid var(--ch-blue-border);
+            font-size: 0.84rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: var(--ch-radius-sm);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action-review:hover {
+            background: var(--ch-blue-light);
+            border-color: var(--ch-blue);
+        }
+
+        .btn-action-resume {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #D97706;
+            color: #FFFFFF;
+            font-size: 0.84rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: var(--ch-radius-sm);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action-resume:hover {
+            background: #B45309;
+        }
+
+        /* Empty state for syllabus only */
+        .curriculum-tag {
+            font-size: 0.78rem;
+            color: var(--ch-text-muted);
+            font-weight: 600;
+            background: var(--ch-bg-subtle);
+            border: 1px dashed var(--ch-border-strong);
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .assessment-dashboard-container {
+                padding: 16px 12px 48px;
+            }
+            .assessment-hero-header {
+                padding: 20px 16px;
+            }
+            .readiness-score-widget {
+                width: 100%;
+                min-width: 0;
+            }
+            .module-header {
+                padding: 16px;
+            }
+            .subject-row {
+                padding: 14px 16px;
+            }
+            .module-progress-box {
+                align-items: flex-start;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body class="dashboard-app">
 
+    <!-- Unified Vertical Student Sidebar -->
     {% include 'student/sidebar.html' with active_nav='assignments' active_sub='available' %}
 
     <!-- ===================== MAIN CONTENT WRAPPER ===================== -->
-    <div class="main-wrapper">
+    <div class="main-wrapper" style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
 
-        <!-- Topbar: Breadcrumbs, Search with Ctrl+K, Notification Bell, Live Dashboard -->
-        <header class="topbar">
-            <div class="topbar-left">
-                <nav class="breadcrumb-nav">
-                    <span style="font-size: 16px;">&#128196;</span>
-                    <a href="{% url 'student:dashboard' %}">Home</a>
-                    <span class="breadcrumb-sep">&gt;</span>
-                    <span class="breadcrumb-current">Courses & Assessments</span>
-                </nav>
-            </div>
+        <main class="assessment-dashboard-container">
 
-            <div class="topbar-right">
-                <!-- Global Search Input with Ctrl K Pill -->
-                <div class="search-box-pill">
-                    <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" id="globalSearchInput" class="search-input-pill" placeholder="Search..." />
-                    <span class="shortcut-badge">Ctrl K</span>
-                </div>
-
-                <!-- Notification Bell with Counter -->
-                <button type="button" class="notif-bell-btn" title="Notifications">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                    <span class="notif-count-badge">9</span>
-                </button>
-
-                <!-- Live Dashboard Outline Pill Button -->
-                <a href="{% url 'student:dashboard' %}" class="live-dash-pill">
-                    <span class="live-dot"></span>
-                    <span>Live Dashboard</span>
-                </a>
-            </div>
-        </header>
-
-        <!-- Main Body -->
-        <main class="assignment-container" style="max-width: 1380px; padding: 28px 32px;">
-
+            <!-- Alerts / Messages -->
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    <div class="alert alert-{{ message.tags }}" style="padding: 12px 18px; border-radius: var(--ch-radius-sm); font-size: 0.9rem; font-weight: 600; margin-bottom: 8px;">
+                        {{ message }}
+                    </div>
                 {% endfor %}
             {% endif %}
 
-            <!-- Title & Subtitle Matching CodeHelp Courses Page -->
-            <div style="margin-bottom: 24px;">
-                <h1 style="font-size: 26px; font-weight: 800; color: var(--clr-text-main); margin-bottom: 6px;">
-                    Assessments & Courses
-                </h1>
-                <p style="font-size: 14px; color: var(--clr-text-muted);">
-                    Explore placement assessments, practice drills, and mock tests to maximize your readiness score.
-                </p>
-            </div>
+            <!-- 1. HERO PAGE HEADER & READINESS METER -->
+            <section class="assessment-hero-header">
+                <div class="hero-left-content">
+                    <div class="hero-title-row">
+                        <h1 class="hero-title">Assessments &amp; Courses</h1>
+                        <span class="hero-badge-pill">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Module-Wise Syllabus
+                        </span>
+                    </div>
 
-            <!-- Tab Pills & Filter Row (Matches Continue Watching / Buy Courses) -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
-                <div style="display: flex; gap: 10px;">
-                    <a href="?exam_type=ALL" class="btn" style="padding: 7px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 600; text-decoration: none; {% if exam_filter == 'ALL' or not exam_filter %}background: var(--clr-tab-active-bg); color: var(--clr-tab-active-text); border: 1px solid var(--clr-border);{% else %}background: transparent; color: var(--clr-text-muted); border: 1px solid transparent;{% endif %}">
-                        All Assessments
-                    </a>
-                    <a href="?exam_type=SUBJECT" class="btn" style="padding: 7px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 600; text-decoration: none; {% if exam_filter == 'SUBJECT' %}background: var(--clr-tab-active-bg); color: var(--clr-tab-active-text); border: 1px solid var(--clr-border);{% else %}background: transparent; color: var(--clr-text-muted); border: 1px solid transparent;{% endif %}">
-                        Subject-wise Tests
-                    </a>
-                    <a href="?exam_type=FINAL" class="btn" style="padding: 7px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 600; text-decoration: none; {% if exam_filter == 'FINAL' %}background: var(--clr-tab-active-bg); color: var(--clr-tab-active-text); border: 1px solid var(--clr-border);{% else %}background: transparent; color: var(--clr-text-muted); border: 1px solid transparent;{% endif %}">
-                        Final Mock Exams
-                    </a>
+                    <p class="hero-subtitle">
+                        Explore module-wise assessments, practice tests and mock exams to improve your placement readiness.
+                    </p>
+
+                    <!-- Real-time Search Box -->
+                    <form method="GET" action="{% url 'assignments:student_list' %}" class="search-filter-wrap">
+                        <svg class="search-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input
+                            type="text"
+                            name="q"
+                            id="assessmentSearchInput"
+                            class="assessment-search-input"
+                            placeholder="Search subjects, topics, or assessments..."
+                            value="{{ query|default:'' }}"
+                            autocomplete="off"
+                        />
+                    </form>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button type="button" class="btn" style="padding: 7px 14px; background: transparent; border: 1px solid var(--clr-border); border-radius: 8px; color: var(--clr-text-muted);" title="Filter">
-                        &#9881; Filter
-                    </button>
-                    <span style="font-size: 13px; color: var(--clr-text-subtle);">Total: <strong>{{ assignments|length }}</strong></span>
-                </div>
-            </div>
-
-            <!-- ===================== CODEHELP CARD GRID ===================== -->
-            <div class="codehelp-grid">
-                {% for item in assignments %}
-                    <div class="codehelp-card">
-                        <!-- 16:9 Thumbnail Banner -->
-                        <div class="card-thumb-wrap {% if 'data' in item.assignment.subject|lower or 'dsa' in item.assignment.subject|lower %}thumb-dsa{% elif 'system' in item.assignment.subject|lower or 'os' in item.assignment.subject|lower %}thumb-os{% elif 'dbms' in item.assignment.subject|lower or 'sql' in item.assignment.subject|lower %}thumb-dbms{% elif 'web' in item.assignment.subject|lower or 'dev' in item.assignment.subject|lower %}thumb-web{% elif item.assignment.exam_type == 'FINAL' %}thumb-final{% else %}thumb-aptitude{% endif %}">
-                            <span class="thumb-tag-badge">{{ item.assignment.subject }}</span>
-                            <span class="thumb-type-pill">
-                                {% if item.assignment.exam_type == 'FINAL' %}MOCK FINAL{% else %}SUBJECT TEST{% endif %}
-                            </span>
-                            <div class="thumb-center-content">
-                                <div class="thumb-title-big">
-                                    {{ item.assignment.subject|truncatechars:18 }}
-                                </div>
-                                <div class="thumb-sub-strip">
-                                    {% if item.is_completed %}COMPLETED{% elif item.is_in_progress %}IN PROGRESS{% else %}PLACEMENT READY{% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card Body -->
-                        <div class="codehelp-card-body">
-                            <h3 class="card-title-ch" title="{{ item.assignment.title }}">
-                                {{ item.assignment.title }}
-                            </h3>
-
-                            <p class="card-desc-ch" title="{{ item.assignment.description }}">
-                                {{ item.assignment.description|default:"Comprehensive technical test evaluated against campus placement standards." }}
-                            </p>
-
-                            <!-- Meta info: Duration (clock), Questions count (layers) -->
-                            <div class="card-meta-ch">
-                                <span class="card-meta-item">
-                                    ⏱️ {{ item.assignment.time_limit }}.0 Mins
-                                </span>
-                                <span class="card-meta-item">
-                                    📚 {{ item.question_count }} Questions
-                                </span>
-                            </div>
-
-                            <!-- Star Rating Row (Matches CodeHelp 0(0)) -->
-                            <div class="card-rating-ch">
-                                <span class="stars-gold">★★★★★</span>
-                                <span>{% if item.is_completed %}Attempted ({{ item.attempt.percentage }}%){% else %}0 (0){% endif %}</span>
-                            </div>
-
-                            <!-- Action Button (Matches CodeHelp 'Continue') -->
-                            {% if item.is_completed %}
-                                <a href="{% url 'assignments:student_result' item.assignment.id %}" class="btn-continue-ch">
-                                    View Solution & Score &rarr;
-                                </a>
-                            {% elif item.is_in_progress %}
-                                <a href="{% url 'assignments:student_start' item.assignment.id %}" class="btn-continue-ch" style="background: #2563eb; color: #ffffff;">
-                                    Resume Test &rarr;
-                                </a>
-                            {% else %}
-                                <a href="{% url 'assignments:student_start' item.assignment.id %}" class="btn-continue-ch">
-                                    Continue
-                                </a>
-                            {% endif %}
+                <!-- 2. TOP-RIGHT OVERALL READINESS SCORE WIDGET -->
+                <div class="readiness-score-widget">
+                    <div class="score-circle-svg-wrap">
+                        <svg class="score-circle-svg" viewBox="0 0 86 86">
+                            <circle class="circle-bg" cx="43" cy="43" r="38"></circle>
+                            <circle
+                                class="circle-progress"
+                                cx="43"
+                                cy="43"
+                                r="38"
+                                stroke-dasharray="{{ ring_circumference }}"
+                                stroke-dashoffset="{{ ring_offset }}"
+                            ></circle>
+                        </svg>
+                        <div class="circle-score-text">
+                            <span class="score-num">{{ readiness_score }}</span>
+                            <span class="score-pct-sign">%</span>
                         </div>
                     </div>
+
+                    <div class="widget-text-content">
+                        <span class="widget-label">Overall Readiness</span>
+                        <div class="widget-band-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>{{ readiness_band }}</span>
+                        </div>
+                        <p class="widget-verdict-note">
+                            {{ summary_verdict|truncatechars:75 }}
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MODULE-WISE EXPANDABLE ACCORDIONS -->
+            <section class="module-accordion-stack" id="moduleAccordionStack">
+                {% for mod_item in modules_data %}
+                <div class="module-card theme-{{ mod_item.module.color_theme }} {% if mod_item.is_expanded %}expanded{% endif %}" id="module-{{ mod_item.module.code }}">
+
+                    <!-- Accordion Section Header -->
+                    <div class="module-header" onclick="toggleModuleAccordion('module-{{ mod_item.module.code }}')">
+                        <div class="module-header-left">
+                            <div class="module-icon-pill">
+                                {% if mod_item.module.code == 'CORE_SUBJECTS' %}
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                    </svg>
+                                {% elif mod_item.module.code == 'APTITUDE_REASONING' %}
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                {% elif mod_item.module.code == 'CODING_DSA' %}
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="16 18 22 12 16 6"></polyline>
+                                        <polyline points="8 6 2 12 8 18"></polyline>
+                                    </svg>
+                                {% elif mod_item.module.code == 'COMMUNICATION_SKILLS' %}
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                {% else %}
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="8" r="7"></circle>
+                                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                                    </svg>
+                                {% endif %}
+                            </div>
+
+                            <div class="module-info-wrap">
+                                <div class="module-title-row">
+                                    <h2 class="module-title">{{ mod_item.module.name }}</h2>
+                                    <span class="module-weight-tag">{{ mod_item.module.weight_percentage }}% Weight</span>
+                                </div>
+                                <p class="module-desc">{{ mod_item.module.description }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar & Expand Toggle -->
+                        <div class="module-header-right">
+                            <div class="module-progress-box">
+                                <div class="progress-label-row">
+                                    <span>Progress</span>
+                                    <span>{{ mod_item.completion_pct }}%</span>
+                                </div>
+                                <div class="progress-bar-track">
+                                    <div class="progress-bar-fill" style="width: {{ mod_item.completion_pct }}%;"></div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="accordion-chevron-btn" aria-label="Toggle section">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Accordion Expanded Body: Subjects Rows -->
+                    <div class="module-content-body">
+                        <div class="subjects-list">
+                            {% for subj_row in mod_item.subjects %}
+
+                                {% if subj_row.has_assignments %}
+                                    {% for asgn_item in subj_row.assignments %}
+                                    <div class="subject-row">
+                                        <div class="subject-main-info">
+                                            <div class="subject-num-badge">{{ forloop.parentloop.counter }}</div>
+                                            <div class="subject-text-wrap">
+                                                <h3 class="subject-name">{{ asgn_item.assignment.title }}</h3>
+                                                <p class="subject-topics">
+                                                    <strong>Topics:</strong> {{ asgn_item.assignment.topic|default:subj_row.subject.topics }}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="subject-action-side">
+                                            <span class="subject-meta-pill">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                                </svg>
+                                                {{ asgn_item.assignment.time_limit }} Mins
+                                            </span>
+
+                                            <span class="subject-meta-pill">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                </svg>
+                                                {{ asgn_item.question_count }} Questions
+                                            </span>
+
+                                            <!-- Status Pill -->
+                                            <span class="status-pill {{ asgn_item.status_class }}">
+                                                {{ asgn_item.status_label }}
+                                            </span>
+
+                                            <!-- Action Button -->
+                                            {% if asgn_item.is_completed %}
+                                                <a href="{% url 'assignments:student_result' asgn_item.assignment.id %}" class="btn-action-review">
+                                                    <span>View Result</span>
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </a>
+                                            {% elif asgn_item.is_in_progress %}
+                                                <a href="{% url 'assignments:student_start' asgn_item.assignment.id %}" class="btn-action-resume">
+                                                    <span>Resume Test</span>
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'assignments:student_start' asgn_item.assignment.id %}" class="btn-action-start">
+                                                    <span>Start Assessment</span>
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- Subject with Curriculum Topics (Assessment Coming Soon) -->
+                                    <div class="subject-row">
+                                        <div class="subject-main-info">
+                                            <div class="subject-num-badge">{{ forloop.counter }}</div>
+                                            <div class="subject-text-wrap">
+                                                <h3 class="subject-name">{{ subj_row.subject.name }}</h3>
+                                                <p class="subject-topics">
+                                                    <strong>Topics:</strong> {{ subj_row.subject.topics }}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="subject-action-side">
+                                            <span class="curriculum-tag">
+                                                Syllabus Active • Practice Test Opening Soon
+                                            </span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
                 {% empty %}
-                    <div style="grid-column: 1 / -1; background: var(--clr-card-bg); border: 1px dashed var(--clr-border); border-radius: var(--radius-lg); padding: 60px 20px; text-align: center; color: var(--clr-text-muted);">
-                        <div style="font-size: 32px; margin-bottom: 10px;">📋</div>
-                        <h3 style="color: var(--clr-text-main); font-size: 18px; margin-bottom: 6px;">No assessments found</h3>
-                        <p style="font-size: 13.5px;">There are no live exams matching the selected filter right now.</p>
-                    </div>
+                <div style="background: #FFFFFF; border: 1px dashed var(--ch-border); border-radius: var(--ch-radius); padding: 60px 20px; text-align: center; color: var(--ch-text-muted);">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; color: var(--ch-blue);">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <h3 style="font-size: 1.1rem; color: var(--ch-text-main); margin-bottom: 6px;">No matching assessments found</h3>
+                    <p style="font-size: 0.9rem;">Try searching with different subject keywords or clear the search input.</p>
+                    <a href="{% url 'assignments:student_list' %}" style="display: inline-block; margin-top: 14px; color: var(--ch-blue); font-weight: 700; text-decoration: underline;">
+                        Reset Search
+                    </a>
+                </div>
                 {% endfor %}
-            </div>
+            </section>
 
         </main>
     </div>
 
-    <!-- Global CodeHelp Theme Controller (Ctrl + M & Ctrl + K) -->
-    <script src="{% static 'core/js/theme.js' %}"></script>
+    <script>
+        function toggleModuleAccordion(moduleId) {
+            const card = document.getElementById(moduleId);
+            if (card) {
+                card.classList.toggle('expanded');
+            }
+        }
+    </script>
 </body>
 </html>

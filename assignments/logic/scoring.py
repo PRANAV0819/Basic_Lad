@@ -85,9 +85,11 @@ def evaluate_attempt(attempt: Attempt, post_data) -> Attempt:
                     total_score += marks_obtained
                     correct_count += 1
                 else:
-                    # Incorrect answer (or partial answer in MSQ -> 0 marks)
+                    # Incorrect answer (or partial answer in MSQ -> penalty/0 marks)
                     is_correct = False
-                    marks_obtained = 0
+                    penalty = float(assignment.negative_marking or 0.0)
+                    marks_obtained = -penalty if penalty > 0 else 0
+                    total_score += marks_obtained
                     wrong_count += 1
 
             # Save the StudentAnswer record
@@ -108,6 +110,8 @@ def evaluate_attempt(attempt: Attempt, post_data) -> Attempt:
                     student_answer=student_answer,
                     option=opt
                 )
+
+        total_score = max(0, total_score)
 
         # Compute percentage
         total_possible = assignment.total_marks

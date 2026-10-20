@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "adminpanel",
     "student",
     "assignments",
+    "myportfolio",
 ]
 
 MIDDLEWARE = [

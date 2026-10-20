@@ -64,6 +64,8 @@
                                     <span class="question-number">Question {{ forloop.counter }} of {{ questions.count }}</span>
                                     {% if q.question_type == 'MCQ' %}
                                         <span class="badge badge-mcq">Single Choice (MCQ)</span>
+                                    {% elif q.question_type == 'CODE' %}
+                                        <span class="badge" style="background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe;">Code Tracing</span>
                                     {% else %}
                                         <span class="badge badge-msq">Multiple Select (MSQ - Select all that apply)</span>
                                     {% endif %}
@@ -75,14 +77,18 @@
 
                             <div class="question-text">{{ q.question_text }}</div>
 
+                            {% if q.code_snippet %}
+                                <pre style="background: #0f172a; color: #f8fafc; padding: 14px 18px; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 13.5px; line-height: 1.5; overflow-x: auto; margin: 12px 0 16px 0;"><code>{{ q.code_snippet }}</code></pre>
+                            {% endif %}
+
                             <!-- Options -->
                             <div class="options-container">
                                 {% for opt in q.options.all %}
                                     <label class="option-choice-item">
-                                        {% if q.question_type == 'MCQ' %}
-                                            <input type="radio" name="q_{{ q.id }}" value="{{ opt.id }}" />
-                                        {% else %}
+                                        {% if q.question_type == 'MSQ' %}
                                             <input type="checkbox" name="q_{{ q.id }}" value="{{ opt.id }}" />
+                                        {% else %}
+                                            <input type="radio" name="q_{{ q.id }}" value="{{ opt.id }}" />
                                         {% endif %}
                                         <span class="option-badge-label">{{ opt.option_label }}</span>
                                         <span style="font-size: 14px; font-weight: 500; color: var(--clr-text-main);">{{ opt.option_text }}</span>

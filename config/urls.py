@@ -32,7 +32,10 @@ urlpatterns = [
     path('student/', include('student.urls')),
 
     # Assignment Module routes
-    path('assignments/', include('assignments.urls')),    
+    path('assignments/', include('assignments.urls')),
+
+    # My Portfolio routes
+    path('portfolio/', include('myportfolio.urls')),
 ]
 
 # Serve user uploaded media files (certificates, etc.)

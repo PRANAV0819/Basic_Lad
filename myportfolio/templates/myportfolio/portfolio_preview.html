@@ -747,40 +747,6 @@
             flex-wrap: wrap;
         }
 
-        /* Recruiter Contact Footer CTA */
-        .recruiter-cta-card {
-            background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
-            border: 1px solid rgba(58, 131, 247, 0.25);
-            border-radius: var(--pr-radius);
-            padding: 36px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .cta-headline {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--pr-text-main);
-        }
-
-        .cta-sub {
-            font-size: 0.95rem;
-            color: var(--pr-text-secondary);
-            max-width: 580px;
-        }
-
-        .cta-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 8px;
-        }
-
         .portfolio-footer-note {
             text-align: center;
             font-size: 0.8rem;
@@ -886,7 +852,7 @@
             <div class="topbar-content">
                 <div class="topbar-actions">
                     {% if is_owner %}
-                    <a href="{% url 'student:profile' %}" class="action-btn">
+                    <a href="{% url 'myportfolio:editor' %}" class="action-btn">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 20h9"></path>
                             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -1097,7 +1063,7 @@
             <div class="empty-hint">
                 <p>No technical skills listed yet.</p>
                 {% if is_owner %}
-                <p style="margin-top: 8px;"><a href="{% url 'student:profile' %}" style="color: var(--pr-blue); text-decoration: underline;">Add your technical skills</a> in the editor to showcase them here.</p>
+                <p style="margin-top: 8px;"><a href="{% url 'myportfolio:editor' %}" style="color: var(--pr-blue); text-decoration: underline;">Add your technical skills</a> in the editor to showcase them here.</p>
                 {% endif %}
             </div>
             {% endif %}
@@ -1176,7 +1142,7 @@
             <div class="empty-hint">
                 <p>No featured projects added yet.</p>
                 {% if is_owner %}
-                <p style="margin-top: 8px;"><a href="{% url 'student:profile' %}" style="color: var(--pr-blue); text-decoration: underline;">Add your featured projects</a> to show off your practical coding abilities.</p>
+                <p style="margin-top: 8px;"><a href="{% url 'myportfolio:editor' %}" style="color: var(--pr-blue); text-decoration: underline;">Add your featured projects</a> to show off your practical coding abilities.</p>
                 {% endif %}
             </div>
             {% endif %}
@@ -1286,36 +1252,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- 7. RECRUITER CONTACT CALLOUT -->
-        <section class="recruiter-cta-card">
-            <h2 class="cta-headline">Interested in hiring {{ student.name }}?</h2>
-            <p class="cta-sub">
-                This candidate is actively participating in the Placement Readiness Platform. Connect directly to schedule an interview or review code assessments.
-            </p>
-            <div class="cta-actions">
-                {% if student.email %}
-                <a href="mailto:{{ student.email }}?subject=Placement%20Inquiry%20via%20Placement%20Readiness%20Platform" class="action-btn action-btn-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    <span>Send Interview Invite</span>
-                </a>
-                {% endif %}
-
-                {% if student.linkedin_profile %}
-                <a href="{{ student.linkedin_profile }}" target="_blank" rel="noopener noreferrer" class="action-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                        <rect x="2" y="9" width="4" height="12"></rect>
-                        <circle cx="4" cy="4" r="2"></circle>
-                    </svg>
-                    <span>Connect on LinkedIn</span>
-                </a>
-                {% endif %}
             </div>
         </section>
 

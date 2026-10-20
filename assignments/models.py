@@ -2,10 +2,97 @@ from django.db import models
 from student.models import Student
 
 
+class ReadinessModule(models.Model):
+    """
+    Represents one of the primary readiness modules (e.g. Core Subjects,
+    Aptitude & Reasoning, Coding & DSA, Communication Skills, Academic / CGPA).
+    Has a configured weight percentage totaling 100%.
+    """
+    code = models.CharField(
+        max_length=50,
+        unique=True,
+        help_text="Machine-readable code (e.g. CORE_SUBJECTS, APTITUDE_REASONING)"
+    )
+    name = models.CharField(
+        max_length=100,
+        help_text="Display title (e.g. Core Subjects)"
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        help_text="Short summary of this module's scope and placement importance"
+    )
+    weight_percentage = models.PositiveIntegerField(
+        default=20,
+        help_text="Configured weight contributing to the overall readiness index (e.g. 25%)"
+    )
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        default='book',
+        help_text="Icon identifier for student dashboard rendering"
+    )
+    color_theme = models.CharField(
+        max_length=30,
+        blank=True,
+        default='blue',
+        help_text="Accent color token: blue, orange, green, purple, teal"
+    )
+    order = models.PositiveIntegerField(
+        default=1,
+        help_text="Display sequence in the accordion layout"
+    )
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f"{self.name} ({self.weight_percentage}%)"
+
+
+class SubjectCategory(models.Model):
+    """
+    Represents a specific subject under a Readiness Module
+    (e.g. DBMS, DSA, Quantitative Aptitude, Linked Lists, Technical Interview).
+    """
+    module = models.ForeignKey(
+        ReadinessModule,
+        on_delete=models.CASCADE,
+        related_name='subjects',
+        help_text="Parent readiness module"
+    )
+    name = models.CharField(
+        max_length=150,
+        help_text="Subject title (e.g. Data Structures and Algorithms (DSA))"
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        help_text="Short subject description"
+    )
+    topics = models.TextField(
+        blank=True,
+        default='',
+        help_text="Included curriculum topics for student guidance"
+    )
+    order = models.PositiveIntegerField(
+        default=1,
+        help_text="Display order within the parent module"
+    )
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name_plural = 'Subject Categories'
+
+    def __str__(self):
+        return f"{self.module.name} → {self.name}"
+
+
 class Assignment(models.Model):
     """
     Represents an assignment / exam created by the Admin.
     Can be a 'Final Exam' or a 'Subject-wise Exam'.
+    Organized into Readiness Modules and Subject Categories.
     """
 
     EXAM_TYPE_CHOICES = [
@@ -19,9 +106,33 @@ class Assignment(models.Model):
         ('CLOSED', 'Closed'),
     ]
 
+    DIFFICULTY_CHOICES = [
+        ('EASY', 'Easy'),
+        ('MEDIUM', 'Medium'),
+        ('HARD', 'Hard'),
+    ]
+
     title = models.CharField(
         max_length=200,
         help_text="Title of the assignment or exam (e.g. Data Structures Assessment 1)"
+    )
+
+    module = models.ForeignKey(
+        ReadinessModule,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assignments',
+        help_text="The readiness module this assessment belongs to"
+    )
+
+    subject_category = models.ForeignKey(
+        SubjectCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assignments',
+        help_text="The specific subject inside the readiness module"
     )
 
     exam_type = models.CharField(
@@ -43,6 +154,14 @@ class Assignment(models.Model):
         help_text="Specific topic (e.g. Paging, Arrays, Probability)"
     )
 
+    difficulty = models.CharField(
+        max_length=20,
+        choices=DIFFICULTY_CHOICES,
+        default='MEDIUM',
+        blank=True,
+        help_text="Assessment difficulty level"
+    )
+
     description = models.TextField(
         blank=True,
         default='',
@@ -57,6 +176,33 @@ class Assignment(models.Model):
     total_marks = models.PositiveIntegerField(
         default=0,
         help_text="Total marks available for this exam"
+    )
+
+    negative_marking = models.FloatField(
+        default=0.0,
+        help_text="Negative marks per wrong answer (e.g. 0.25)"
+    )
+
+    shuffle_questions = models.BooleanField(
+        default=False,
+        help_text="Shuffle question order for each attempt"
+    )
+
+    show_solutions_after_submission = models.BooleanField(
+        default=True,
+        help_text="Show answers and explanations after test is submitted"
+    )
+
+    max_attempts = models.PositiveIntegerField(
+        default=1,
+        help_text="Maximum allowed attempts per student"
+    )
+
+    tags = models.CharField(
+        max_length=200,
+        blank=True,
+        default='',
+        help_text="Comma-separated tags for filtering (e.g. campus, interview, mock)"
     )
 
     status = models.CharField(
@@ -92,12 +238,13 @@ class Assignment(models.Model):
 class Question(models.Model):
     """
     Represents an individual question inside an assignment.
-    Can be Single Choice (MCQ) or Multiple Select (MSQ).
+    Can be Single Choice (MCQ), Multiple Select (MSQ), or Code Output/Tracing.
     """
 
     QUESTION_TYPE_CHOICES = [
         ('MCQ', 'Single Choice (MCQ)'),
         ('MSQ', 'Multiple Select (MSQ)'),
+        ('CODE', 'Code Output / Tracing'),
     ]
 
     assignment = models.ForeignKey(
@@ -111,11 +258,17 @@ class Question(models.Model):
         help_text="The question problem statement"
     )
 
+    code_snippet = models.TextField(
+        blank=True,
+        default='',
+        help_text="Optional code snippet or tracing block"
+    )
+
     question_type = models.CharField(
         max_length=10,
         choices=QUESTION_TYPE_CHOICES,
         default='MCQ',
-        help_text="MCQ (single correct) or MSQ (one or more correct)"
+        help_text="MCQ (single correct), MSQ (one or more correct), or Code Output/Tracing"
     )
 
     marks = models.PositiveIntegerField(

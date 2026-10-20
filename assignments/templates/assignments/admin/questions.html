@@ -75,7 +75,6 @@
             </a>
         </nav>
 
-        <!-- Sidebar Footer with Admin Profile Widget -->
         <div class="sidebar-footer" style="padding: 16px;">
             <div class="user-profile-widget">
                 <div class="user-profile-info">
@@ -102,7 +101,7 @@
                     <span class="breadcrumb-sep">&gt;</span>
                     <a href="{% url 'assignments:admin_list' %}">Assignments</a>
                     <span class="breadcrumb-sep">&gt;</span>
-                    <span class="breadcrumb-current">{{ assignment.title }}: Questions</span>
+                    <span class="breadcrumb-current">{{ assignment.title }}: Question Pool</span>
                 </nav>
             </div>
             <div class="topbar-right">
@@ -119,15 +118,19 @@
                 {% endfor %}
             {% endif %}
 
-            <!-- Header with Actions -->
+            <!-- Header with Assessment Summary -->
             <div class="page-header">
                 <div>
                     <h1 class="page-title">{{ assignment.title }}</h1>
-                    <div style="display: flex; gap: 8px; margin-top: 6px; align-items: center;">
+                    <div style="display: flex; gap: 8px; margin-top: 6px; align-items: center; flex-wrap: wrap;">
+                        {% if assignment.module %}
+                            <span class="badge" style="background: #f1f5f9; color: #334155;">{{ assignment.module.icon }} {{ assignment.module.name }}</span>
+                        {% endif %}
+
                         {% if assignment.exam_type == 'FINAL' %}
                             <span class="badge badge-final">Final Exam</span>
                         {% else %}
-                            <span class="badge badge-subject">Subject-wise: {{ assignment.subject }}</span>
+                            <span class="badge badge-subject">{{ assignment.subject }}</span>
                         {% endif %}
 
                         {% if assignment.status == 'DRAFT' %}
@@ -139,12 +142,15 @@
                         {% endif %}
 
                         <span style="font-size: 13px; color: var(--clr-text-muted);">
-                            Duration: {{ assignment.time_limit }} mins &bull; Total Marks: <strong>{{ assignment.total_marks }}</strong>
+                            Duration: {{ assignment.time_limit }} mins &bull; Total Marks: <strong>{{ assignment.total_marks }}</strong> &bull; Questions: <strong>{{ questions.count }}</strong>
                         </span>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 8px;">
+                    <a href="{% url 'assignments:admin_edit' assignment.id %}" class="btn btn-secondary">
+                        ✏️ Edit Metadata
+                    </a>
                     <a href="{% url 'assignments:admin_list' %}" class="btn btn-secondary">
                         &larr; Catalog
                     </a>
@@ -154,18 +160,18 @@
                         {% csrf_token %}
                         {% if assignment.status == 'DRAFT' %}
                             <input type="hidden" name="status" value="PUBLISHED" />
-                            <button type="submit" class="btn btn-success" {% if assignment.questions.count == 0 %}disabled title="Add at least 1 question first"{% endif %}>
-                                🚀 Publish Assignment
+                            <button type="submit" class="btn btn-success" {% if questions.count == 0 %}disabled title="Add at least 1 question first"{% endif %}>
+                                🚀 Publish Assessment
                             </button>
                         {% elif assignment.status == 'PUBLISHED' %}
                             <input type="hidden" name="status" value="CLOSED" />
                             <button type="submit" class="btn btn-danger">
-                                🛑 Close Assignment
+                                🛑 Close Assessment
                             </button>
                         {% else %}
                             <input type="hidden" name="status" value="PUBLISHED" />
                             <button type="submit" class="btn btn-primary">
-                                Reopen Assignment
+                                Reopen Assessment
                             </button>
                         {% endif %}
                     </form>
@@ -186,8 +192,10 @@
                                     <span class="question-number">Question {{ q.order }}</span>
                                     {% if q.question_type == 'MCQ' %}
                                         <span class="badge badge-mcq">Single Choice (MCQ)</span>
-                                    {% else %}
+                                    {% elif q.question_type == 'MSQ' %}
                                         <span class="badge badge-msq">Multiple Select (MSQ)</span>
+                                    {% elif q.question_type == 'CODE' %}
+                                        <span class="badge badge-code" style="background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe;">Code Tracing</span>
                                     {% endif %}
                                 </div>
                                 <div style="display: flex; gap: 12px; align-items: center;">
@@ -206,6 +214,11 @@
                             </div>
 
                             <div class="question-text">{{ q.question_text }}</div>
+
+                            <!-- Code snippet display if present -->
+                            {% if q.code_snippet %}
+                                <pre style="background: #0f172a; color: #f8fafc; padding: 12px 16px; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; margin: 10px 0 14px 0;"><code>{{ q.code_snippet }}</code></pre>
+                            {% endif %}
 
                             <!-- Options display -->
                             <div style="margin-bottom: 14px;">
@@ -257,7 +270,7 @@
 
                         <div class="form-group">
                             <label class="form-label">Question Text *</label>
-                            <textarea name="question_text" class="form-control" placeholder="Enter problem statement..." required>{{ form_data.question_text|default:'' }}</textarea>
+                            <textarea name="question_text" class="form-control" placeholder="Enter problem statement or question prompt..." required>{{ form_data.question_text|default:'' }}</textarea>
                         </div>
 
                         <div class="form-row">
@@ -266,6 +279,7 @@
                                 <select name="question_type" id="questionTypeSelect" class="form-control">
                                     <option value="MCQ" {% if form_data.question_type == 'MCQ' %}selected{% endif %}>Single Choice (MCQ)</option>
                                     <option value="MSQ" {% if form_data.question_type == 'MSQ' %}selected{% endif %}>Multiple Select (MSQ)</option>
+                                    <option value="CODE" {% if form_data.question_type == 'CODE' %}selected{% endif %}>Code Output / Tracing (CODE)</option>
                                 </select>
                             </div>
 
@@ -275,10 +289,17 @@
                             </div>
                         </div>
 
+                        <!-- Code snippet input -->
+                        <div class="form-group" id="codeSnippetBox">
+                            <label class="form-label">Code Snippet (Optional / For Code Tracing)</label>
+                            <textarea name="code_snippet" class="form-control" rows="4" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px;" placeholder="e.g.&#10;int x = 5;&#10;int y = ++x * 2;&#10;cout << y;">{{ form_data.code_snippet|default:'' }}</textarea>
+                            <span class="help-text">Will be formatted with monospace code styling for students.</span>
+                        </div>
+
                         <div style="margin-bottom: 8px;">
                             <label class="form-label">Options & Correct Answer(s) *</label>
                             <p style="font-size: 12px; color: var(--clr-text-muted); margin-bottom: 10px;" id="typeHint">
-                                For MCQ: Select exactly ONE correct option. For MSQ: Select one or more correct options.
+                                For MCQ / Code Tracing: Select exactly ONE correct option. For MSQ: Select one or more correct options.
                             </p>
                         </div>
 
@@ -336,5 +357,24 @@
 
     <script src="{% static 'adminpanel/js/script.js' %}"></script>
     <script src="{% static 'core/js/theme.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('questionTypeSelect');
+            const typeHint = document.getElementById('typeHint');
+
+            function updateTypeHint() {
+                if (typeSelect.value === 'MSQ') {
+                    typeHint.innerHTML = '<strong>MSQ Mode:</strong> Select all checkboxes that apply as correct answers.';
+                } else if (typeSelect.value === 'CODE') {
+                    typeHint.innerHTML = '<strong>Code Tracing:</strong> Enter program output options and select the exactly ONE correct option.';
+                } else {
+                    typeHint.innerHTML = '<strong>MCQ Mode:</strong> Select exactly ONE correct option.';
+                }
+            }
+
+            typeSelect.addEventListener('change', updateTypeHint);
+            updateTypeHint();
+        });
+    </script>
 </body>
 </html>

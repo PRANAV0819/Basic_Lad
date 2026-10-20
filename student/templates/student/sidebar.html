@@ -28,7 +28,7 @@
         </a>
 
         <!-- 2. My Portfolio -->
-        <a href="{% url 'student:portfolio_preview' %}" class="nav-item {% if active_nav == 'portfolio' or active_nav == 'profile' %}active{% endif %}">
+        <a href="{% url 'myportfolio:preview' %}" class="nav-item {% if active_nav == 'portfolio' or active_nav == 'profile' %}active{% endif %}">
             <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
@@ -85,7 +85,7 @@
 
     <!-- Sidebar Footer with User Profile Pill & Logout -->
     <div class="sidebar-footer" style="padding: 16px; border-top: 1px solid var(--clr-border);">
-        <a href="{% url 'student:profile' %}" class="user-profile-widget" title="View Profile">
+        <a href="{% url 'myportfolio:editor' %}" class="user-profile-widget" title="View Profile">
             <div class="user-profile-info">
                 <div class="user-avatar-circle">
                     {{ student.name|slice:":1"|upper|default:"S" }}

@@ -727,7 +727,7 @@
                     <p>Showcase your skills, projects, and achievements to prepare for placement opportunities.</p>
                 </div>
                 <div class="header-actions">
-                    <a href="{% url 'student:portfolio_preview' %}" class="btn-preview-portfolio" title="Open Recruiter-Ready Portfolio Preview">
+                    <a href="{% url 'myportfolio:preview' %}" class="btn-preview-portfolio" title="Open Recruiter-Ready Portfolio Preview">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                             <circle cx="12" cy="12" r="3"></circle>
@@ -760,7 +760,7 @@
                             Tip: Fill in your Headline, CGPA, Skills, Projects, and Professional Links to reach 100%.
                         {% endif %}
                     </span>
-                    <a href="{% url 'student:portfolio_preview' %}" style="color: var(--p-blue); font-weight: 600; text-decoration: none;">
+                    <a href="{% url 'myportfolio:preview' %}" style="color: var(--p-blue); font-weight: 600; text-decoration: none;">
                         See How Recruiters View You &rarr;
                     </a>
                 </div>
@@ -782,7 +782,7 @@
             {% endif %}
 
             <!-- Form Wrapper -->
-            <form method="POST" action="{% url 'student:profile' %}" enctype="multipart/form-data" id="portfolioForm">
+            <form method="POST" action="{% url 'myportfolio:editor' %}" enctype="multipart/form-data" id="portfolioForm">
                 {% csrf_token %}
 
                 <div class="builder-layout">
@@ -828,7 +828,7 @@
                         </a>
 
                         <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--p-border);">
-                            <a href="{% url 'student:portfolio_preview' %}" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0.6rem; background: var(--p-surface); color: var(--p-blue); border-radius: var(--p-radius-sm); font-size: 0.85rem; font-weight: 700; text-decoration: none;">
+                            <a href="{% url 'myportfolio:preview' %}" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0.6rem; background: var(--p-surface); color: var(--p-blue); border-radius: var(--p-radius-sm); font-size: 0.85rem; font-weight: 700; text-decoration: none;">
                                 <span>👁️ Open Live Preview</span>
                             </a>
                         </div>
@@ -1148,7 +1148,7 @@ HackerRank SQL Gold Badge">{{ student.certifications }}</textarea>
                         <a href="{% url 'student:dashboard' %}" class="btn-cancel-portfolio">
                             Cancel
                         </a>
-                        <a href="{% url 'student:portfolio_preview' %}" class="btn-dash-back" style="background: var(--p-blue-light); color: var(--p-blue); border-color: rgba(58, 131, 247, 0.2);">
+                        <a href="{% url 'myportfolio:preview' %}" class="btn-dash-back" style="background: var(--p-blue-light); color: var(--p-blue); border-color: rgba(58, 131, 247, 0.2);">
                             👁️ Preview Portfolio
                         </a>
                         <button type="submit" class="btn-save-portfolio">

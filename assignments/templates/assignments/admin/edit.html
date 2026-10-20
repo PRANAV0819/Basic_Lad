@@ -4,9 +4,39 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Assignment - Admin</title>
+    <title>Edit Assessment - Admin</title>
     <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+        .checkbox-pill-group {
+            display: flex;
+            gap: 20px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-top: 6px;
+        }
+        .checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body class="dashboard-app">
 
@@ -74,7 +104,6 @@
             </a>
         </nav>
 
-        <!-- Sidebar Footer with Admin Profile Widget -->
         <div class="sidebar-footer" style="padding: 16px;">
             <div class="user-profile-widget">
                 <div class="user-profile-info">
@@ -114,15 +143,26 @@
         <div class="assignment-container">
             <div class="page-header">
                 <div>
-                    <h1 class="page-title">Edit Assignment Details</h1>
+                    <h1 class="page-title">Edit Assessment Details</h1>
                     <p class="page-subtitle">Update parameters for "{{ assignment.title }}"</p>
                 </div>
-                <div>
+                <div style="display: flex; gap: 8px;">
+                    <a href="{% url 'assignments:admin_questions' assignment.id %}" class="btn btn-secondary">
+                        Manage Questions ({{ assignment.questions.count }}) &rarr;
+                    </a>
                     <a href="{% url 'assignments:admin_list' %}" class="btn btn-secondary">
                         &larr; Back to Catalog
                     </a>
                 </div>
             </div>
+
+            <!-- Safeguard banner for existing student attempts -->
+            {% if completed_attempts_count > 0 %}
+                <div class="alert" style="background: #fffbeb; border: 1px solid #fde68a; color: #92400e; padding: 14px 18px; border-radius: 8px; margin-bottom: 20px;">
+                    <strong>⚠️ Attempt Safeguard Active:</strong> This assessment already has <strong>{{ completed_attempts_count }} completed student submission{{ completed_attempts_count|pluralize }}</strong>.
+                    You can modify titles, instructions, module categorization, and difficulty safely. Please avoid modifying parameters that alter historical score normalization.
+                </div>
+            {% endif %}
 
             {% if errors %}
                 <div class="alert alert-error">
@@ -138,49 +178,138 @@
                 <form method="POST">
                     {% csrf_token %}
 
-                    <div class="form-group">
-                        <label class="form-label">Assignment Title *</label>
-                        <input type="text" name="title" class="form-control" value="{{ assignment.title }}" required />
+                    <!-- Section 1: Basic Info -->
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
+                            1. Basic Details
+                        </h3>
+
+                        <div class="form-group">
+                            <label class="form-label">Assessment Title *</label>
+                            <input type="text" name="title" class="form-control" value="{{ assignment.title }}" required />
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Readiness Module</label>
+                                <select name="module_id" id="moduleSelect" class="form-control">
+                                    <option value="">-- Select Readiness Module --</option>
+                                    {% for mod in modules %}
+                                        <option value="{{ mod.id }}" {% if assignment.module_id == mod.id %}selected{% endif %}>
+                                            {{ mod.icon }} {{ mod.name }} ({{ mod.weight_percentage }}%)
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Subject Category</label>
+                                <select name="subject_category_id" id="subjectCategorySelect" class="form-control">
+                                    <option value="">-- Select Subject Category --</option>
+                                    {% for cat in subject_categories %}
+                                        <option value="{{ cat.id }}" data-module="{{ cat.module_id }}" data-name="{{ cat.name }}" data-topics="{{ cat.topics }}" {% if assignment.subject_category_id == cat.id %}selected{% endif %}>
+                                            {{ cat.name }} ({{ cat.module.name }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Subject Name *</label>
+                                <input type="text" name="subject" id="subjectInput" class="form-control" value="{{ assignment.subject }}" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Topics / Subtopics</label>
+                                <input type="text" name="topic" id="topicInput" class="form-control" value="{{ assignment.topic|default:'' }}" />
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Exam Category *</label>
-                            <select name="exam_type" class="form-control">
-                                <option value="SUBJECT" {% if assignment.exam_type == 'SUBJECT' %}selected{% endif %}>Subject-wise Exam</option>
-                                <option value="FINAL" {% if assignment.exam_type == 'FINAL' %}selected{% endif %}>Final Exam</option>
-                            </select>
+                    <!-- Section 2: Exam Settings -->
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
+                            2. Exam Settings & Rules
+                        </h3>
+
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label class="form-label">Exam Category *</label>
+                                <select name="exam_type" class="form-control">
+                                    <option value="SUBJECT" {% if assignment.exam_type == 'SUBJECT' %}selected{% endif %}>Subject-wise Practice Exam</option>
+                                    <option value="FINAL" {% if assignment.exam_type == 'FINAL' %}selected{% endif %}>Comprehensive Mock / Final Exam</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Difficulty Level</label>
+                                <select name="difficulty" class="form-control">
+                                    <option value="EASY" {% if assignment.difficulty == 'EASY' %}selected{% endif %}>Easy</option>
+                                    <option value="MEDIUM" {% if assignment.difficulty == 'MEDIUM' %}selected{% endif %}>Medium</option>
+                                    <option value="HARD" {% if assignment.difficulty == 'HARD' %}selected{% endif %}>Hard</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Time Limit (Minutes) *</label>
+                                <input type="number" name="time_limit" class="form-control" min="1" max="300" value="{{ assignment.time_limit }}" required />
+                            </div>
+                        </div>
+
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label class="form-label">Negative Marking</label>
+                                <input type="number" step="0.25" min="0" max="10" name="negative_marking" class="form-control" value="{{ assignment.negative_marking|default:'0.0' }}" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Max Attempts</label>
+                                <input type="number" min="1" max="10" name="max_attempts" class="form-control" value="{{ assignment.max_attempts|default:'1' }}" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Search Tags</label>
+                                <input type="text" name="tags" class="form-control" value="{{ assignment.tags|default:'' }}" />
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Time Limit (Minutes) *</label>
-                            <input type="number" name="time_limit" class="form-control" min="1" max="300" value="{{ assignment.time_limit }}" required />
+                            <label class="form-label">Security & Integrity Toggles</label>
+                            <div class="checkbox-pill-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="shuffle_questions" value="1" {% if assignment.shuffle_questions %}checked{% endif %} />
+                                    <span>🔀 Shuffle Questions per Student</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="show_solutions_after_submission" value="1" {% if assignment.show_solutions_after_submission %}checked{% endif %} />
+                                    <span>💡 Release Solutions & Explanations After Submission</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
+                    <!-- Section 3: Description -->
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
+                            3. Description & Student Instructions
+                        </h3>
+
                         <div class="form-group">
-                            <label class="form-label">Subject *</label>
-                            <input type="text" name="subject" class="form-control" value="{{ assignment.subject }}" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Topic / Unit</label>
-                            <input type="text" name="topic" class="form-control" value="{{ assignment.topic }}" />
+                            <textarea name="description" rows="3" class="form-control">{{ assignment.description|default:'' }}</textarea>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Instructions / Description</label>
-                        <textarea name="description" class="form-control">{{ assignment.description }}</textarea>
-                    </div>
-
-                    <div style="display: flex; gap: 12px; margin-top: 24px;">
-                        <button type="submit" class="btn btn-primary">
+                    <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                        <button type="submit" class="btn btn-primary" style="padding: 12px 24px; font-size: 14.5px;">
                             Save Changes
                         </button>
                         <a href="{% url 'assignments:admin_questions' assignment.id %}" class="btn btn-secondary">
                             Manage Questions &rarr;
+                        </a>
+                        <a href="{% url 'assignments:admin_list' %}" class="btn btn-secondary">
+                            Cancel
                         </a>
                     </div>
                 </form>
@@ -190,5 +319,48 @@
 
     <script src="{% static 'adminpanel/js/script.js' %}"></script>
     <script src="{% static 'core/js/theme.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const moduleSelect = document.getElementById('moduleSelect');
+            const subjectSelect = document.getElementById('subjectCategorySelect');
+            const subjectInput = document.getElementById('subjectInput');
+            const topicInput = document.getElementById('topicInput');
+
+            function filterSubjects() {
+                const selectedModuleId = moduleSelect.value;
+                const options = subjectSelect.querySelectorAll('option');
+
+                options.forEach(opt => {
+                    if (!opt.value) return;
+                    const modId = opt.getAttribute('data-module');
+                    if (!selectedModuleId || modId === selectedModuleId) {
+                        opt.style.display = '';
+                    } else {
+                        opt.style.display = 'none';
+                    }
+                });
+            }
+
+            moduleSelect.addEventListener('change', filterSubjects);
+
+            subjectSelect.addEventListener('change', function() {
+                const opt = subjectSelect.options[subjectSelect.selectedIndex];
+                if (opt && opt.value) {
+                    const name = opt.getAttribute('data-name');
+                    const topics = opt.getAttribute('data-topics');
+                    if (name && !subjectInput.value) {
+                        subjectInput.value = name;
+                    }
+                    if (topics && !topicInput.value) {
+                        topicInput.value = topics;
+                    }
+                }
+            });
+
+            if (moduleSelect.value) {
+                filterSubjects();
+            }
+        });
+    </script>
 </body>
 </html>

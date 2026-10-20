@@ -4,9 +4,94 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage Assignments - Admin</title>
+    <title>Manage Assessments - Admin</title>
     <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        .filter-controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--clr-border);
+            margin-bottom: 20px;
+        }
+        .filter-selects-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13.5px;
+            color: #1e293b;
+            background: #ffffff;
+            outline: none;
+            min-width: 170px;
+        }
+        .search-box-wrap {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .search-box-input {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13.5px;
+            min-width: 220px;
+            outline: none;
+        }
+        .search-box-input:focus {
+            border-color: #2563eb;
+        }
+        .badge-difficulty-easy {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .badge-difficulty-medium {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .badge-difficulty-hard {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .module-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+    </style>
 </head>
 <body class="dashboard-app">
 
@@ -75,7 +160,6 @@
             </a>
         </nav>
 
-        <!-- Sidebar Footer with Admin Profile Widget -->
         <div class="sidebar-footer" style="padding: 16px;">
             <div class="user-profile-widget">
                 <div class="user-profile-info">
@@ -101,7 +185,7 @@
                     <span style="font-size: 16px;">&#128196;</span>
                     <a href="{% url 'adminpanel:dashboard' %}">Home</a>
                     <span class="breadcrumb-sep">&gt;</span>
-                    <span class="breadcrumb-current">Assignments</span>
+                    <span class="breadcrumb-current">Assessment Management</span>
                 </nav>
             </div>
             <div class="topbar-right">
@@ -126,9 +210,9 @@
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                         </svg>
-                        Assignment Management
+                        Assessment Management
                     </h1>
-                    <p class="page-subtitle">Create, configure, publish exams, and inspect student performance</p>
+                    <p class="page-subtitle">Create, organize module-wise assessments, configure question pools, and inspect submissions.</p>
                 </div>
                 <div>
                     <a href="{% url 'assignments:admin_create' %}" class="btn btn-primary">
@@ -136,18 +220,18 @@
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
-                        Create New Assignment
+                        Create New Assessment
                     </a>
                 </div>
             </div>
 
-            <!-- Metrics -->
+            <!-- Metrics Cards -->
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-icon-wrap metric-icon-blue">📋</div>
                     <div>
                         <div class="metric-value">{{ total_count }}</div>
-                        <div class="metric-label">Total Assignments</div>
+                        <div class="metric-label">Total Assessments</div>
                     </div>
                 </div>
                 <div class="metric-card">
@@ -161,46 +245,74 @@
                     <div class="metric-icon-wrap metric-icon-amber">✏️</div>
                     <div>
                         <div class="metric-value">{{ draft_count }}</div>
-                        <div class="metric-label">Drafts</div>
+                        <div class="metric-label">Draft Assessments</div>
                     </div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-icon-wrap metric-icon-blue">🎓</div>
                     <div>
                         <div class="metric-value">{{ total_attempts }}</div>
-                        <div class="metric-label">Student Submissions</div>
+                        <div class="metric-label">Student Attempts</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Filters -->
-            <div class="filter-bar">
-                <div class="tabs-group">
-                    <a href="?exam_type=ALL&status={{ status_filter }}" class="tab-btn {% if exam_filter == 'ALL' %}active{% endif %}">All Exams</a>
-                    <a href="?exam_type=FINAL&status={{ status_filter }}" class="tab-btn {% if exam_filter == 'FINAL' %}active{% endif %}">Final Exams</a>
-                    <a href="?exam_type=SUBJECT&status={{ status_filter }}" class="tab-btn {% if exam_filter == 'SUBJECT' %}active{% endif %}">Subject-wise</a>
+            <!-- Enhanced Search & Filter Controls -->
+            <form method="GET" class="filter-controls-row">
+                <div class="filter-selects-wrap">
+                    <!-- Module Filter -->
+                    <select name="module_id" class="filter-select" onchange="this.form.submit()">
+                        <option value="ALL">All Modules</option>
+                        {% for mod in modules %}
+                            <option value="{{ mod.id }}" {% if module_filter == mod.id|stringformat:"s" %}selected{% endif %}>
+                                {{ mod.icon }} {{ mod.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <!-- Exam Type Filter -->
+                    <select name="exam_type" class="filter-select" onchange="this.form.submit()">
+                        <option value="ALL" {% if exam_filter == 'ALL' %}selected{% endif %}>All Types (Subject & Mock)</option>
+                        <option value="SUBJECT" {% if exam_filter == 'SUBJECT' %}selected{% endif %}>Subject-wise Tests</option>
+                        <option value="FINAL" {% if exam_filter == 'FINAL' %}selected{% endif %}>Final / Comprehensive</option>
+                    </select>
+
+                    <!-- Status Filter -->
+                    <select name="status" class="filter-select" onchange="this.form.submit()">
+                        <option value="ALL" {% if status_filter == 'ALL' %}selected{% endif %}>All Statuses</option>
+                        <option value="PUBLISHED" {% if status_filter == 'PUBLISHED' %}selected{% endif %}>Published Only</option>
+                        <option value="DRAFT" {% if status_filter == 'DRAFT' %}selected{% endif %}>Drafts Only</option>
+                        <option value="CLOSED" {% if status_filter == 'CLOSED' %}selected{% endif %}>Closed</option>
+                    </select>
                 </div>
 
-                <div class="tabs-group">
-                    <a href="?exam_type={{ exam_filter }}&status=ALL" class="tab-btn {% if status_filter == 'ALL' %}active{% endif %}">All Status</a>
-                    <a href="?exam_type={{ exam_filter }}&status=DRAFT" class="tab-btn {% if status_filter == 'DRAFT' %}active{% endif %}">Drafts</a>
-                    <a href="?exam_type={{ exam_filter }}&status=PUBLISHED" class="tab-btn {% if status_filter == 'PUBLISHED' %}active{% endif %}">Published</a>
-                    <a href="?exam_type={{ exam_filter }}&status=CLOSED" class="tab-btn {% if status_filter == 'CLOSED' %}active{% endif %}">Closed</a>
+                <!-- Search Input -->
+                <div class="search-box-wrap">
+                    <input type="text" name="q" class="search-box-input" placeholder="Search by title, subject, tags..." value="{{ search_query }}" />
+                    <button type="submit" class="btn btn-secondary btn-sm" style="padding: 8px 14px;">
+                        🔍 Search
+                    </button>
+                    {% if search_query or module_filter != 'ALL' or exam_filter != 'ALL' or status_filter != 'ALL' %}
+                        <a href="{% url 'assignments:admin_list' %}" class="btn btn-secondary btn-sm" style="padding: 8px 12px; color: #dc2626;" title="Reset Filters">
+                            ✕ Clear
+                        </a>
+                    {% endif %}
                 </div>
-            </div>
+            </form>
 
-            <!-- Table -->
+            <!-- Table of Assessments -->
             <div class="table-card">
                 <table class="custom-table">
                     <thead>
                         <tr>
-                            <th>Assignment Title</th>
-                            <th>Category</th>
-                            <th>Subject & Topic</th>
-                            <th>Time Limit</th>
+                            <th>Assessment Details</th>
+                            <th>Module & Subject</th>
+                            <th>Difficulty</th>
+                            <th>Duration</th>
                             <th>Questions</th>
-                            <th>Total Marks</th>
+                            <th>Marks</th>
                             <th>Status</th>
+                            <th>Submissions</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -209,26 +321,38 @@
                             <tr>
                                 <td>
                                     <strong>{{ asgn.title }}</strong>
-                                    <div style="font-size: 11px; color: var(--clr-text-muted);">Created: {{ asgn.created_at|date:"M d, Y" }}</div>
-                                </td>
-                                <td>
-                                    {% if asgn.exam_type == 'FINAL' %}
-                                        <span class="badge badge-final">Final Exam</span>
-                                    {% else %}
-                                        <span class="badge badge-subject">Subject-wise</span>
+                                    {% if asgn.tags %}
+                                        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+                                            🏷️ {{ asgn.tags }}
+                                        </div>
                                     {% endif %}
                                 </td>
                                 <td>
                                     <div><strong>{{ asgn.subject }}</strong></div>
-                                    <div style="font-size: 12px; color: var(--clr-text-muted);">{{ asgn.topic|default:"General" }}</div>
+                                    {% if asgn.module %}
+                                        <div class="module-tag">
+                                            {{ asgn.module.icon }} {{ asgn.module.name }}
+                                        </div>
+                                    {% else %}
+                                        <div style="font-size: 11px; color: #94a3b8;">Unassigned</div>
+                                    {% endif %}
                                 </td>
-                                <td>{{ asgn.time_limit }} mins</td>
                                 <td>
-                                    <a href="{% url 'assignments:admin_questions' asgn.id %}" style="color: var(--clr-primary); font-weight: 600;">
-                                        {{ asgn.num_questions }} Questions &rarr;
+                                    {% if asgn.difficulty == 'EASY' %}
+                                        <span class="badge-difficulty-easy">Easy</span>
+                                    {% elif asgn.difficulty == 'HARD' %}
+                                        <span class="badge-difficulty-hard">Hard</span>
+                                    {% else %}
+                                        <span class="badge-difficulty-medium">Medium</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ asgn.time_limit }}m</td>
+                                <td>
+                                    <a href="{% url 'assignments:admin_questions' asgn.id %}" style="color: var(--clr-primary); font-weight: 700;">
+                                        {{ asgn.num_questions }} Qs &rarr;
                                     </a>
                                 </td>
-                                <td><strong>{{ asgn.total_marks }}</strong> pts</td>
+                                <td><strong>{{ asgn.total_marks }}</strong></td>
                                 <td>
                                     {% if asgn.status == 'DRAFT' %}
                                         <span class="badge badge-draft">Draft</span>
@@ -239,16 +363,17 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    <a href="{% url 'assignments:admin_submissions' asgn.id %}" style="font-weight: 600; color: #1e293b;">
+                                        {{ asgn.num_attempts }} student{{ asgn.num_attempts|pluralize }}
+                                    </a>
+                                </td>
+                                <td>
                                     <div style="display: flex; gap: 6px; align-items: center;">
                                         <a href="{% url 'assignments:admin_questions' asgn.id %}" class="btn btn-secondary btn-sm" title="Manage Questions">
                                             Questions
                                         </a>
 
-                                        <a href="{% url 'assignments:admin_submissions' asgn.id %}" class="btn btn-secondary btn-sm" title="View Submissions">
-                                            Scores ({{ asgn.num_attempts }})
-                                        </a>
-
-                                        <!-- Status toggle dropdown/form -->
+                                        <!-- Status toggle -->
                                         <form method="POST" action="{% url 'assignments:admin_status_toggle' asgn.id %}" style="display: inline;">
                                             {% csrf_token %}
                                             {% if asgn.status == 'DRAFT' %}
@@ -258,8 +383,8 @@
                                                 <input type="hidden" name="status" value="CLOSED" />
                                                 <button type="submit" class="btn btn-danger btn-sm" title="Archive / Close test">Close</button>
                                             {% else %}
-                                                <input type="hidden" name="status" value="DRAFT" />
-                                                <button type="submit" class="btn btn-secondary btn-sm" title="Revert to draft">Reopen</button>
+                                                <input type="hidden" name="status" value="PUBLISHED" />
+                                                <button type="submit" class="btn btn-secondary btn-sm" title="Reopen as published">Reopen</button>
                                             {% endif %}
                                         </form>
 
@@ -271,8 +396,10 @@
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 40px; color: var(--clr-text-muted);">
-                                    No assignments found matching the criteria. Click "Create New Assignment" to get started!
+                                <td colspan="9" style="text-align: center; padding: 48px 20px; color: var(--clr-text-muted);">
+                                    <div style="font-size: 32px; margin-bottom: 8px;">📂</div>
+                                    <div style="font-size: 15px; font-weight: 600; color: #334155;">No assessments found matching the criteria</div>
+                                    <p style="font-size: 13px; margin-top: 4px;">Try clearing filters or click "Create New Assessment" to configure your first test.</p>
                                 </td>
                             </tr>
                         {% endfor %}
