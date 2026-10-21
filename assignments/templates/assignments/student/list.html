@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Assessments & Courses - Placement Readiness Platform</title>
+    <title>Assessments & Courses - Placement Readiness Scorecard</title>
     <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
     <style>
@@ -740,6 +740,7 @@
             <!-- 3. MODULE-WISE EXPANDABLE ACCORDIONS -->
             <section class="module-accordion-stack" id="moduleAccordionStack">
                 {% for mod_item in modules_data %}
+                {% if mod_item.module.code != 'ACADEMIC_CGPA' and 'Academic' not in mod_item.module.name and 'CGPA' not in mod_item.module.name %}
                 <div class="module-card theme-{{ mod_item.module.color_theme }} {% if mod_item.is_expanded %}expanded{% endif %}" id="module-{{ mod_item.module.code }}">
 
                     <!-- Accordion Section Header -->
@@ -842,29 +843,40 @@
                                                 {{ asgn_item.status_label }}
                                             </span>
 
-                                            <!-- Action Button -->
-                                            {% if asgn_item.is_completed %}
-                                                <a href="{% url 'assignments:student_result' asgn_item.assignment.id %}" class="btn-action-review">
-                                                    <span>View Result</span>
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                                    </svg>
-                                                </a>
-                                            {% elif asgn_item.is_in_progress %}
-                                                <a href="{% url 'assignments:student_start' asgn_item.assignment.id %}" class="btn-action-resume">
-                                                    <span>Resume Test</span>
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                                    </svg>
-                                                </a>
-                                            {% else %}
-                                                <a href="{% url 'assignments:student_start' asgn_item.assignment.id %}" class="btn-action-start">
-                                                    <span>Start Assessment</span>
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                                    </svg>
-                                                </a>
-                                            {% endif %}
+                                            <!-- Action Buttons based on workflow -->
+                                            <div style="display: flex; gap: 8px; align-items: center;">
+                                                {% if asgn_item.can_resume %}
+                                                    <a href="{% url 'assignments:student_attempt' asgn_item.assignment.id %}" class="btn-action-resume">
+                                                        <span>Continue Test</span>
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                                        </svg>
+                                                    </a>
+                                                {% elif asgn_item.can_view_result %}
+                                                    <a href="{% url 'assignments:student_result' asgn_item.assignment.id %}" class="btn-action-review">
+                                                        <span>View Result</span>
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                                        </svg>
+                                                    </a>
+                                                    {% if asgn_item.can_retake %}
+                                                        <a href="{% url 'assignments:student_instructions' asgn_item.assignment.id %}" class="btn-action-start" style="background: #ffffff; color: var(--ch-blue); border: 1px solid var(--ch-blue);">
+                                                            <span>Retake Test</span>
+                                                        </a>
+                                                    {% endif %}
+                                                {% elif asgn_item.can_start %}
+                                                    <a href="{% url 'assignments:student_instructions' asgn_item.assignment.id %}" class="btn-action-start">
+                                                        <span>Start Test</span>
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                                        </svg>
+                                                    </a>
+                                                {% elif asgn_item.is_upcoming %}
+                                                    <span class="subject-meta-pill" style="color: #64748b;">Upcoming</span>
+                                                {% elif asgn_item.is_expired %}
+                                                    <span class="subject-meta-pill" style="color: #dc2626;">Closed</span>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                     {% endfor %}
@@ -894,6 +906,7 @@
                     </div>
 
                 </div>
+                {% endif %}
                 {% empty %}
                 <div style="background: #FFFFFF; border: 1px dashed var(--ch-border); border-radius: var(--ch-radius); padding: 60px 20px; text-align: center; color: var(--ch-text-muted);">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; color: var(--ch-blue);">

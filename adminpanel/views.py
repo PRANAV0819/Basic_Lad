@@ -92,7 +92,7 @@ def admin_dashboard_view(request):
 
     total_students = Student.objects.count()
     total_assignments = Assignment.objects.count()
-    completed_attempts = Attempt.objects.filter(status='COMPLETED')
+    completed_attempts = Attempt.objects.filter(status__in=['SUBMITTED', 'AUTO_SUBMITTED', 'COMPLETED'])
     total_submissions = completed_attempts.count()
 
     rankings = get_all_student_rankings()
@@ -203,7 +203,7 @@ def admin_scores_view(request):
     if not is_admin_logged_in(request):
         return redirect('adminpanel:login')
 
-    attempts = Attempt.objects.filter(status='COMPLETED').select_related('student', 'assignment').order_by('-submitted_at')
+    attempts = Attempt.objects.filter(status__in=['SUBMITTED', 'AUTO_SUBMITTED', 'COMPLETED']).select_related('student', 'assignment').order_by('-submitted_at')
 
     context = {
         'attempts': attempts,

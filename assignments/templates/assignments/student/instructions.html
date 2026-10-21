@@ -1,0 +1,213 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assessment Instructions - {{ assignment.title }}</title>
+    <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        .instructions-hero-card {
+            background: #ffffff;
+            border: 1px solid var(--clr-border);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+        .instruction-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .meta-box-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .meta-box-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 4px;
+        }
+        .rules-list {
+            margin: 20px 0;
+            padding-left: 20px;
+            color: #334155;
+            font-size: 14.5px;
+            line-height: 1.7;
+        }
+        .rules-list li {
+            margin-bottom: 10px;
+        }
+        .agree-box {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="dashboard-app">
+
+    {% include 'student/sidebar.html' with active_nav='assignments' %}
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'assignments:student_list' %}">Assessments</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">{{ assignment.title }}</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <a href="{% url 'assignments:student_list' %}" class="live-dash-pill">
+                    <span>&#8592; Back to Catalog</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="assignment-container" style="max-width: 900px; margin: 0 auto; padding: 24px;">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="instructions-hero-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                            {% if assignment.module %}
+                                <span class="badge" style="background: #eff6ff; color: #2563eb; font-weight: 700;">
+                                    {{ assignment.module.name }}
+                                </span>
+                            {% endif %}
+                            <span class="badge" style="background: #f1f5f9; color: #475569;">
+                                {{ assignment.get_assessment_type_display }}
+                            </span>
+                            <span class="badge" style="background: {% if assignment.difficulty == 'EASY' %}#ecfdf5; color: #059669;{% elif assignment.difficulty == 'HARD' %}#fef2f2; color: #dc2626;{% else %}#eff6ff; color: #2563eb;{% endif %}">
+                                {{ assignment.get_difficulty_display }}
+                            </span>
+                        </div>
+                        <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">
+                            {{ assignment.title }}
+                        </h1>
+                        <p style="font-size: 14px; color: #64748b; margin: 0;">
+                            Subject: <strong>{{ assignment.subject }}</strong> &bull; Topics: <strong>{{ assignment.topic|default:"Comprehensive Curriculum" }}</strong>
+                        </p>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <span class="badge" style="background: #f8fafc; border: 1px solid #cbd5e1; font-size: 13px; padding: 6px 12px;">
+                            Attempt {{ attempt_number }} of {{ assignment.max_attempts }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Test Specifications Grid -->
+                <div class="instruction-meta-grid">
+                    <div>
+                        <div class="meta-box-label">Duration</div>
+                        <div class="meta-box-value">{{ assignment.time_limit }} mins</div>
+                    </div>
+                    <div>
+                        <div class="meta-box-label">Total Questions</div>
+                        <div class="meta-box-value">{{ questions_count }} Qs</div>
+                    </div>
+                    <div>
+                        <div class="meta-box-label">Total Marks</div>
+                        <div class="meta-box-value">{{ assignment.total_marks }} pts</div>
+                    </div>
+                    <div>
+                        <div class="meta-box-label">Pass Threshold</div>
+                        <div class="meta-box-value">{{ assignment.passing_percentage }}%</div>
+                    </div>
+                    <div>
+                        <div class="meta-box-label">Negative Marking</div>
+                        <div class="meta-box-value" style="color: {% if assignment.negative_marking > 0 %}#dc2626{% else %}#16a34a{% endif %};">
+                            {% if assignment.negative_marking > 0 %}-{{ assignment.negative_marking }}{% else %}None{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if assignment.description %}
+                    <div style="background: #ffffff; border-left: 4px solid #2563eb; padding: 12px 18px; margin-bottom: 24px; border-radius: 0 6px 6px 0; font-size: 14px; color: #334155; line-height: 1.6;">
+                        <strong>Assessment Notes:</strong><br />
+                        {{ assignment.description|linebreaksbr }}
+                    </div>
+                {% endif %}
+
+                <!-- Standard Operating Rules -->
+                <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-top: 24px;">
+                    📜 Test Instructions & Integrity Guidelines
+                </h3>
+                <ul class="rules-list">
+                    <li><strong>Continuous Timer:</strong> Once initiated, the test countdown timer runs continuously on the server. Navigating away or closing your browser tab does NOT pause the timer.</li>
+                    <li><strong>Question Formats:</strong> This assessment may contain Single-Choice MCQs, Multiple-Select Questions (MSQ), Code Output/Tracing, and Numerical reasoning problems.</li>
+                    <li><strong>Scoring Policy:</strong> For MSQ questions, full marks are awarded strictly when all correct options and no incorrect options are chosen.</li>
+                    {% if assignment.negative_marking > 0 %}
+                        <li style="color: #b91c1c;"><strong>Penalty Warning:</strong> Incorrect responses will incur a deduction of <strong>{{ assignment.negative_marking }} marks</strong>. Unanswered questions do not attract negative marks.</li>
+                    {% else %}
+                        <li><strong>No Negative Marking:</strong> There is no penalty for wrong answers. We encourage attempting all questions.</li>
+                    {% endif %}
+                    <li><strong>Automatic Submission:</strong> When the remaining countdown timer reaches zero, your responses will be automatically locked, evaluated, and submitted by the server.</li>
+                    <li><strong>Single Submission:</strong> Once you finalize and submit the test, answers cannot be edited.</li>
+                </ul>
+
+                <form method="POST" action="{% url 'assignments:student_start' assignment.id %}" id="startTestForm">
+                    {% csrf_token %}
+
+                    <label class="agree-box">
+                        <input type="checkbox" id="agreeCheck" required style="width: 18px; height: 18px; cursor: pointer;" />
+                        <span style="font-size: 14px; font-weight: 600; color: #1e293b;">
+                            I have read, understood, and agree to abide by all the assessment guidelines and timer rules.
+                        </span>
+                    </label>
+
+                    <div style="display: flex; gap: 14px; align-items: center; margin-top: 24px;">
+                        <button type="submit" id="startBtn" class="btn btn-primary" style="padding: 14px 32px; font-size: 15px; font-weight: 700;">
+                            🚀 Begin Assessment (Attempt #{{ attempt_number }})
+                        </button>
+                        <a href="{% url 'assignments:student_list' %}" class="btn btn-secondary" style="padding: 14px 24px; font-size: 15px;">
+                            Cancel & Return
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'student/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
+    <script>
+        const agreeCheck = document.getElementById('agreeCheck');
+        const startBtn = document.getElementById('startBtn');
+
+        function toggleBtn() {
+            startBtn.disabled = !agreeCheck.checked;
+            startBtn.style.opacity = agreeCheck.checked ? '1' : '0.5';
+            startBtn.style.cursor = agreeCheck.checked ? 'pointer' : 'not-allowed';
+        }
+
+        agreeCheck.addEventListener('change', toggleBtn);
+        toggleBtn();
+    </script>
+</body>
+</html>

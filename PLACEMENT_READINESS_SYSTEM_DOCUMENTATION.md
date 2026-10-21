@@ -1,8 +1,8 @@
-# PLACEMENT READINESS PLATFORM — COMPLETE TECHNICAL SPECIFICATION & VIVA GUIDE
+# PLACEMENT READINESS SCORECARD — COMPLETE TECHNICAL SPECIFICATION & VIVA GUIDE
 
 ## 1. Project Purpose & System Overview
 
-The **Placement Readiness Platform** is a college web application designed to help engineering and computer science students evaluate, track, and improve their technical and academic readiness for campus recruitment drives.
+The **Placement Readiness Scorecard** is a college web application designed to help engineering and computer science students evaluate, track, and improve their technical and academic readiness for campus recruitment drives.
 
 ### System Architecture
 - **Web Framework:** Python Django (MVT Architecture)
@@ -118,15 +118,16 @@ Located in [student/logic/analytics.py](file:///D:/Basic_Lad/student/logic/analy
 
 ### Mathematical Weightage Breakdown (Guaranteed 0 - 100):
 
-$$\text{Readiness Score} = (S \times 0.40) + (F \times 0.25) + (P \times 0.15) + (C \times 0.10) + (R \times 0.10)$$
+$$\text{Readiness Score} = (\text{Coding \& DSA} \times 0.25) + (\text{Core CS} \times 0.25) + (\text{Aptitude} \times 0.15) + (\text{Logical Reasoning} \times 0.15) + (\text{CGPA} \times 0.10) + (\text{Communication Skills} \times 0.10)$$
 
 | Component | Weight | Calculation Method | Description |
 |-----------|--------|--------------------|-------------|
-| **Subject Performance ($S$)** | **40%** | $\frac{\sum \text{Score}_{\text{subj}}}{\sum \text{Total}_{\text{subj}}} \times 100$ | Aggregate percentage across subject tests (Data Structures, Python, DBMS, etc.) |
-| **Final Exam Score ($F$)** | **25%** | $\frac{\sum \text{Score}_{\text{final}}}{\sum \text{Total}_{\text{final}}} \times 100$ | Average on full-length mock placement assessments |
-| **Profile Completion ($P$)** | **15%** | 10 key profile fields $\times$ 10% each | Academic, technical, and project portfolio completeness |
-| **Normalized CGPA ($C$)** | **10%** | $\min\left(\frac{\text{CGPA}}{10.0} \times 100, 100\right)$ | Academic consistency from college degree |
-| **Completion Ratio ($R$)** | **10%** | $\frac{\text{Completed Tests}}{\text{Total Available Tests}} \times 100$ | Test discipline and continuous engagement |
+| **Coding & DSA** | **25%** | $\frac{\sum \text{Score}_{\text{coding}}}{\sum \text{Total}_{\text{coding}}} \times 100$ | Performance across Programming, Data Structures, Algorithms, Recursion & DP |
+| **Core CS Subjects** | **25%** | $\frac{\sum \text{Score}_{\text{core}}}{\sum \text{Total}_{\text{core}}} \times 100$ | Foundational computer science: OOP, DBMS, Operating Systems, Computer Networks |
+| **Aptitude & Quants** | **15%** | $\frac{\sum \text{Score}_{\text{apt}}}{\sum \text{Total}_{\text{apt}}} \times 100$ | Quantitative aptitude, Percentages, Profit & Loss, Speed-Time-Distance, Numbers |
+| **Logical Reasoning** | **15%** | $\frac{\sum \text{Score}_{\text{lr}}}{\sum \text{Total}_{\text{lr}}} \times 100$ | Analytical puzzles, Series, Coding-Decoding, Seating Arrangements, Blood Relations |
+| **Normalized CGPA** | **10%** | $\min\left(\frac{\text{CGPA}}{10.0} \times 100, 100\right)$ | Academic consistency from college degree performance |
+| **Communication Skills** | **10%** | $\frac{\sum \text{Score}_{\text{comm}}}{\sum \text{Total}_{\text{comm}}} \times 100$ | Verbal fluency, corporate English, grammar, reading comprehension, and interview readiness |
 
 ### Readiness Bands:
 - **High Readiness ($\ge 80\%$):** Ready for product company placement interviews.

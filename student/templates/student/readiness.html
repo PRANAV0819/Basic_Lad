@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Placement Readiness Analysis - PlaceReady</title>
+    <title>Placement Readiness Analysis - Placement Readiness Scorecard</title>
     <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
     <style>
@@ -194,34 +194,41 @@
             </div>
         </section>
 
-        <!-- 5-Component Mathematical Breakdown -->
+        <!-- 6-Component Mathematical Breakdown -->
         <section>
             <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--clr-text-main); margin-bottom: 0.5rem;">
                 Mathematical Weightage Breakdown
             </h2>
             <p style="color: var(--clr-text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
-                Formula: <code>Readiness = (Subject × 40%) + (Final Exam × 25%) + (Profile × 15%) + (CGPA × 10%) + (Consistency × 10%)</code>
+                Formula: <code>Readiness Score = (Coding & DSA × 25%) + (Core CS Subjects × 25%) + (Aptitude × 15%) + (Logical Reasoning × 15%) + (Academic CGPA × 10%) + (Communication Skills × 10%)</code>
             </p>
 
             <div class="formula-grid">
-                <!-- Subject Performance -->
+                <!-- Coding & DSA -->
                 <div class="formula-card">
-                    <span class="formula-card-title">Subject Performance</span>
-                    <span class="formula-card-val">{{ readiness.components.subject_pct }}%</span>
-                    <span class="formula-card-weight">Weight: 40%</span>
-                </div>
-
-                <!-- Final Exam -->
-                <div class="formula-card">
-                    <span class="formula-card-title">Final Exam Score</span>
-                    <span class="formula-card-val">{{ readiness.components.final_pct }}%</span>
+                    <span class="formula-card-title">Coding &amp; DSA</span>
+                    <span class="formula-card-val">{{ readiness.components.coding_dsa_pct }}%</span>
                     <span class="formula-card-weight">Weight: 25%</span>
                 </div>
 
-                <!-- Profile Completion -->
+                <!-- Core CS Subjects -->
                 <div class="formula-card">
-                    <span class="formula-card-title">Profile Completion</span>
-                    <span class="formula-card-val">{{ readiness.components.profile_pct }}%</span>
+                    <span class="formula-card-title">Core CS Subjects</span>
+                    <span class="formula-card-val">{{ readiness.components.core_subjects_pct }}%</span>
+                    <span class="formula-card-weight">Weight: 25%</span>
+                </div>
+
+                <!-- Aptitude -->
+                <div class="formula-card">
+                    <span class="formula-card-title">Aptitude &amp; Quants</span>
+                    <span class="formula-card-val">{{ readiness.components.aptitude_pct }}%</span>
+                    <span class="formula-card-weight">Weight: 15%</span>
+                </div>
+
+                <!-- Logical Reasoning -->
+                <div class="formula-card">
+                    <span class="formula-card-title">Logical Reasoning</span>
+                    <span class="formula-card-val">{{ readiness.components.logical_reasoning_pct }}%</span>
                     <span class="formula-card-weight">Weight: 15%</span>
                 </div>
 
@@ -232,10 +239,10 @@
                     <span class="formula-card-weight">Weight: 10%</span>
                 </div>
 
-                <!-- Completion Ratio -->
+                <!-- Communication Skills -->
                 <div class="formula-card">
-                    <span class="formula-card-title">Test Completion Rate</span>
-                    <span class="formula-card-val">{{ readiness.components.completion_ratio }}%</span>
+                    <span class="formula-card-title">Communication Skills</span>
+                    <span class="formula-card-val">{{ readiness.components.communication_pct }}%</span>
                     <span class="formula-card-weight">Weight: 10%</span>
                 </div>
             </div>

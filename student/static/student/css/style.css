@@ -1,7 +1,7 @@
 /*
   student/static/student/css/style.css
 
-  Placement Readiness Platform - Student Module Stylesheet
+  Placement Readiness Scorecard - Student Module Stylesheet
   Design matches the reference student dashboard image:
   - Dark Navy Sidebar (#0b1727)
   - Top Search & Student Profile Bar
@@ -852,6 +852,99 @@ button {
     font-size: 0.68rem;
 }
 
+/* Clickable Metric Card Styling */
+a.metric-card,
+.metric-card.clickable-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+a.metric-card:hover,
+.metric-card.clickable-card:hover {
+    transform: translateY(-4px);
+    border-color: #93c5fd;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.12);
+}
+
+.metric-action-hint {
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 0.4rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.85;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+a.metric-card:hover .metric-action-hint,
+.metric-card.clickable-card:hover .metric-action-hint {
+    opacity: 1;
+    transform: translateX(3px);
+}
+
+.card-cyan .metric-action-hint { color: #0284c7; }
+.card-green .metric-action-hint { color: #16a34a; }
+.card-amber .metric-action-hint { color: #d97706; }
+.card-blue .metric-action-hint { color: #2563eb; }
+
+/* Recent Scores Table Styling */
+.table-assignment-link {
+    color: var(--clr-text-main);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.15s ease;
+}
+.table-assignment-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.badge-score-pill {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 0.35rem;
+}
+.badge-score-green {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+.badge-score-amber {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+.badge-score-red {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.btn-table-review {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #2563eb;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 0.32rem 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.btn-table-review:hover {
+    background-color: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
 
 /* ============================================================
    8. PANEL CARDS (Shared Base)
@@ -1071,8 +1164,9 @@ button {
     align-items: center;
     height: 100%;
     justify-content: flex-end;
-    width: 52px;
+    width: 60px;
     position: relative;
+    cursor: default;
 }
 
 .bar-val {
@@ -1083,7 +1177,7 @@ button {
 }
 
 .bar-fill {
-    width: 38px;
+    width: 36px;
     border-radius: 6px 6px 0 0;
     transition: height 0.6s ease;
 }
@@ -1096,11 +1190,17 @@ button {
 
 .bar-label {
     position: absolute;
-    bottom: -28px;
-    font-size: 0.78rem;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.76rem;
     color: var(--clr-text-muted);
     font-weight: 600;
     white-space: nowrap;
+    text-align: center;
+    max-width: 68px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Donut Chart Layout */

@@ -50,8 +50,8 @@
                 </svg>
             </div>
             <div class="brand-title-wrap">
-                <h2 class="brand-title">PlaceReady</h2>
-                <span class="brand-sub">Placement Readiness Platform</span>
+                <h2 class="brand-title" style="color: #2563eb; font-size: 1.05rem;">Placement Readiness</h2>
+                <span class="brand-sub">Scorecard</span>
             </div>
         </div>
 
@@ -71,7 +71,7 @@
                     <line x1="16" y1="13" x2="8" y2="13"></line>
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                 </svg>
-                <span>Assignments</span>
+                <span>Assessments</span>
             </a>
 
             <a href="{% url 'adminpanel:students' %}" class="nav-item">
@@ -114,7 +114,6 @@
                     </div>
                 </div>
             </div>
-
             <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
                 Sign Out
             </a>
@@ -128,14 +127,14 @@
                     <span style="font-size: 16px;">&#128196;</span>
                     <a href="{% url 'adminpanel:dashboard' %}">Home</a>
                     <span class="breadcrumb-sep">&gt;</span>
-                    <a href="{% url 'assignments:admin_list' %}">Assignments</a>
+                    <a href="{% url 'assignments:admin_list' %}">Assessments</a>
                     <span class="breadcrumb-sep">&gt;</span>
                     <span class="breadcrumb-current">Edit: {{ assignment.title }}</span>
                 </nav>
             </div>
             <div class="topbar-right">
                 <a href="{% url 'assignments:admin_list' %}" class="live-dash-pill">
-                    <span>&#8592; Assignments</span>
+                    <span>&#8592; Back to Catalog</span>
                 </a>
             </div>
         </header>
@@ -144,7 +143,7 @@
             <div class="page-header">
                 <div>
                     <h1 class="page-title">Edit Assessment Details</h1>
-                    <p class="page-subtitle">Update parameters for "{{ assignment.title }}"</p>
+                    <p class="page-subtitle">Update parameters, test rules, or availability dates for "{{ assignment.title }}"</p>
                 </div>
                 <div style="display: flex; gap: 8px;">
                     <a href="{% url 'assignments:admin_questions' assignment.id %}" class="btn btn-secondary">
@@ -160,7 +159,7 @@
             {% if completed_attempts_count > 0 %}
                 <div class="alert" style="background: #fffbeb; border: 1px solid #fde68a; color: #92400e; padding: 14px 18px; border-radius: 8px; margin-bottom: 20px;">
                     <strong>⚠️ Attempt Safeguard Active:</strong> This assessment already has <strong>{{ completed_attempts_count }} completed student submission{{ completed_attempts_count|pluralize }}</strong>.
-                    You can modify titles, instructions, module categorization, and difficulty safely. Please avoid modifying parameters that alter historical score normalization.
+                    You can modify titles, instructions, module categorization, and dates safely.
                 </div>
             {% endif %}
 
@@ -191,12 +190,12 @@
 
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label class="form-label">Readiness Module</label>
+                                <label class="form-label">Readiness Category (Module)</label>
                                 <select name="module_id" id="moduleSelect" class="form-control">
-                                    <option value="">-- Select Readiness Module --</option>
+                                    <option value="">-- Select Category --</option>
                                     {% for mod in modules %}
                                         <option value="{{ mod.id }}" {% if assignment.module_id == mod.id %}selected{% endif %}>
-                                            {{ mod.icon }} {{ mod.name }} ({{ mod.weight_percentage }}%)
+                                            {{ mod.name }} (Weight: {{ mod.weight_percentage }}%)
                                         </option>
                                     {% endfor %}
                                 </select>
@@ -236,10 +235,11 @@
 
                         <div class="form-grid-3">
                             <div class="form-group">
-                                <label class="form-label">Exam Category *</label>
-                                <select name="exam_type" class="form-control">
-                                    <option value="SUBJECT" {% if assignment.exam_type == 'SUBJECT' %}selected{% endif %}>Subject-wise Practice Exam</option>
-                                    <option value="FINAL" {% if assignment.exam_type == 'FINAL' %}selected{% endif %}>Comprehensive Mock / Final Exam</option>
+                                <label class="form-label">Assessment Type *</label>
+                                <select name="assessment_type" class="form-control">
+                                    <option value="SUBJECT" {% if assignment.assessment_type == 'SUBJECT' %}selected{% endif %}>Subject Test</option>
+                                    <option value="PRACTICE" {% if assignment.assessment_type == 'PRACTICE' %}selected{% endif %}>Practice Test</option>
+                                    <option value="MOCK" {% if assignment.assessment_type == 'MOCK' %}selected{% endif %}>Mock Test / Final Exam</option>
                                 </select>
                             </div>
 
@@ -253,30 +253,56 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Time Limit (Minutes) *</label>
+                                <label class="form-label">Duration (Minutes) *</label>
                                 <input type="number" name="time_limit" class="form-control" min="1" max="300" value="{{ assignment.time_limit }}" required />
                             </div>
                         </div>
 
                         <div class="form-grid-3">
                             <div class="form-group">
-                                <label class="form-label">Negative Marking</label>
+                                <label class="form-label">Passing Threshold (%)</label>
+                                <input type="number" min="0" max="100" name="passing_percentage" class="form-control" value="{{ assignment.passing_percentage|default:'40' }}" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Negative Marking (Penalty)</label>
                                 <input type="number" step="0.25" min="0" max="10" name="negative_marking" class="form-control" value="{{ assignment.negative_marking|default:'0.0' }}" />
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Max Attempts</label>
+                                <label class="form-label">Maximum Attempts</label>
                                 <input type="number" min="1" max="10" name="max_attempts" class="form-control" value="{{ assignment.max_attempts|default:'1' }}" />
+                            </div>
+                        </div>
+
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label class="form-label">Availability Start Date</label>
+                                <input type="datetime-local" name="start_date" class="form-control" value="{{ assignment.start_date|date:'Y-m-d\TH:i' }}" />
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Search Tags</label>
-                                <input type="text" name="tags" class="form-control" value="{{ assignment.tags|default:'' }}" />
+                                <label class="form-label">Availability End Date</label>
+                                <input type="datetime-local" name="end_date" class="form-control" value="{{ assignment.end_date|date:'Y-m-d\TH:i' }}" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Publication Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="DRAFT" {% if assignment.status == 'DRAFT' %}selected{% endif %}>Draft</option>
+                                    <option value="PUBLISHED" {% if assignment.status == 'PUBLISHED' %}selected{% endif %}>Published</option>
+                                    <option value="ARCHIVED" {% if assignment.status == 'ARCHIVED' or assignment.status == 'CLOSED' %}selected{% endif %}>Archived</option>
+                                </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Security & Integrity Toggles</label>
+                            <label class="form-label">Search Tags</label>
+                            <input type="text" name="tags" class="form-control" value="{{ assignment.tags|default:'' }}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Security & Solution Release Toggles</label>
                             <div class="checkbox-pill-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="shuffle_questions" value="1" {% if assignment.shuffle_questions %}checked{% endif %} />
@@ -284,7 +310,7 @@
                                 </label>
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="show_solutions_after_submission" value="1" {% if assignment.show_solutions_after_submission %}checked{% endif %} />
-                                    <span>💡 Release Solutions & Explanations After Submission</span>
+                                    <span>💡 Release Answers & Explanations After Submission</span>
                                 </label>
                             </div>
                         </div>
@@ -293,7 +319,7 @@
                     <!-- Section 3: Description -->
                     <div style="margin-bottom: 24px;">
                         <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
-                            3. Description & Student Instructions
+                            3. Description & Student Guidelines
                         </h3>
 
                         <div class="form-group">

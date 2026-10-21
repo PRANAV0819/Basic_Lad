@@ -1,6 +1,6 @@
 /**
  * theme.js
- * Placement Readiness Platform - Global UI Controller (Light Theme)
+ * Placement Readiness Scorecard - Global UI Controller (Light Theme)
  *
  * Ensures dark theme is completely removed, clears any legacy localStorage theme tokens,
  * and maintains the CodeHelp global search keyboard shortcut (Ctrl + K).

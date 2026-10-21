@@ -21,8 +21,8 @@
                 </svg>
             </div>
             <div class="brand-title-wrap">
-                <h2 class="brand-title">PlaceReady</h2>
-                <span class="brand-sub">Placement Readiness Platform</span>
+                <h2 class="brand-title" style="color: #2563eb; font-size: 1.05rem;">Placement Readiness</h2>
+                <span class="brand-sub">Scorecard</span>
             </div>
         </div>
 
@@ -196,12 +196,26 @@
                                         <span class="badge badge-msq">Multiple Select (MSQ)</span>
                                     {% elif q.question_type == 'CODE' %}
                                         <span class="badge badge-code" style="background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe;">Code Tracing</span>
+                                    {% elif q.question_type == 'NUMERICAL' %}
+                                        <span class="badge" style="background: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc;">Numerical Question</span>
                                     {% endif %}
                                 </div>
-                                <div style="display: flex; gap: 12px; align-items: center;">
+                                <div style="display: flex; gap: 8px; align-items: center;">
                                     <span style="font-weight: 700; font-size: 13px; color: var(--clr-text-main);">
                                         {{ q.marks }} {% if q.marks == 1 %}mark{% else %}marks{% endif %}
                                     </span>
+
+                                    <!-- Reorder Buttons -->
+                                    <form method="POST" action="{% url 'assignments:admin_question_reorder' assignment.id q.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="direction" value="up" />
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 10px;" title="Move Up" {% if forloop.first %}disabled style="opacity:0.4;"{% endif %}>▲</button>
+                                    </form>
+                                    <form method="POST" action="{% url 'assignments:admin_question_reorder' assignment.id q.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="direction" value="down" />
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 10px;" title="Move Down" {% if forloop.last %}disabled style="opacity:0.4;"{% endif %}>▼</button>
+                                    </form>
 
                                     <!-- Delete Question -->
                                     <form method="POST" action="{% url 'assignments:admin_question_delete' assignment.id q.id %}" onsubmit="return confirm('Delete Question {{ q.order }}?');" style="display: inline;">
@@ -280,6 +294,7 @@
                                     <option value="MCQ" {% if form_data.question_type == 'MCQ' %}selected{% endif %}>Single Choice (MCQ)</option>
                                     <option value="MSQ" {% if form_data.question_type == 'MSQ' %}selected{% endif %}>Multiple Select (MSQ)</option>
                                     <option value="CODE" {% if form_data.question_type == 'CODE' %}selected{% endif %}>Code Output / Tracing (CODE)</option>
+                                    <option value="NUMERICAL" {% if form_data.question_type == 'NUMERICAL' %}selected{% endif %}>Numerical Problem (NUMERICAL)</option>
                                 </select>
                             </div>
 
@@ -366,7 +381,9 @@
                 if (typeSelect.value === 'MSQ') {
                     typeHint.innerHTML = '<strong>MSQ Mode:</strong> Select all checkboxes that apply as correct answers.';
                 } else if (typeSelect.value === 'CODE') {
-                    typeHint.innerHTML = '<strong>Code Tracing:</strong> Enter program output options and select the exactly ONE correct option.';
+                    typeHint.innerHTML = '<strong>Code Tracing:</strong> Enter program output options and select exactly ONE correct option.';
+                } else if (typeSelect.value === 'NUMERICAL') {
+                    typeHint.innerHTML = '<strong>Numerical Problem:</strong> Enter numerical options (e.g. 42, 3.14) and designate the correct numerical answer.';
                 } else {
                     typeHint.innerHTML = '<strong>MCQ Mode:</strong> Select exactly ONE correct option.';
                 }

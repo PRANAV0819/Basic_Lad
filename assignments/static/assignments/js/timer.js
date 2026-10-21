@@ -1,7 +1,7 @@
 /**
  * assignments/static/assignments/js/timer.js
  *
- * Placement Readiness Platform - Exam Timer & Examination Interface Script
+ * Placement Readiness Scorecard - Exam Timer & Examination Interface Script
  * Written in 100% Vanilla JavaScript (No external libraries, No jQuery).
  *
  * Responsibilities:

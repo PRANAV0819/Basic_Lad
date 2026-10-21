@@ -65,7 +65,7 @@ def create_or_update_admin(username: str, raw_password: str):
 
 
 if __name__ == '__main__':
-    print("=== Placement Readiness Platform - Admin Creator ===")
+    print("=== Placement Readiness Scorecard - Admin Creator ===")
     if len(sys.argv) == 3:
         u = sys.argv[1]
         p = sys.argv[2]

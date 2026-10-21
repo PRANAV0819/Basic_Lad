@@ -1,0 +1,255 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Subjects & Topics - Admin</title>
+    <link rel="stylesheet" href="{% static 'adminpanel/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        .module-group-card {
+            background: #ffffff;
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .module-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body class="dashboard-app">
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="10" width="4" height="11" rx="1.5" fill="#38bdf8"/>
+                    <rect x="9" y="5" width="4" height="16" rx="1.5" fill="#2563eb"/>
+                    <rect x="16" y="2" width="4" height="19" rx="1.5" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-title-wrap">
+                <h2 class="brand-title" style="color: #2563eb; font-size: 1.05rem;">Placement Readiness</h2>
+                <span class="brand-sub">Scorecard</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="{% url 'adminpanel:dashboard' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'assignments:admin_list' %}" class="nav-item active">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Assignments</span>
+            </a>
+
+            <a href="{% url 'adminpanel:students' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Students</span>
+            </a>
+
+            <a href="{% url 'adminpanel:student_scores' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Student Scores</span>
+            </a>
+
+            <a href="{% url 'adminpanel:reports' %}" class="nav-item">
+                <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer" style="padding: 16px;">
+            <div class="user-profile-widget">
+                <div class="user-profile-info">
+                    <div class="user-avatar-circle">A</div>
+                    <div class="user-names-wrap">
+                        <div class="user-full-name">Admin Console</div>
+                        <div class="user-email-sub">Administrator</div>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <nav class="breadcrumb-nav">
+                    <span style="font-size: 16px;">&#128196;</span>
+                    <a href="{% url 'adminpanel:dashboard' %}">Home</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <a href="{% url 'assignments:admin_list' %}">Assignments</a>
+                    <span class="breadcrumb-sep">&gt;</span>
+                    <span class="breadcrumb-current">Subject & Topic Management</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <a href="{% url 'assignments:admin_list' %}" class="live-dash-pill">
+                    <span>&#8592; Back to Assignments</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="assignment-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Curriculum Subjects & Topics</h1>
+                    <p class="page-subtitle">Configure the subjects, syllabus units, and curriculum scope available under each readiness module.</p>
+                </div>
+                <div>
+                    <a href="{% url 'assignments:admin_list' %}" class="btn btn-secondary">
+                        &larr; Back to Catalog
+                    </a>
+                </div>
+            </div>
+
+            <!-- Create Subject Form -->
+            <div class="form-card" style="margin-bottom: 24px; border-left: 4px solid #2563eb;">
+                <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 14px;">
+                    ➕ Add New Subject or Topic Area
+                </h3>
+                <form method="POST" action="{% url 'assignments:admin_subject_create' %}">
+                    {% csrf_token %}
+                    <div style="display: grid; grid-template-columns: 240px 1fr 1fr auto; gap: 14px; align-items: flex-end;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Parent Module *</label>
+                            <select name="module_id" class="form-control" required>
+                                {% for mod in modules %}
+                                    <option value="{{ mod.id }}">{{ mod.name }} ({{ mod.weight_percentage }}%)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Subject Title *</label>
+                            <input type="text" name="name" class="form-control" placeholder="e.g. Cloud Computing Architecture" required />
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Curriculum Topics (Comma-separated)</label>
+                            <input type="text" name="topics" class="form-control" placeholder="e.g. AWS, Azure, Virtualization, Containers" />
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">
+                                Add Subject
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Existing Subjects Grouped by Module -->
+            {% for mod in modules %}
+                <div class="module-group-card">
+                    <div class="module-group-header">
+                        <div>
+                            <h2 style="font-size: 18px; font-weight: 700; color: #0f172a; margin: 0;">
+                                {{ mod.name }}
+                            </h2>
+                            <p style="font-size: 13px; color: #64748b; margin: 2px 0 0 0;">
+                                Weight: <strong>{{ mod.weight_percentage }}%</strong> &bull; Total Configured Subjects: <strong>{{ mod.subjects.count }}</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 280px;">Subject Name</th>
+                                <th>Curriculum Topics</th>
+                                <th style="width: 120px;">Tests Linked</th>
+                                <th style="width: 100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subj in mod.subjects.all %}
+                                <tr>
+                                    <td><strong>{{ forloop.counter }}</strong></td>
+                                    <td>
+                                        <strong>{{ subj.name }}</strong>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px; color: #334155;">{{ subj.topics|default:"General syllabus" }}</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge" style="background: #eff6ff; color: #2563eb; font-weight: 700;">
+                                            {{ subj.assignments.count }} Test{{ subj.assignments.count|pluralize }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if subj.assignments.count == 0 %}
+                                            <form method="POST" action="{% url 'assignments:admin_subject_delete' subj.id %}" onsubmit="return confirm('Delete subject {{ subj.name }}?');" style="display: inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-sm" style="padding: 3px 8px; font-size: 11px;">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span style="font-size: 11px; color: #94a3b8;">In Use</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 20px; color: #94a3b8;">
+                                        No subjects added under this category yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <script src="{% static 'adminpanel/js/script.js' %}"></script>
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

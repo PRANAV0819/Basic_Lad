@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Dashboard - Placement Readiness Platform</title>
+    <title>Student Dashboard - Placement Readiness Scorecard</title>
     <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
 </head>
@@ -49,7 +49,7 @@
             <!-- Row 1: 4 Metric Cards -->
             <section class="metrics-grid">
                 <!-- Card 1: Assignments -->
-                <div class="metric-card card-cyan">
+                <a href="{% url 'assignments:student_list' %}" class="metric-card card-cyan clickable-card" title="Click to view all available assignments">
                     <div class="metric-icon-box box-cyan">
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -63,11 +63,12 @@
                         <div class="metric-number-row">
                             <span class="metric-value">{{ total_assignments }}</span>
                         </div>
+                        <span class="metric-action-hint">View tests &rarr;</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- Card 2: Completed Assignments -->
-                <div class="metric-card card-green">
+                <a href="{% url 'assignments:student_results_list' %}" class="metric-card card-green clickable-card" title="Click to view completed assignments and test results">
                     <div class="metric-icon-box box-green">
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -81,11 +82,12 @@
                         <div class="metric-number-row">
                             <span class="metric-value">{{ completed_assignments }}</span>
                         </div>
+                        <span class="metric-action-hint">View results &rarr;</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- Card 3: Average Score -->
-                <div class="metric-card card-amber">
+                <a href="{% url 'student:readiness' %}" class="metric-card card-amber clickable-card" title="Click to view score breakdown and placement readiness analysis">
                     <div class="metric-icon-box box-amber">
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
                             <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
@@ -101,11 +103,12 @@
                         <div class="metric-number-row">
                             <span class="metric-value">{{ avg_score }}%</span>
                         </div>
+                        <span class="metric-action-hint">View analysis &rarr;</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- Card 4: Placement Readiness Score -->
-                <div class="metric-card card-blue">
+                <a href="{% url 'student:readiness' %}" class="metric-card card-blue clickable-card" title="Click to view placement readiness analysis">
                     <div class="metric-icon-box box-blue">
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
                             <line x1="18" y1="20" x2="18" y2="10"></line>
@@ -118,8 +121,9 @@
                         <div class="metric-number-row">
                             <span class="metric-value">{{ readiness_score }}%</span>
                         </div>
+                        <span class="metric-action-hint">Readiness report &rarr;</span>
                     </div>
-                </div>
+                </a>
             </section>
 
             <!-- Row 2: 3 Analytics Cards (Your Rank, Subject Performance Bar Chart, Readiness Donut Chart) -->
@@ -182,11 +186,13 @@
                             <div class="bars-container">
                                 {% if subject_perf %}
                                     {% for s in subject_perf %}
-                                        <div class="bar-column">
-                                            <span class="bar-val">{{ s.percentage }}%</span>
-                                            <div class="bar-fill {% cycle 'bar-blue-1' 'bar-blue-2' 'bar-blue-1' 'bar-cyan' 'bar-green' %}" style="height: {{ s.percentage }}%;"></div>
-                                            <span class="bar-label">{{ s.subject }}</span>
-                                        </div>
+                                        {% if "Programming Fundamentals" not in s.subject %}
+                                            <div class="bar-column" title="{{ s.subject }}: {{ s.percentage }}%">
+                                                <span class="bar-val">{{ s.percentage }}%</span>
+                                                <div class="bar-fill {% cycle 'bar-blue-1' 'bar-blue-2' 'bar-blue-1' 'bar-cyan' 'bar-green' %}" style="height: {{ s.percentage }}%;"></div>
+                                                <span class="bar-label" title="{{ s.subject }}">{{ s.short_name|default:s.subject }}</span>
+                                            </div>
+                                        {% endif %}
                                     {% endfor %}
                                 {% else %}
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 1rem;">
@@ -313,7 +319,7 @@
                             </svg>
                             <h3 class="panel-title">Your Recent Scores</h3>
                         </div>
-                        <a href="{% url 'assignments:student_results_list' %}" class="view-all-link">View all</a>
+                        <a href="{% url 'assignments:student_results_list' %}" class="view-all-link">View all &rarr;</a>
                     </div>
 
                     <div class="table-responsive">
@@ -330,20 +336,33 @@
                                 {% if recent_scores %}
                                     {% for att in recent_scores %}
                                         <tr>
-                                            <td class="font-medium">{{ att.assignment.title }}</td>
-                                            <td><strong>{{ att.score }}</strong> / {{ att.assignment.total_marks }} ({{ att.percentage }}%)</td>
+                                            <td class="font-medium">
+                                                <a href="{% url 'assignments:student_result' att.assignment.id %}?attempt_id={{ att.id }}" class="table-assignment-link" title="View details and solutions">
+                                                    {{ att.assignment.title }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <strong>{{ att.score }}</strong> / {{ att.assignment.total_marks }}
+                                                <span class="badge-score-pill {% if att.percentage >= 60 %}badge-score-green{% elif att.percentage >= 40 %}badge-score-amber{% else %}badge-score-red{% endif %}">
+                                                    {{ att.percentage }}%
+                                                </span>
+                                            </td>
                                             <td class="date-cell">{{ att.submitted_at|date:"d M Y" }}</td>
                                             <td>
-                                                <a href="{% url 'assignments:student_result' att.id %}" class="badge-completed" style="text-decoration: none; display: inline-block;">
-                                                    Review
+                                                <a href="{% url 'assignments:student_result' att.assignment.id %}?attempt_id={{ att.id }}" class="btn-table-review" title="Inspect solutions and feedback">
+                                                    Review &rarr;
                                                 </a>
                                             </td>
                                         </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="4" style="text-align: center; color: #94a3b8; padding: 1.5rem;">
-                                            No completed assignments yet. Attempt a test above to view your score breakdown!
+                                        <td colspan="4" style="text-align: center; color: #94a3b8; padding: 2rem 1.5rem;">
+                                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📝</div>
+                                            <p style="margin-bottom: 0.75rem; font-size: 0.9rem;">No completed assignments yet.</p>
+                                            <a href="{% url 'assignments:student_list' %}" class="status-pill status-active" style="text-decoration: none; display: inline-block;">
+                                                Attempt a Test &rarr;
+                                            </a>
                                         </td>
                                     </tr>
                                 {% endif %}

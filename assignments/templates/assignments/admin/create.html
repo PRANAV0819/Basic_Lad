@@ -51,8 +51,8 @@
                 </svg>
             </div>
             <div class="brand-title-wrap">
-                <h2 class="brand-title">PlaceReady</h2>
-                <span class="brand-sub">Placement Readiness Platform</span>
+                <h2 class="brand-title" style="color: #2563eb; font-size: 1.05rem;">Placement Readiness</h2>
+                <span class="brand-sub">Scorecard</span>
             </div>
         </div>
 
@@ -72,7 +72,7 @@
                     <line x1="16" y1="13" x2="8" y2="13"></line>
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                 </svg>
-                <span>Assignments</span>
+                <span>Assessments</span>
             </a>
 
             <a href="{% url 'adminpanel:students' %}" class="nav-item">
@@ -115,7 +115,6 @@
                     </div>
                 </div>
             </div>
-
             <a href="{% url 'adminpanel:logout' %}" style="display: block; text-align: center; font-size: 12px; color: var(--clr-text-subtle); margin-top: 10px; text-decoration: none;">
                 Sign Out
             </a>
@@ -129,14 +128,14 @@
                     <span style="font-size: 16px;">&#128196;</span>
                     <a href="{% url 'adminpanel:dashboard' %}">Home</a>
                     <span class="breadcrumb-sep">&gt;</span>
-                    <a href="{% url 'assignments:admin_list' %}">Assignments</a>
+                    <a href="{% url 'assignments:admin_list' %}">Assessments</a>
                     <span class="breadcrumb-sep">&gt;</span>
                     <span class="breadcrumb-current">Create Assessment</span>
                 </nav>
             </div>
             <div class="topbar-right">
                 <a href="{% url 'assignments:admin_list' %}" class="live-dash-pill">
-                    <span>&#8592; Assignments</span>
+                    <span>&#8592; Back to Catalog</span>
                 </a>
             </div>
         </header>
@@ -145,9 +144,12 @@
             <div class="page-header">
                 <div>
                     <h1 class="page-title">Create New Assessment</h1>
-                    <p class="page-subtitle">Configure module categorization, exam settings, and scoring criteria.</p>
+                    <p class="page-subtitle">Configure module categorization, exam settings, question rules, and scoring parameters.</p>
                 </div>
-                <div>
+                <div style="display: flex; gap: 8px;">
+                    <a href="{% url 'assignments:admin_subjects' %}" class="btn btn-secondary">
+                        ⚙️ Manage Subjects & Topics
+                    </a>
                     <a href="{% url 'assignments:admin_list' %}" class="btn btn-secondary">
                         &larr; Back to Catalog
                     </a>
@@ -171,31 +173,36 @@
                     <!-- Section 1: Basic Info -->
                     <div style="margin-bottom: 24px;">
                         <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
-                            1. Basic Details
+                            1. Basic Information
                         </h3>
 
                         <div class="form-group">
                             <label class="form-label">Assessment Title *</label>
-                            <input type="text" name="title" class="form-control" placeholder="e.g. Data Structures and Algorithms (DSA) Mock 1" value="{{ form_data.title|default:'' }}" required />
+                            <input type="text" name="title" class="form-control" placeholder="e.g. Data Structures and Algorithms Comprehensive Test 1" value="{{ form_data.title|default:'' }}" required />
                             <span class="help-text">Give a clear descriptive title that will appear on the student dashboard.</span>
                         </div>
 
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label class="form-label">Readiness Module *</label>
-                                <select name="module_id" id="moduleSelect" class="form-control">
-                                    <option value="">-- Select Readiness Module --</option>
+                                <label class="form-label">Assessment Category (Module) *</label>
+                                <select name="module_id" id="moduleSelect" class="form-control" required>
+                                    <option value="">-- Select Category --</option>
                                     {% for mod in modules %}
                                         <option value="{{ mod.id }}" {% if form_data.module_id == mod.id|stringformat:"s" %}selected{% endif %}>
-                                            {{ mod.icon }} {{ mod.name }} ({{ mod.weight_percentage }}%)
+                                            {{ mod.name }} (Weight: {{ mod.weight_percentage }}%)
                                         </option>
                                     {% endfor %}
                                 </select>
-                                <span class="help-text">Assigns the assessment to the student readiness category.</span>
+                                <span class="help-text">Assigns the assessment to Core Subjects, Aptitude, Logical Reasoning, etc.</span>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Subject Category *</label>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label class="form-label">Subject Category *</label>
+                                    <a href="{% url 'assignments:admin_subjects' %}" target="_blank" style="font-size: 11.5px; color: #2563eb; text-decoration: underline;">
+                                        + Add New Subject
+                                    </a>
+                                </div>
                                 <select name="subject_category_id" id="subjectCategorySelect" class="form-control">
                                     <option value="">-- Select Subject Category --</option>
                                     {% for cat in subject_categories %}
@@ -204,7 +211,7 @@
                                         </option>
                                     {% endfor %}
                                 </select>
-                                <span class="help-text">Specific subject under the chosen module.</span>
+                                <span class="help-text">Dynamically filtered based on chosen category.</span>
                             </div>
                         </div>
 
@@ -212,29 +219,30 @@
                             <div class="form-group">
                                 <label class="form-label">Subject Name *</label>
                                 <input type="text" name="subject" id="subjectInput" class="form-control" placeholder="e.g. Data Structures and Algorithms" value="{{ form_data.subject|default:'' }}" required />
-                                <span class="help-text">Used for analytics grouping. Auto-fills from Subject Category.</span>
+                                <span class="help-text">Auto-filled from chosen subject category or customized.</span>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Topics / Subtopics</label>
-                                <input type="text" name="topic" id="topicInput" class="form-control" placeholder="e.g. Arrays, Linked Lists, Stacks, Queues, Trees" value="{{ form_data.topic|default:'' }}" />
-                                <span class="help-text">Displayed on the student horizontal assessment row.</span>
+                                <label class="form-label">Topic or Subtopic</label>
+                                <input type="text" name="topic" id="topicInput" class="form-control" placeholder="e.g. Arrays, Linked Lists, Stacks, Queues" value="{{ form_data.topic|default:'' }}" />
+                                <span class="help-text">Displayed on the horizontal student assessment row.</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Section 2: Exam Settings -->
+                    <!-- Section 2: Test Configuration -->
                     <div style="margin-bottom: 24px;">
                         <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
-                            2. Exam Settings & Rules
+                            2. Test Configuration & Rules
                         </h3>
 
                         <div class="form-grid-3">
                             <div class="form-group">
-                                <label class="form-label">Exam Category *</label>
-                                <select name="exam_type" class="form-control">
-                                    <option value="SUBJECT" {% if form_data.exam_type == 'SUBJECT' %}selected{% endif %}>Subject-wise Practice Exam</option>
-                                    <option value="FINAL" {% if form_data.exam_type == 'FINAL' %}selected{% endif %}>Comprehensive Mock / Final Exam</option>
+                                <label class="form-label">Assessment Type *</label>
+                                <select name="assessment_type" class="form-control">
+                                    <option value="SUBJECT" {% if form_data.assessment_type == 'SUBJECT' or not form_data.assessment_type %}selected{% endif %}>Subject Test</option>
+                                    <option value="PRACTICE" {% if form_data.assessment_type == 'PRACTICE' %}selected{% endif %}>Practice Test</option>
+                                    <option value="MOCK" {% if form_data.assessment_type == 'MOCK' %}selected{% endif %}>Mock Test / Final Exam</option>
                                 </select>
                             </div>
 
@@ -248,22 +256,42 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Time Limit (Minutes) *</label>
+                                <label class="form-label">Duration (Minutes) *</label>
                                 <input type="number" name="time_limit" class="form-control" min="1" max="300" value="{{ form_data.time_limit|default:'30' }}" required />
                             </div>
                         </div>
 
                         <div class="form-grid-3">
                             <div class="form-group">
-                                <label class="form-label">Negative Marking (Marks per wrong)</label>
-                                <input type="number" step="0.25" min="0" max="10" name="negative_marking" class="form-control" value="{{ form_data.negative_marking|default:'0.0' }}" />
-                                <span class="help-text">Deducted for incorrect answers (0 for no penalty).</span>
+                                <label class="form-label">Passing Threshold (%)</label>
+                                <input type="number" min="0" max="100" name="passing_percentage" class="form-control" value="{{ form_data.passing_percentage|default:'40' }}" />
+                                <span class="help-text">Minimum % required to achieve PASS status.</span>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Max Attempts</label>
+                                <label class="form-label">Negative Marking (Penalty)</label>
+                                <input type="number" step="0.25" min="0" max="10" name="negative_marking" class="form-control" value="{{ form_data.negative_marking|default:'0.0' }}" />
+                                <span class="help-text">Deducted per incorrect response (0 for none).</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Maximum Allowed Attempts</label>
                                 <input type="number" min="1" max="10" name="max_attempts" class="form-control" value="{{ form_data.max_attempts|default:'1' }}" />
-                                <span class="help-text">Standard placement policy is 1 attempt.</span>
+                                <span class="help-text">Number of times a student can retake this test.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label class="form-label">Availability Start Date</label>
+                                <input type="datetime-local" name="start_date" class="form-control" value="{{ form_data.start_date|default:'' }}" />
+                                <span class="help-text">Optional: student cannot start before this time.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Availability End Date</label>
+                                <input type="datetime-local" name="end_date" class="form-control" value="{{ form_data.end_date|default:'' }}" />
+                                <span class="help-text">Optional: deadline after which test is closed.</span>
                             </div>
 
                             <div class="form-group">
@@ -271,6 +299,7 @@
                                 <select name="status" class="form-control">
                                     <option value="DRAFT" {% if form_data.status == 'DRAFT' or not form_data.status %}selected{% endif %}>Draft (Hidden from students)</option>
                                     <option value="PUBLISHED" {% if form_data.status == 'PUBLISHED' %}selected{% endif %}>Published (Available to students)</option>
+                                    <option value="ARCHIVED" {% if form_data.status == 'ARCHIVED' %}selected{% endif %}>Archived (Closed for attempts)</option>
                                 </select>
                             </div>
                         </div>
@@ -281,7 +310,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Security & Integrity Toggles</label>
+                            <label class="form-label">Security & Solution Release Toggles</label>
                             <div class="checkbox-pill-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="shuffle_questions" value="1" {% if form_data.shuffle_questions %}checked{% endif %} />
@@ -289,20 +318,20 @@
                                 </label>
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="show_solutions_after_submission" value="1" {% if form_data.show_solutions_after_submission != '0' %}checked{% endif %} />
-                                    <span>💡 Release Solutions & Explanations After Submission</span>
+                                    <span>💡 Release Answers & Explanations After Submission</span>
                                 </label>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Section 3: Instructions -->
+                    <!-- Section 3: Description & Instructions -->
                     <div style="margin-bottom: 24px;">
                         <h3 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
-                            3. Description & Student Instructions
+                            3. Description & Student Guidelines
                         </h3>
 
                         <div class="form-group">
-                            <textarea name="description" rows="3" class="form-control" placeholder="Enter test guidelines, syllabus coverage, or instructions for students before they begin...">{{ form_data.description|default:'' }}</textarea>
+                            <textarea name="description" rows="3" class="form-control" placeholder="Enter instructions, syllabus coverage, or rules for students before they begin...">{{ form_data.description|default:'' }}</textarea>
                         </div>
                     </div>
 
@@ -322,7 +351,6 @@
     <script src="{% static 'adminpanel/js/script.js' %}"></script>
     <script src="{% static 'core/js/theme.js' %}"></script>
     <script>
-        // Dynamic subject category filtering based on selected module
         document.addEventListener('DOMContentLoaded', function() {
             const moduleSelect = document.getElementById('moduleSelect');
             const subjectSelect = document.getElementById('subjectCategorySelect');
@@ -334,7 +362,7 @@
                 const options = subjectSelect.querySelectorAll('option');
 
                 options.forEach(opt => {
-                    if (!opt.value) return; // keep default placeholder
+                    if (!opt.value) return;
                     const modId = opt.getAttribute('data-module');
                     if (!selectedModuleId || modId === selectedModuleId) {
                         opt.style.display = '';
@@ -343,7 +371,6 @@
                     }
                 });
 
-                // If currently selected option is hidden, reset it
                 const currentOpt = subjectSelect.options[subjectSelect.selectedIndex];
                 if (currentOpt && currentOpt.style.display === 'none') {
                     subjectSelect.value = '';
@@ -366,7 +393,6 @@
                 }
             });
 
-            // Run initial filter if module is pre-selected
             if (moduleSelect.value) {
                 filterSubjects();
             }

@@ -100,9 +100,16 @@ class Assignment(models.Model):
         ('SUBJECT', 'Subject-wise Exam'),
     ]
 
+    ASSESSMENT_TYPE_CHOICES = [
+        ('PRACTICE', 'Practice Test'),
+        ('SUBJECT', 'Subject Test'),
+        ('MOCK', 'Mock Test'),
+    ]
+
     STATUS_CHOICES = [
         ('DRAFT', 'Draft'),
         ('PUBLISHED', 'Published'),
+        ('ARCHIVED', 'Archived'),
         ('CLOSED', 'Closed'),
     ]
 
@@ -133,6 +140,29 @@ class Assignment(models.Model):
         blank=True,
         related_name='assignments',
         help_text="The specific subject inside the readiness module"
+    )
+
+    assessment_type = models.CharField(
+        max_length=30,
+        choices=ASSESSMENT_TYPE_CHOICES,
+        default='SUBJECT',
+        help_text="Practice Test, Subject Test, or Mock Test"
+    )
+
+    created_by = models.ForeignKey(
+        'adminpanel.Admin',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='created_assignments',
+        help_text="Admin or teacher who created this assessment"
+    )
+
+    created_by_name = models.CharField(
+        max_length=100,
+        default='Administrator',
+        blank=True,
+        help_text="Display author name"
     )
 
     exam_type = models.CharField(
@@ -178,6 +208,11 @@ class Assignment(models.Model):
         help_text="Total marks available for this exam"
     )
 
+    passing_percentage = models.PositiveIntegerField(
+        default=40,
+        help_text="Minimum percentage required to pass"
+    )
+
     negative_marking = models.FloatField(
         default=0.0,
         help_text="Negative marks per wrong answer (e.g. 0.25)"
@@ -198,6 +233,18 @@ class Assignment(models.Model):
         help_text="Maximum allowed attempts per student"
     )
 
+    start_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Assessment availability start date/time"
+    )
+
+    end_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Assessment availability deadline"
+    )
+
     tags = models.CharField(
         max_length=200,
         blank=True,
@@ -209,12 +256,17 @@ class Assignment(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default='DRAFT',
-        help_text="Draft (admin only), Published (students can attempt), Closed (archived)"
+        help_text="Draft (admin only), Published (students can attempt), Archived"
     )
 
     created_at = models.DateTimeField(
         auto_now_add=True,
         help_text="Timestamp when assignment was created"
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        help_text="Timestamp when assignment was last modified"
     )
 
     class Meta:
@@ -245,6 +297,7 @@ class Question(models.Model):
         ('MCQ', 'Single Choice (MCQ)'),
         ('MSQ', 'Multiple Select (MSQ)'),
         ('CODE', 'Code Output / Tracing'),
+        ('NUMERICAL', 'Numerical Question'),
     ]
 
     assignment = models.ForeignKey(
@@ -335,11 +388,14 @@ class QuestionOption(models.Model):
 class Attempt(models.Model):
     """
     Represents a student's attempt at an assignment.
-    Enforces SINGLE ATTEMPT per student per assignment.
+    Supports attempt tracking, server-side deadline enforcement, and retakes.
     """
 
     STATUS_CHOICES = [
         ('IN_PROGRESS', 'In Progress'),
+        ('SUBMITTED', 'Submitted'),
+        ('AUTO_SUBMITTED', 'Auto-Submitted'),
+        ('EXPIRED', 'Expired / Abandoned'),
         ('COMPLETED', 'Completed'),
     ]
 
@@ -357,9 +413,20 @@ class Attempt(models.Model):
         help_text="Assignment being attempted"
     )
 
+    attempt_number = models.PositiveIntegerField(
+        default=1,
+        help_text="Sequence index of this attempt for this student"
+    )
+
     started_at = models.DateTimeField(
         auto_now_add=True,
         help_text="When student clicked Start Test"
+    )
+
+    deadline = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Server-enforced deadline when attempt must conclude"
     )
 
     submitted_at = models.DateTimeField(
@@ -368,14 +435,24 @@ class Attempt(models.Model):
         help_text="When student submitted (or auto-submitted by timer)"
     )
 
-    score = models.PositiveIntegerField(
+    time_taken_seconds = models.PositiveIntegerField(
         default=0,
+        help_text="Actual duration taken in seconds"
+    )
+
+    score = models.FloatField(
+        default=0.0,
         help_text="Total marks obtained by the student"
     )
 
     percentage = models.FloatField(
         default=0.0,
         help_text="Percentage scored (score / total_marks * 100)"
+    )
+
+    is_passed = models.BooleanField(
+        default=False,
+        help_text="True if score >= assignment.passing_percentage"
     )
 
     correct_count = models.PositiveIntegerField(
@@ -397,16 +474,32 @@ class Attempt(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default='IN_PROGRESS',
-        help_text="In Progress while timer runs; Completed once submitted"
+        help_text="In Progress, Submitted, Auto-Submitted, or Expired"
     )
 
     class Meta:
-        # Strict college requirement: A student can attempt each assignment only ONCE!
-        unique_together = ('student', 'assignment')
+        unique_together = ('student', 'assignment', 'attempt_number')
         ordering = ['-started_at']
 
     def __str__(self):
-        return f"{self.student.name} - {self.assignment.title} ({self.status}: {self.score}/{self.assignment.total_marks})"
+        return f"{self.student.name} - {self.assignment.title} (Attempt #{self.attempt_number}: {self.score}/{self.assignment.total_marks})"
+
+    @property
+    def is_finished(self):
+        return self.status in ['SUBMITTED', 'AUTO_SUBMITTED', 'COMPLETED', 'EXPIRED']
+
+    @property
+    def time_taken_formatted(self):
+        if self.time_taken_seconds:
+            m = self.time_taken_seconds // 60
+            s = self.time_taken_seconds % 60
+            return f"{m}m {s}s"
+        if self.submitted_at and self.started_at:
+            diff = int((self.submitted_at - self.started_at).total_seconds())
+            m = max(0, diff // 60)
+            s = max(0, diff % 60)
+            return f"{m}m {s}s"
+        return "N/A"
 
 
 class StudentAnswer(models.Model):
@@ -433,9 +526,9 @@ class StudentAnswer(models.Model):
         help_text="True if student scored full marks on this question"
     )
 
-    marks_obtained = models.PositiveIntegerField(
-        default=0,
-        help_text="Marks awarded for this question (full marks or 0)"
+    marks_obtained = models.FloatField(
+        default=0.0,
+        help_text="Marks awarded for this question"
     )
 
     class Meta:

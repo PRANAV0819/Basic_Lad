@@ -19,11 +19,16 @@ urlpatterns = [
     path('admin/<int:assignment_id>/status/', views_admin.admin_assignment_status_toggle_view, name='admin_status_toggle'),
     path('admin/<int:assignment_id>/questions/', views_admin.admin_assignment_questions_view, name='admin_questions'),
     path('admin/<int:assignment_id>/questions/<int:question_id>/delete/', views_admin.admin_question_delete_view, name='admin_question_delete'),
+    path('admin/<int:assignment_id>/questions/<int:question_id>/reorder/', views_admin.admin_question_reorder_view, name='admin_question_reorder'),
     path('admin/<int:assignment_id>/submissions/', views_admin.admin_assignment_submissions_view, name='admin_submissions'),
+    path('admin/subjects/', views_admin.admin_subject_manage_view, name='admin_subjects'),
+    path('admin/subjects/create/', views_admin.admin_subject_create_view, name='admin_subject_create'),
+    path('admin/subjects/<int:subject_id>/delete/', views_admin.admin_subject_delete_view, name='admin_subject_delete'),
 
     # ==================== STUDENT ENDPOINTS ====================
     path('', views_student.student_assignment_list_view, name='root'),
     path('student/', views_student.student_assignment_list_view, name='student_list'),
+    path('student/<int:assignment_id>/instructions/', views_student.student_instructions_view, name='student_instructions'),
     path('student/<int:assignment_id>/start/', views_student.student_start_attempt_view, name='student_start'),
     path('student/<int:assignment_id>/attempt/', views_student.student_attempt_view, name='student_attempt'),
     path('student/<int:assignment_id>/submit/', views_student.student_submit_attempt_view, name='student_submit'),

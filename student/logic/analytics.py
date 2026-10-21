@@ -14,8 +14,57 @@
 # - Every component of the score is transparent, explainable, and mathematically bounded (0-100).
 
 from typing import Dict, List, Any, Optional
+from django.db.models import Q
 from student.models import Student
 from assignments.models import Assignment, Attempt
+
+
+SUBJECT_SHORT_NAMES = {
+    'Percentages, Ratios and Proportions': 'Quant',
+    'Time, Speed and Distance': 'TSD',
+    'Time and Work': 'Time & Work',
+    'Probability and Permutations': 'Prob & PnC',
+    'Number Systems': 'Numbers',
+    'Number and Letter Series': 'Series',
+    'Direction Sense': 'Direction',
+    'Syllogisms': 'Syllogisms',
+    'Blood Relations': 'Blood Rel',
+    'Seating Arrangements': 'Seating',
+    'Coding-Decoding': 'Coding',
+    'Data Structures': 'DS',
+    'Data Structures and Algorithms (DSA)': 'DSA',
+    'Arrays & Strings': 'Arrays',
+    'Stacks & Queues': 'Stacks',
+    'Linked Lists': 'Lists',
+    'Trees & Graphs': 'Trees',
+    'Searching & Sorting': 'Search/Sort',
+    'Recursion and Dynamic Programming': 'Recursion',
+    'Database Management Systems (DBMS)': 'DBMS',
+    'Operating Systems (OS)': 'OS',
+    'Computer Networks and Cloud Computing (CN&CC)': 'Networks',
+    'Object-Oriented Programming (OOP)': 'OOPs',
+    'Core Computer Science': 'Core CS',
+    'Programming Fundamentals - C/C++ or Python': 'Prog Fund',
+    'Verbal Communication': 'Verbal',
+}
+
+
+def get_subject_short_name(subject_name: str) -> str:
+    """Returns a clean concise abbreviation/short-form of a subject name for chart display."""
+    if not subject_name:
+        return ""
+    clean = subject_name.strip()
+    if clean in SUBJECT_SHORT_NAMES:
+        return SUBJECT_SHORT_NAMES[clean]
+    for full, short in SUBJECT_SHORT_NAMES.items():
+        if full.lower() in clean.lower():
+            return short
+    if len(clean) > 10:
+        words = clean.split()
+        if len(words) > 1:
+            return "".join(w[0].upper() for w in words if w.isalnum())[:8]
+        return clean[:10]
+    return clean
 
 
 def get_student_subject_performance(student: Student) -> List[Dict[str, Any]]:
@@ -37,7 +86,7 @@ def get_student_subject_performance(student: Student) -> List[Dict[str, Any]]:
     """
     completed_attempts = Attempt.objects.filter(
         student=student,
-        status='COMPLETED'
+        status__in=['COMPLETED', 'SUBMITTED', 'AUTO_SUBMITTED']
     ).select_related('assignment')
 
     subject_data: Dict[str, Dict[str, Any]] = {}
@@ -73,6 +122,7 @@ def get_student_subject_performance(student: Student) -> List[Dict[str, Any]]:
 
         result.append({
             'subject': subj,
+            'short_name': get_subject_short_name(subj),
             'attempts_count': data['attempts_count'],
             'total_score': data['total_score'],
             'total_marks': data['total_marks'],
@@ -92,7 +142,7 @@ def get_student_topic_performance(student: Student) -> List[Dict[str, Any]]:
     """
     completed_attempts = Attempt.objects.filter(
         student=student,
-        status='COMPLETED'
+        status__in=['COMPLETED', 'SUBMITTED', 'AUTO_SUBMITTED']
     ).select_related('assignment')
 
     topic_data: Dict[str, Dict[str, Any]] = {}
@@ -139,7 +189,7 @@ def get_final_exam_performance(student: Student) -> Dict[str, Any]:
     """
     final_attempts = Attempt.objects.filter(
         student=student,
-        status='COMPLETED',
+        status__in=['COMPLETED', 'SUBMITTED', 'AUTO_SUBMITTED'],
         assignment__exam_type='FINAL'
     ).select_related('assignment')
 
@@ -170,84 +220,112 @@ def calculate_placement_readiness(student: Student) -> Dict[str, Any]:
     """
     CHECKPOINT 16: Placement Readiness Score Calculation Algorithm.
 
-    MATHEMATICAL FORMULA:
-    Readiness Score = (Subject Performance × 0.40)
-                    + (Final Exam Score × 0.25)
-                    + (Profile Completion × 0.15)
-                    + (CGPA Normalized × 0.10)
-                    + (Completion / Consistency × 0.10)
+    MATHEMATICAL FORMULA (Updated Placement Readiness Weightage):
+    Readiness Score = (Coding & DSA × 0.25)
+                    + (Core CS Subjects × 0.25)
+                    + (Aptitude × 0.15)
+                    + (Logical Reasoning × 0.15)
+                    + (Academic CGPA Normalized × 0.10)
+                    + (Communication Skills × 0.10)
 
     Components Explained:
-    1. Subject Performance (40% weight):
-       Average score on subject-specific tests (Data Structures, Python, etc.)
-    2. Final Exam Score (25% weight):
-       Performance on full-length mock placement tests.
-       (If student has not taken a Final Exam yet, Subject Performance is used as a proxy
-       to avoid unfairly penalizing new students while encouraging final exams).
-    3. Profile Completion (15% weight):
-       Percentage of profile completed (PRN, skills, projects, certifications).
-    4. Academic CGPA (10% weight):
+    1. Coding & DSA (25% weight):
+       Performance in Programming fundamentals, Data Structures, Algorithms, Recursion & Dynamic Programming.
+    2. Core CS Subjects (25% weight):
+       Performance in foundational computer science: OOP, DBMS, Operating Systems, Computer Networks.
+    3. Aptitude (15% weight):
+       Quantitative aptitude, Percentages, Profit & Loss, Time & Work, Speed & Distance, Number Systems.
+    4. Logical Reasoning (15% weight):
+       Analytical puzzles, Series, Coding-Decoding, Seating Arrangements, Blood Relations, Syllogisms.
+    5. Academic CGPA (10% weight):
        Academic record normalized to a 100-point scale: (CGPA / 10.0) * 100.
-    5. Test Completion Ratio (10% weight):
-       Ratio of published assignments completed: (Completed / Total Available) * 100.
+    6. Communication Skills (10% weight):
+       Verbal communication, corporate English fluency, grammar, comprehension, and interview readiness.
 
-    Total bounds: Guaranteed between 0 and 100.
+    Total bounds: Strictly bounded between 0 and 100.
     """
     published_assignments = Assignment.objects.filter(status='PUBLISHED')
     total_published = published_assignments.count()
 
     completed_attempts = Attempt.objects.filter(
         student=student,
-        status='COMPLETED'
-    ).select_related('assignment')
+        status__in=['COMPLETED', 'SUBMITTED', 'AUTO_SUBMITTED']
+    ).select_related('assignment', 'assignment__module')
 
     completed_count = completed_attempts.count()
 
-    # 1. Subject Performance (40%)
-    subject_attempts = completed_attempts.filter(assignment__exam_type='SUBJECT')
-    if subject_attempts.exists():
-        sub_score = sum(a.score for a in subject_attempts)
-        sub_total = sum(a.assignment.total_marks for a in subject_attempts)
-        subject_pct = (sub_score / sub_total * 100.0) if sub_total > 0 else 0.0
-    else:
-        # If student completed general attempts, use their overall completed percentage
-        if completed_count > 0:
-            c_score = sum(a.score for a in completed_attempts)
-            c_total = sum(a.assignment.total_marks for a in completed_attempts)
-            subject_pct = (c_score / c_total * 100.0) if c_total > 0 else 0.0
-        else:
-            subject_pct = 0.0
+    # Helper: calculate module-specific score percentage strictly from actual attempts
+    def get_module_percentage(module_codes, subject_keywords=None):
+        if not isinstance(module_codes, (list, tuple, set)):
+            module_codes = [module_codes]
 
-    # 2. Final Exam Performance (25%)
-    final_exam_info = get_final_exam_performance(student)
-    if final_exam_info['attempted']:
-        final_pct = final_exam_info['avg_percentage']
-    else:
-        # Fallback to subject percentage if no final exam attempted yet
-        final_pct = subject_pct * 0.7  # Slight incentive to take actual final exam
+        # 1. Primary: Match strictly by module assignment
+        attempts = completed_attempts.filter(assignment__module__code__in=module_codes)
 
-    # 3. Profile Completion (15%)
-    profile_pct = float(student.profile_completion_percentage)
+        # 2. Secondary fallback: ONLY for legacy assignments where module foreign key is NULL
+        if not attempts.exists() and subject_keywords:
+            q_filter = Q()
+            for kw in subject_keywords:
+                q_filter |= Q(assignment__subject__icontains=kw)
+            attempts = completed_attempts.filter(q_filter, assignment__module__isnull=True)
 
-    # 4. Academic CGPA (10%)
+        if attempts.exists():
+            score = sum(a.score for a in attempts)
+            total = sum(a.assignment.total_marks for a in attempts)
+            return (score / total * 100.0) if total > 0 else 0.0
+        return 0.0
+
+    # 1. Coding & DSA (25% weight) - strictly 0.0% if unattempted
+    coding_dsa_pct = get_module_percentage(
+        ['CODING_DSA'],
+        ['Coding', 'DSA', 'Algorithm', 'Data Structure', 'Program', 'Tree', 'Graph']
+    )
+
+    # 2. Core CS Subjects (25% weight) - strictly 0.0% if unattempted
+    core_subjects_pct = get_module_percentage(
+        ['CORE_SUBJECTS'],
+        ['Core', 'DBMS', 'Operating System', 'OS', 'Network', 'OOP', 'Database']
+    )
+
+    # 3. Aptitude (15% weight) - strictly 0.0% if unattempted
+    aptitude_pct = get_module_percentage(
+        ['APTITUDE'],
+        ['Aptitude', 'Quantitative', 'Math', 'Percentage', 'Profit', 'Work']
+    )
+
+    # 4. Logical Reasoning (15% weight) - strictly 0.0% if unattempted
+    logical_reasoning_pct = get_module_percentage(
+        ['LOGICAL_REASONING'],
+        ['Reasoning', 'Logical', 'Puzzle', 'Series', 'Relation', 'Syllogism', 'Direction']
+    )
+
+    # 5. Academic CGPA (10% weight) - normalized from degree CGPA
     if student.cgpa and student.cgpa > 0:
         cgpa_pct = min(float(student.cgpa) * 10.0, 100.0)
     else:
         cgpa_pct = 0.0
 
-    # 5. Completion / Consistency (10%)
+    # 6. Communication Skills (10% weight) - strictly 0.0% if unattempted
+    communication_pct = get_module_percentage(
+        ['COMMUNICATION_SKILLS', 'COMMUNICATION'],
+        ['Communication', 'Verbal', 'English', 'Interview', 'Grammar', 'Corporate', 'Vocabulary']
+    )
+
+    # Legacy profile metric tracking
+    profile_ratio = float(student.profile_completion_percentage)
     if total_published > 0:
-        completion_ratio = min((completed_count / total_published) * 100.0, 100.0)
+        test_ratio = min((completed_count / total_published) * 100.0, 100.0)
     else:
-        completion_ratio = 100.0 if completed_count > 0 else 0.0
+        test_ratio = 100.0 if completed_count > 0 else 0.0
 
     # Weighted calculation
     readiness_raw = (
-        (subject_pct * 0.40) +
-        (final_pct * 0.25) +
-        (profile_pct * 0.15) +
+        (coding_dsa_pct * 0.25) +
+        (core_subjects_pct * 0.25) +
+        (aptitude_pct * 0.15) +
+        (logical_reasoning_pct * 0.15) +
         (cgpa_pct * 0.10) +
-        (completion_ratio * 0.10)
+        (communication_pct * 0.10)
     )
 
     readiness_score = int(round(min(max(readiness_raw, 0.0), 100.0)))
@@ -272,11 +350,18 @@ def calculate_placement_readiness(student: Student) -> Dict[str, Any]:
         'band_class': band_class,
         'summary_verdict': summary_verdict,
         'components': {
-            'subject_pct': round(subject_pct, 1),
-            'final_pct': round(final_pct, 1),
-            'profile_pct': round(profile_pct, 1),
+            'coding_dsa_pct': round(coding_dsa_pct, 1),
+            'core_subjects_pct': round(core_subjects_pct, 1),
+            'aptitude_pct': round(aptitude_pct, 1),
+            'logical_reasoning_pct': round(logical_reasoning_pct, 1),
             'cgpa_pct': round(cgpa_pct, 1),
-            'completion_ratio': round(completion_ratio, 1),
+            'communication_pct': round(communication_pct, 1),
+            # Backwards compatibility keys
+            'profile_consistency_pct': round(communication_pct, 1),
+            'subject_pct': round(core_subjects_pct, 1),
+            'final_pct': round(coding_dsa_pct, 1),
+            'profile_pct': round(profile_ratio, 1),
+            'completion_ratio': round(test_ratio, 1),
         },
         'completed_count': completed_count,
         'total_published': total_published,
@@ -375,7 +460,7 @@ def generate_improvement_plan(student: Student) -> Dict[str, Any]:
     # Find pending assignments
     completed_ids = Attempt.objects.filter(
         student=student,
-        status='COMPLETED'
+        status__in=['SUBMITTED', 'AUTO_SUBMITTED', 'COMPLETED']
     ).values_list('assignment_id', flat=True)
 
     pending_assignments = Assignment.objects.filter(

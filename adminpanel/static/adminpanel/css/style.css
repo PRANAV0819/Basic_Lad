@@ -1,7 +1,7 @@
 /*
   adminpanel/static/adminpanel/css/style.css
 
-  Placement Readiness Platform - Admin Module Stylesheet
+  Placement Readiness Scorecard - Admin Module Stylesheet
   Design matches the reference dashboard layout (PlacementX):
   - Dark Navy Sidebar (#0b1727)
   - Top Search & Profile Bar
@@ -286,11 +286,11 @@ button {
 }
 
 .brand-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #2563eb;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
 }
 
 .brand-sub {

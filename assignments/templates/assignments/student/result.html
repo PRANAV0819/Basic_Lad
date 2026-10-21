@@ -7,12 +7,47 @@
     <title>Assessment Result - {{ assignment.title }}</title>
     <link rel="stylesheet" href="{% static 'student/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assignments/css/assignments.css' %}" />
+    <style>
+        .topic-table-card {
+            background: #ffffff;
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .topic-summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+        }
+        .topic-summary-table th {
+            text-align: left;
+            padding: 10px 14px;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .topic-summary-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+        }
+        .solutions-protected-banner {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            color: #475569;
+            margin: 24px 0;
+        }
+    </style>
 </head>
 <body class="dashboard-app">
 
     {% include 'student/sidebar.html' with active_nav='assignments' active_sub='results' %}
 
-    <!-- ===================== MAIN CONTENT WRAPPER ===================== -->
     <div class="main-wrapper">
         <div class="assignment-container">
             {% if messages %}
@@ -24,11 +59,18 @@
             <div class="page-header">
                 <div>
                     <h1 class="page-title">{{ assignment.title }} - Performance Card</h1>
-                    <p class="page-subtitle">Submitted on {{ attempt.submitted_at|date:"F d, Y &bull; H:i" }} &bull; Time taken: {{ time_taken }}</p>
+                    <p class="page-subtitle">
+                        Submitted on {{ attempt.submitted_at|date:"F d, Y &bull; H:i" }} &bull; Time taken: <strong>{{ time_taken_str }}</strong>
+                    </p>
                 </div>
-                <div>
+                <div style="display: flex; gap: 10px;">
+                    {% if can_retake %}
+                        <a href="{% url 'assignments:student_instructions' assignment.id %}" class="btn btn-primary">
+                            🔄 Retake Assessment
+                        </a>
+                    {% endif %}
                     <a href="{% url 'assignments:student_list' %}" class="btn btn-secondary">
-                        &larr; Back to Assignments
+                        &larr; Back to Catalog
                     </a>
                 </div>
             </div>
@@ -36,12 +78,35 @@
             <!-- Score Hero Card -->
             <div class="score-hero">
                 <div>
-                    <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 600;">Overall Score</div>
-                    <div style="font-size: 42px; font-weight: 800; margin: 4px 0;">
+                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 700;">
+                            Attempt #{{ attempt.attempt_number }} of {{ assignment.max_attempts }}
+                        </span>
+                        {% if attempt.status == 'AUTO_SUBMITTED' %}
+                            <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fde047; font-size: 11px;">
+                                Auto-Submitted (Timer Expired)
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div style="font-size: 44px; font-weight: 800; margin: 4px 0;">
                         {{ attempt.score }} <span style="font-size: 20px; font-weight: 500; color: #94a3b8;">/ {{ assignment.total_marks }}</span>
                     </div>
-                    <div style="font-size: 18px; font-weight: 600; color: {% if attempt.percentage >= 70 %}#4ade80{% elif attempt.percentage >= 40 %}#facc15{% else %}#f87171{% endif %};">
-                        {{ attempt.percentage }}% &bull; {% if attempt.percentage >= 70 %}Excellent{% elif attempt.percentage >= 40 %}Good Effort{% else %}Needs Practice{% endif %}
+
+                    <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px;">
+                        <span style="font-size: 18px; font-weight: 700; color: {% if attempt.percentage >= 70 %}#4ade80{% elif attempt.percentage >= 40 %}#facc15{% else %}#f87171{% endif %};">
+                            {{ attempt.percentage }}%
+                        </span>
+
+                        {% if attempt.is_passed %}
+                            <span class="badge" style="background: #166534; color: #dcfce7; font-size: 13px; font-weight: 700;">
+                                ✓ PASSED (Threshold: {{ assignment.passing_percentage }}%)
+                            </span>
+                        {% else %}
+                            <span class="badge" style="background: #991b1b; color: #fee2e2; font-size: 13px; font-weight: 700;">
+                                ✗ NOT PASSED (Threshold: {{ assignment.passing_percentage }}%)
+                            </span>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -59,93 +124,150 @@
                         <div class="score-stat-lbl">Unattempted</div>
                     </div>
                     <div class="score-stat-box">
-                        <div class="score-stat-val" style="color: #38bdf8;">{{ time_taken }}</div>
+                        <div class="score-stat-val" style="color: #38bdf8;">{{ time_taken_str }}</div>
                         <div class="score-stat-lbl">Time Taken</div>
                     </div>
                 </div>
             </div>
 
+            <!-- Topic-wise Performance Breakdown -->
+            {% if topic_breakdown %}
+                <div class="topic-table-card">
+                    <h3 style="font-size: 16px; font-weight: 700; color: var(--clr-text-main); margin-bottom: 12px;">
+                        📊 Topic-Wise Proficiency Breakdown
+                    </h3>
+                    <table class="topic-summary-table">
+                        <thead>
+                            <tr>
+                                <th>Curriculum Topic / Module</th>
+                                <th>Questions</th>
+                                <th>Accuracy</th>
+                                <th>Marks Obtained</th>
+                                <th>Proficiency Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for top in topic_breakdown %}
+                                <tr>
+                                    <td><strong>{{ top.name }}</strong></td>
+                                    <td>{{ top.total_q }} Questions</td>
+                                    <td>{{ top.percentage }}% ({{ top.correct_q }}/{{ top.total_q }} correct)</td>
+                                    <td><strong>{{ top.score }}</strong> / {{ top.max_score }}</td>
+                                    <td>
+                                        {% if top.is_proficient %}
+                                            <span class="badge" style="background: #ecfdf5; color: #059669; font-weight: 700;">Proficient</span>
+                                        {% else %}
+                                            <span class="badge" style="background: #fef2f2; color: #dc2626; font-weight: 700;">Needs Practice</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
             <!-- Question by Question Review -->
             <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--clr-text-main);">
-                Detailed Question Solutions & Explanations
+                Detailed Question Review
             </h2>
 
-            {% for item in breakdown %}
-                <div class="review-card {% if not item.is_attempted %}unattempted{% elif item.is_correct %}correct{% else %}incorrect{% endif %}">
-                    <div class="question-header">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span class="question-number">Question {{ forloop.counter }}</span>
-                            {% if item.question.question_type == 'MCQ' %}
-                                <span class="badge badge-mcq">MCQ (Single Choice)</span>
-                            {% elif item.question.question_type == 'CODE' %}
-                                <span class="badge" style="background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe;">Code Tracing</span>
-                            {% else %}
-                                <span class="badge badge-msq">MSQ (Multiple Select)</span>
-                            {% endif %}
-                        </div>
+            {% if show_solutions %}
+                {% for item in breakdown %}
+                    <div class="review-card {% if not item.is_attempted %}unattempted{% elif item.is_correct %}correct{% else %}incorrect{% endif %}">
+                        <div class="question-header">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="question-number">Question {{ forloop.counter }}</span>
+                                {% if item.question.question_type == 'MCQ' %}
+                                    <span class="badge badge-mcq">MCQ (Single Choice)</span>
+                                {% elif item.question.question_type == 'CODE' %}
+                                    <span class="badge" style="background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe;">Code Tracing</span>
+                                {% elif item.question.question_type == 'NUMERICAL' %}
+                                    <span class="badge" style="background: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc;">Numerical Question</span>
+                                {% else %}
+                                    <span class="badge badge-msq">MSQ (Multiple Select)</span>
+                                {% endif %}
+                            </div>
 
-                        <div>
-                            {% if not item.is_attempted %}
-                                <span class="badge" style="background: #f1f5f9; color: #64748b;">Not Attempted (0/{{ item.question.marks }})</span>
-                            {% elif item.is_correct %}
-                                <span class="badge" style="background: #dcfce7; color: #166534;">✓ Correct (+{{ item.marks_obtained }}/{{ item.question.marks }})</span>
-                            {% else %}
-                                <span class="badge" style="background: #fee2e2; color: #991b1b;">✗ Incorrect (0/{{ item.question.marks }})</span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="question-text">{{ item.question.question_text }}</div>
-
-                    {% if item.question.code_snippet %}
-                        <pre style="background: #0f172a; color: #f8fafc; padding: 14px 18px; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 13.5px; line-height: 1.5; overflow-x: auto; margin: 12px 0 16px 0;"><code>{{ item.question.code_snippet }}</code></pre>
-                    {% endif %}
-
-                    <!-- Options with Visual Indicators -->
-                    <div style="margin-bottom: 14px;">
-                        {% for opt_state in item.options %}
-                            <div class="option-result-item {% if opt_state.is_selected and opt_state.is_correct %}is-correct-target was-selected{% elif opt_state.is_selected and not opt_state.is_correct %}wrong-pick{% elif not opt_state.is_selected and opt_state.is_correct %}is-correct-target{% endif %}">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <span class="option-badge-label" style="{% if opt_state.is_correct %}background: #10b981; color: white;{% elif opt_state.is_selected %}background: #ef4444; color: white;{% endif %}">
-                                        {{ opt_state.option.option_label }}
+                            <div>
+                                {% if not item.is_attempted %}
+                                    <span class="badge" style="background: #f1f5f9; color: #64748b;">Not Attempted (0/{{ item.question.marks }})</span>
+                                {% elif item.is_correct %}
+                                    <span class="badge" style="background: #dcfce7; color: #166534;">✓ Correct (+{{ item.marks_obtained }}/{{ item.question.marks }})</span>
+                                {% else %}
+                                    <span class="badge" style="background: #fee2e2; color: #991b1b;">
+                                        ✗ Incorrect ({% if item.marks_obtained < 0 %}{{ item.marks_obtained }}{% else %}0{% endif %}/{{ item.question.marks }})
                                     </span>
-                                    <span>{{ opt_state.option.option_text }}</span>
-                                </div>
-
-                                <div style="display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 600;">
-                                    {% if opt_state.is_selected %}
-                                        <span class="badge" style="background: #eff6ff; color: #1d4ed8;">Your Choice</span>
-                                    {% endif %}
-                                    {% if opt_state.is_correct %}
-                                        <span class="badge" style="background: #dcfce7; color: #166534;">✓ Correct Answer</span>
-                                    {% endif %}
-                                </div>
+                                {% endif %}
                             </div>
-                        {% endfor %}
-                    </div>
-
-                    <!-- Solution / Explanation -->
-                    {% if item.question.solution %}
-                        <div class="solution-box">
-                            <div class="solution-box-title">
-                                💡 Explanation & Solution:
-                            </div>
-                            <div style="white-space: pre-line; line-height: 1.5;">{{ item.question.solution }}</div>
                         </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
 
-            <div style="text-align: center; margin-top: 30px; margin-bottom: 40px;">
-                <a href="{% url 'assignments:student_list' %}" class="btn btn-primary" style="padding: 12px 28px;">
-                    &larr; Return to Available Assignments
+                        <div class="question-text">{{ item.question.question_text }}</div>
+
+                        {% if item.question.code_snippet %}
+                            <pre style="background: #0f172a; color: #f8fafc; padding: 14px 18px; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 13.5px; line-height: 1.5; overflow-x: auto; margin: 12px 0 16px 0;"><code>{{ item.question.code_snippet }}</code></pre>
+                        {% endif %}
+
+                        <!-- Options with Visual Indicators -->
+                        <div style="margin-bottom: 14px;">
+                            {% for opt_state in item.options %}
+                                <div class="option-result-item {% if opt_state.is_selected and opt_state.is_correct %}is-correct-target was-selected{% elif opt_state.is_selected and not opt_state.is_correct %}wrong-pick{% elif not opt_state.is_selected and opt_state.is_correct %}is-correct-target{% endif %}">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span class="option-badge-label" style="{% if opt_state.is_correct %}background: #10b981; color: white;{% elif opt_state.is_selected %}background: #ef4444; color: white;{% endif %}">
+                                            {{ opt_state.option.option_label }}
+                                        </span>
+                                        <span>{{ opt_state.option.option_text }}</span>
+                                    </div>
+
+                                    <div style="display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 600;">
+                                        {% if opt_state.is_selected %}
+                                            <span class="badge" style="background: #eff6ff; color: #1d4ed8;">Your Choice</span>
+                                        {% endif %}
+                                        {% if opt_state.is_correct %}
+                                            <span class="badge" style="background: #dcfce7; color: #166534;">✓ Correct Answer</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Solution / Explanation -->
+                        {% if item.question.solution %}
+                            <div class="solution-box">
+                                <div class="solution-box-title">
+                                    💡 Explanation & Solution:
+                                </div>
+                                <div style="white-space: pre-line; line-height: 1.5;">{{ item.question.solution }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="solutions-protected-banner">
+                    <div style="font-size: 32px; margin-bottom: 8px;">🔒</div>
+                    <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 6px;">
+                        Solutions & Explanations Protected
+                    </h3>
+                    <p style="font-size: 13.5px; max-width: 520px; margin: 0 auto;">
+                        Per the assessment guidelines configured by your administrator, correct answers and detailed explanations will be released after the test evaluation period closes.
+                    </p>
+                </div>
+            {% endif %}
+
+            <div style="display: flex; justify-content: center; gap: 12px; margin-top: 30px; margin-bottom: 40px;">
+                {% if can_retake %}
+                    <a href="{% url 'assignments:student_instructions' assignment.id %}" class="btn btn-primary" style="padding: 12px 28px;">
+                        🔄 Retake Assessment (Attempt #{{ completed_count|add:1 }})
+                    </a>
+                {% endif %}
+                <a href="{% url 'assignments:student_list' %}" class="btn btn-secondary" style="padding: 12px 28px;">
+                    &larr; Return to Catalog
                 </a>
             </div>
 
         </div>
     </div>
 
-    <!-- Global CodeHelp Theme Controller (Ctrl + M & Ctrl + K) -->
     <script src="{% static 'core/js/theme.js' %}"></script>
 </body>
 </html>

@@ -175,7 +175,7 @@ def student_dashboard_view(request):
 
     completed_attempts = Attempt.objects.filter(
         student=student,
-        status='COMPLETED'
+        status__in=['SUBMITTED', 'AUTO_SUBMITTED', 'COMPLETED']
     ).select_related('assignment').order_by('-submitted_at')
 
     completed_count = completed_attempts.count()
@@ -188,7 +188,12 @@ def student_dashboard_view(request):
     # Analytics computations
     readiness_data = calculate_placement_readiness(student)
     rank_data = get_student_rank(student)
-    subject_perf = get_student_subject_performance(student)
+    raw_subject_perf = get_student_subject_performance(student)
+    # Exclude "Programming Fundamentals - C/C++ or Python" from the dashboard bar chart
+    subject_perf = [
+        s for s in raw_subject_perf
+        if "Programming Fundamentals" not in s.get('subject', '')
+    ]
 
     # Completed assignment IDs
     completed_ids = completed_attempts.values_list('assignment_id', flat=True)
